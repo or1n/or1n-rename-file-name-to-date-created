@@ -62,6 +62,10 @@
             "Microsoft.WindowsAppSDK": {
               "target": "Package",
               "version": "[1.*, )"
+            },
+            "WinUIEx": {
+              "target": "Package",
+              "version": "[2.9.0, )"
             }
           },
           "imports": [

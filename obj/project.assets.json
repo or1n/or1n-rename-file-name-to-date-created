@@ -345,6 +345,22 @@
         "build": {
           "buildTransitive/net8.0/_._": {}
         }
+      },
+      "WinUIEx/2.9.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.WindowsAppSDK.WinUI": "1.8.250906003"
+        },
+        "compile": {
+          "lib/net8.0-windows10.0.19041/WinUIEx.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.19041/WinUIEx.dll": {
+            "related": ".pri;.xml"
+          }
+        }
       }
     },
     "net10.0-windows10.0.19041/win-arm64": {
@@ -649,6 +665,22 @@
         },
         "build": {
           "buildTransitive/net8.0/_._": {}
+        }
+      },
+      "WinUIEx/2.9.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.WindowsAppSDK.WinUI": "1.8.250906003"
+        },
+        "compile": {
+          "lib/net8.0-windows10.0.19041/WinUIEx.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.19041/WinUIEx.dll": {
+            "related": ".pri;.xml"
+          }
         }
       }
     },
@@ -955,6 +987,22 @@
         "build": {
           "buildTransitive/net8.0/_._": {}
         }
+      },
+      "WinUIEx/2.9.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.WindowsAppSDK.WinUI": "1.8.250906003"
+        },
+        "compile": {
+          "lib/net8.0-windows10.0.19041/WinUIEx.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.19041/WinUIEx.dll": {
+            "related": ".pri;.xml"
+          }
+        }
       }
     },
     "net10.0-windows10.0.19041/win-x86": {
@@ -1259,6 +1307,22 @@
         },
         "build": {
           "buildTransitive/net8.0/_._": {}
+        }
+      },
+      "WinUIEx/2.9.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.WindowsAppSDK.WinUI": "1.8.250906003"
+        },
+        "compile": {
+          "lib/net8.0-windows10.0.19041/WinUIEx.dll": {
+            "related": ".pri;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.19041/WinUIEx.dll": {
+            "related": ".pri;.xml"
+          }
         }
       }
     }
@@ -3170,13 +3234,39 @@
         "system.numerics.tensors.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "WinUIEx/2.9.0": {
+      "sha512": "t/33rHjROKEY5SpgKfpBJgrPw+Wqmo1w+EldZMMHF3PE689PspKicXBjZb5RseL059IzU7FOfUiAIqPPjwBByQ==",
+      "type": "package",
+      "path": "winuiex/2.9.0",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "analyzers/dotnet/cs/WinUIEx.Analyzers.dll",
+        "lib/net8.0-windows10.0.19041/WinUIEx.dll",
+        "lib/net8.0-windows10.0.19041/WinUIEx.pri",
+        "lib/net8.0-windows10.0.19041/WinUIEx.xml",
+        "lib/net8.0-windows10.0.19041/WinUIEx/NumberBox/NumberBox.xaml",
+        "lib/net8.0-windows10.0.19041/WinUIEx/NumberBox/NumberBox_themeresources.xaml",
+        "lib/net8.0-windows10.0.19041/WinUIEx/Themes/Generic.xaml",
+        "lib/net8.0-windows10.0.19041/WinUIEx/TitleBar/TitleBar.xaml",
+        "lib/net8.0-windows10.0.19041/WinUIEx/TitleBar/TitleBar_themeresources.xaml",
+        "logo.png",
+        "tools/install.ps1",
+        "tools/uninstall.ps1",
+        "winuiex.2.9.0.nupkg.sha512",
+        "winuiex.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     "net10.0-windows10.0.19041": [
       "Microsoft.Web.WebView2 >= 1.*",
       "Microsoft.Windows.SDK.BuildTools >= 10.*",
-      "Microsoft.WindowsAppSDK >= 1.*"
+      "Microsoft.WindowsAppSDK >= 1.*",
+      "WinUIEx >= 2.9.0"
     ]
   },
   "packageFolders": {
@@ -3241,6 +3331,10 @@
           "Microsoft.WindowsAppSDK": {
             "target": "Package",
             "version": "[1.*, )"
+          },
+          "WinUIEx": {
+            "target": "Package",
+            "version": "[2.9.0, )"
           }
         },
         "imports": [

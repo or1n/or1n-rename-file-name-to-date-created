@@ -10,6 +10,7 @@
         "dependencies": {
           "Microsoft.Web.WebView2": "1.0.3719.77",
           "Microsoft.WindowsAppSDK": "1.8.260101001",
+          "WinUIEx": "2.9.0",
           "Microsoft.Web.WebView2.Core.Projection": "1.0.3719.77",
           "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.57"
         },
@@ -267,6 +268,17 @@
           }
         }
       },
+      "WinUIEx/2.9.0": {
+        "dependencies": {
+          "Microsoft.WindowsAppSDK.WinUI": "1.8.251222000"
+        },
+        "runtime": {
+          "lib/net8.0-windows10.0.19041/WinUIEx.dll": {
+            "assemblyVersion": "2.9.0.0",
+            "fileVersion": "2.9.0.0"
+          }
+        }
+      },
       "Microsoft.Web.WebView2.Core.Projection/1.0.3719.77": {
         "runtime": {
           "Microsoft.Web.WebView2.Core.Projection.dll": {
@@ -350,6 +362,13 @@
       "sha512": "sha512-hyJB4UlpAi19Xr9AXzu2NuagKC4lPfHObNMEAA0HmqFz2rX7wKgzeYzO/jM/eBHDhnUGFFEjk5cOoJaxqg5J4A==",
       "path": "system.numerics.tensors/9.0.0",
       "hashPath": "system.numerics.tensors.9.0.0.nupkg.sha512"
+    },
+    "WinUIEx/2.9.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-t/33rHjROKEY5SpgKfpBJgrPw+Wqmo1w+EldZMMHF3PE689PspKicXBjZb5RseL059IzU7FOfUiAIqPPjwBByQ==",
+      "path": "winuiex/2.9.0",
+      "hashPath": "winuiex.2.9.0.nupkg.sha512"
     },
     "Microsoft.Web.WebView2.Core.Projection/1.0.3719.77": {
       "type": "reference",

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "JFCXFn0k5aU=",
+  "dgSpecHash": "+14fVy6YnAg=",
   "success": true,
   "projectFilePath": "N:\\92-apps\\or1n_rename_file-names-to-date\\or1n-rename-file-name-to-date-created.csproj",
   "expectedPackageFiles": [
@@ -18,6 +18,7 @@
     "C:\\Users\\orinm\\.nuget\\packages\\microsoft.windowsappsdk.widgets\\1.8.251231004\\microsoft.windowsappsdk.widgets.1.8.251231004.nupkg.sha512",
     "C:\\Users\\orinm\\.nuget\\packages\\microsoft.windowsappsdk.winui\\1.8.251222000\\microsoft.windowsappsdk.winui.1.8.251222000.nupkg.sha512",
     "C:\\Users\\orinm\\.nuget\\packages\\system.numerics.tensors\\9.0.0\\system.numerics.tensors.9.0.0.nupkg.sha512",
+    "C:\\Users\\orinm\\.nuget\\packages\\winuiex\\2.9.0\\winuiex.2.9.0.nupkg.sha512",
     "C:\\Users\\orinm\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x86\\10.0.2\\microsoft.netcore.app.runtime.win-x86.10.0.2.nupkg.sha512",
     "C:\\Users\\orinm\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\10.0.2\\microsoft.netcore.app.runtime.win-x64.10.0.2.nupkg.sha512",
     "C:\\Users\\orinm\\.nuget\\packages\\microsoft.netcore.app.runtime.win-arm64\\10.0.2\\microsoft.netcore.app.runtime.win-arm64.10.0.2.nupkg.sha512",

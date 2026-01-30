@@ -430,6 +430,8 @@ namespace or1n_rename_file_name_to_date_created.or1n_rename_file_name_to_date_cr
                     global::Microsoft.UI.Xaml.Markup.IXamlMetadataProvider provider;
                     provider = new global::Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider() as global::Microsoft.UI.Xaml.Markup.IXamlMetadataProvider;
                     otherProviders.Add(provider); 
+                    provider = new global::WinUIEx.WinUIEx_XamlTypeInfo.XamlMetaDataProvider() as global::Microsoft.UI.Xaml.Markup.IXamlMetadataProvider;
+                    otherProviders.Add(provider); 
                     _otherProviders = otherProviders;
                 }
                 return _otherProviders;

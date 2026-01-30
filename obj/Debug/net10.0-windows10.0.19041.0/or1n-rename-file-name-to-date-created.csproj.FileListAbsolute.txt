@@ -1,3 +1,12 @@
+N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\or1n-rename-file-name-to-date-created.csproj.AssemblyReference.cache
+N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\App.g.i.cs
+N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\App.g.cs
+N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\Views\MainPage.g.i.cs
+N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\Views\MainPage.g.cs
+N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\App.xaml
+N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\Views\MainPage.xaml
+N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\App.xbf
+N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\Views\MainPage.xbf
 N:\92-apps\or1n_rename_file-names-to-date\bin\Debug\net10.0-windows10.0.19041.0\Assets\LockScreenLogo.scale-200.png
 N:\92-apps\or1n_rename_file-names-to-date\bin\Debug\net10.0-windows10.0.19041.0\Assets\SplashScreen.scale-200.png
 N:\92-apps\or1n_rename_file-names-to-date\bin\Debug\net10.0-windows10.0.19041.0\Assets\Square150x150Logo.scale-200.png
@@ -59,16 +68,7 @@ N:\92-apps\or1n_rename_file-names-to-date\bin\Debug\net10.0-windows10.0.19041.0\
 N:\92-apps\or1n_rename_file-names-to-date\bin\Debug\net10.0-windows10.0.19041.0\Microsoft.Windows.SDK.NET.dll
 N:\92-apps\or1n_rename_file-names-to-date\bin\Debug\net10.0-windows10.0.19041.0\WinRT.Runtime.dll
 N:\92-apps\or1n_rename_file-names-to-date\bin\Debug\net10.0-windows10.0.19041.0\Microsoft.Web.WebView2.Core.Projection.dll
-N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\or1n-rename-file-name-to-date-created.csproj.AssemblyReference.cache
-N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\App.g.i.cs
-N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\App.g.cs
-N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\Views\MainPage.g.i.cs
-N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\Views\MainPage.g.cs
 N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\XamlTypeInfo.g.cs
-N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\App.xaml
-N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\Views\MainPage.xaml
-N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\App.xbf
-N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\Views\MainPage.xbf
 N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\XamlSaveStateFile.xml
 N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\or1n-rename-file-name-to-date-created.GeneratedMSBuildEditorConfig.editorconfig
 N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\or1n-rename-file-name-to-date-created.AssemblyInfoInputs.cache
@@ -96,3 +96,5 @@ N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\
 N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\qualifiers.txt
 N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\qualifiers.txt.intermediate
 N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\MultipleQualifiersPerDimensionFound.txt
+N:\92-apps\or1n_rename_file-names-to-date\bin\Debug\net10.0-windows10.0.19041.0\WinUIEx.dll
+N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\WinUIEx.pri.xml

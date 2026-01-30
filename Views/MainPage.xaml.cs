@@ -1,3 +1,4 @@
+using WinUIEx;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -14,6 +15,46 @@ namespace or1n_rename_file_name_to_date_created.Views
         {
             this.InitializeComponent();
             Log("App started.");
+            this.Loaded += MainPage_Loaded;
+            SetWindowSize(900, 420); // Set compact initial window size
+        }
+
+        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Use WinUIEx to set minimum window size and margin
+            var window = App.WindowInstance;
+            if (window is not null)
+            {
+                var manager = WinUIEx.WindowManager.Get(window);
+                manager.MinWidth = 480;
+                manager.MinHeight = 320;
+                window.CenterOnScreen();
+            }
+
+        }
+
+        // Set the window size using AppWindow API for WinUI 3
+        private void SetWindowSize(int width, int height)
+        {
+            try
+            {
+                var window = App.WindowInstance;
+                if (window is null) return;
+                var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+                var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
+                var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+                if (appWindow != null)
+                {
+                    appWindow.Resize(new Windows.Graphics.SizeInt32(width, height));
+                    var presenter = appWindow.Presenter as Microsoft.UI.Windowing.OverlappedPresenter;
+                    if (presenter != null)
+                    {
+                        presenter.IsMaximizable = false;
+                        presenter.IsResizable = true;
+                    }
+                }
+            }
+            catch { /* Ignore if fails */ }
         }
 
         private void Log(string message)

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("or1n-rename-file-name-to-date-created")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5398f43c8603fccc5ddcbe95501708b38b90db26")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d631c2c9b0def1d908fd0f542599d41beaf047eb")]
 [assembly: System.Reflection.AssemblyProductAttribute("or1n-rename-file-name-to-date-created")]
 [assembly: System.Reflection.AssemblyTitleAttribute("or1n-rename-file-name-to-date-created")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

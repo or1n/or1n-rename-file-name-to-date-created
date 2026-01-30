@@ -37,6 +37,9 @@
         "&": true,
         "Remove-Item": true,
         "taskkill": true,
-        "git push": true
+        "git push": true,
+        "msbuild": true,
+        "dotnet restore": true,
+        "git status": true
     }
 }
