@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "or1n-rename-file-name-to-date-created (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "or1n-rename-file-name-to-date-created (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
