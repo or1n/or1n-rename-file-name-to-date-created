@@ -7,13 +7,27 @@ namespace or1n_rename_file_name_to_date_created.Views
 {
     public sealed partial class MainPage : Page
     {
+        private const int MaxLogLines = 100;
+        private readonly Queue<string> _logLines = new();
+
         public MainPage()
         {
             this.InitializeComponent();
+            Log("App started.");
+        }
+
+        private void Log(string message)
+        {
+            var timestamp = DateTime.Now.ToString("HH:mm:ss");
+            _logLines.Enqueue($"[{timestamp}] {message}");
+            while (_logLines.Count > MaxLogLines)
+                _logLines.Dequeue();
+            InfoTextBlock.Text = string.Join("\n", _logLines.Skip(Math.Max(0, _logLines.Count - 10)));
         }
 
         private async void OpenFolderButton_Click(object sender, RoutedEventArgs e)
         {
+            Log("Open Folder button pressed.");
             var picker = new Windows.Storage.Pickers.FolderPicker();
             picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
             picker.FileTypeFilter.Add("*");
@@ -23,26 +37,26 @@ namespace or1n_rename_file_name_to_date_created.Views
             if (folder != null)
             {
                 SelectedFolderText.Text = folder.Path;
-                InfoTextBlock.Text = $"Selected folder: {folder.Path}";
+                Log($"Selected folder: {folder.Path}");
             }
             else
             {
-                InfoTextBlock.Text = "No folder selected.";
+                Log("No folder selected.");
             }
         }
 
         private async void ScanButton_Click(object sender, RoutedEventArgs e)
         {
-            InfoTextBlock.Text = "Scanning folder...";
-            ResultsListView.Items.Clear();
+            Log("Scan button pressed.");
             var folderPath = SelectedFolderText.Text;
             if (string.IsNullOrWhiteSpace(folderPath) || folderPath == "No folder selected")
             {
-                InfoTextBlock.Text = "Please select a folder first.";
+                Log("Please select a folder first.");
                 return;
             }
             try
             {
+                Log($"Scanning folder: {folderPath}");
                 var dir = await Windows.Storage.StorageFolder.GetFolderFromPathAsync(folderPath);
                 var files = await dir.GetFilesAsync();
                 var groups = files.GroupBy(f => f.FileType.ToLowerInvariant())
@@ -50,13 +64,13 @@ namespace or1n_rename_file_name_to_date_created.Views
                     .OrderByDescending(g => g.Count);
                 foreach (var group in groups)
                 {
-                    ResultsListView.Items.Add($"{group.Type}: {group.Count}");
+                    Log($"{group.Type}: {group.Count}");
                 }
-                InfoTextBlock.Text = $"Scan complete. {files.Count} files found.";
+                Log($"Scan complete. {files.Count} files found.");
             }
             catch (Exception ex)
             {
-                InfoTextBlock.Text = $"Error: {ex.Message}";
+                Log($"Error: {ex.Message}");
             }
         }
     }

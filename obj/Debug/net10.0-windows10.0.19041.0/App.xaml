@@ -18,8 +18,10 @@
                 <Color x:Key="Primary">#222222</Color>
                 <Color x:Key="Secondary">#444444</Color>
                 <Color x:Key="Accent">#888888</Color>
-                <Color x:Key="Background">#FFFFFF</Color>
-                <Color x:Key="Foreground">#111111</Color>
+                <Color x:Key="Background">#1A1A1A</Color>
+                <Color x:Key="Foreground">#F3F3F3</Color>
+                <Color x:Key="LogBackground">#22232A</Color>
+                <Color x:Key="LogForeground">#F3F3F3</Color>
                 <Color x:Key="Border">#CCCCCC</Color>
 
                 <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}" />
@@ -27,7 +29,11 @@
                 <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource Accent}" />
                 <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource Background}" />
                 <SolidColorBrush x:Key="ForegroundBrush" Color="{StaticResource Foreground}" />
+                <!-- For window background/frame -->
+                <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#181818" />
                 <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource Border}" />
+                <SolidColorBrush x:Key="LogBackgroundBrush" Color="{StaticResource LogBackground}" />
+                <SolidColorBrush x:Key="LogForegroundBrush" Color="{StaticResource LogForeground}" />
 
                 <!-- Fix: Add TitleBrush to prevent XAML resource error -->
                 <SolidColorBrush x:Key="TitleBrush" Color="#FFFFFFFF" />
