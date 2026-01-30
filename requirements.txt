@@ -1,0 +1,3 @@
+# Install requirements
+# Windows 11, Visual Studio 2022+, .NET 8.0 SDK, Windows App SDK
+# Run: ./install.cmd

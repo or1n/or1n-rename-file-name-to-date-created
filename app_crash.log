@@ -1,0 +1,36 @@
+[ONLAUNCHED] 2026/01/30 22:57:57: Microsoft.UI.Xaml.Markup.XamlParseException: The text associated with this error code could not be found.
+
+Cannot find a Resource with the Name/Key TitleBrush [Line: 35 Position: 51]
+   at WinRT.ExceptionHelpers.<ThrowExceptionForHR>g__Throw|38_0(Int32 hr)
+   at WinRT.ExceptionHelpers.ThrowExceptionForHR(Int32 hr)
+   at ABI.Microsoft.UI.Xaml.IApplicationStaticsMethods.LoadComponent(IObjectReference _obj, Object component, Uri resourceLocator, ComponentResourceLocation componentResourceLocation)
+   at Microsoft.UI.Xaml.Application.LoadComponent(Object component, Uri resourceLocator, ComponentResourceLocation componentResourceLocation)
+   at or1n_rename_file_name_to_date_created.Views.MainPage.InitializeComponent() in N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\Views\MainPage.g.i.cs:line 47
+   at or1n_rename_file_name_to_date_created.Views.MainPage..ctor() in N:\92-apps\or1n_rename_file-names-to-date\Views\MainPage.xaml.cs:line 12
+   at or1n_rename_file_name_to_date_created.or1n_rename_file_name_to_date_created_XamlTypeInfo.XamlTypeInfoProvider.Activate_7_MainPage() in N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\XamlTypeInfo.g.cs:line 295
+   at or1n_rename_file_name_to_date_created.or1n_rename_file_name_to_date_created_XamlTypeInfo.XamlUserType.ActivateInstance() in N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\XamlTypeInfo.g.cs:line 791
+   at ABI.Microsoft.UI.Xaml.Markup.IXamlType.Do_Abi_ActivateInstance_13(IntPtr thisPtr, IntPtr* result)
+--- End of stack trace from previous location ---
+   at WinRT.ExceptionHelpers.<ThrowExceptionForHR>g__Throw|38_0(Int32 hr)
+   at WinRT.ExceptionHelpers.ThrowExceptionForHR(Int32 hr)
+   at ABI.Microsoft.UI.Xaml.Controls.IFrameMethods.Navigate(IObjectReference _obj, Type sourcePageType, Object parameter)
+   at Microsoft.UI.Xaml.Controls.Frame.Navigate(Type sourcePageType, Object parameter)
+   at or1n_rename_file_name_to_date_created.App.OnLaunched(LaunchActivatedEventArgs e) in N:\92-apps\or1n_rename_file-names-to-date\App.xaml.cs:line 60
+[ONLAUNCHED] 2026/01/30 23:00:43: Microsoft.UI.Xaml.Markup.XamlParseException: The text associated with this error code could not be found.
+
+Cannot find a Resource with the Name/Key TitleBrush [Line: 35 Position: 51]
+   at WinRT.ExceptionHelpers.<ThrowExceptionForHR>g__Throw|38_0(Int32 hr)
+   at WinRT.ExceptionHelpers.ThrowExceptionForHR(Int32 hr)
+   at ABI.Microsoft.UI.Xaml.IApplicationStaticsMethods.LoadComponent(IObjectReference _obj, Object component, Uri resourceLocator, ComponentResourceLocation componentResourceLocation)
+   at Microsoft.UI.Xaml.Application.LoadComponent(Object component, Uri resourceLocator, ComponentResourceLocation componentResourceLocation)
+   at or1n_rename_file_name_to_date_created.Views.MainPage.InitializeComponent() in N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\Views\MainPage.g.i.cs:line 47
+   at or1n_rename_file_name_to_date_created.Views.MainPage..ctor() in N:\92-apps\or1n_rename_file-names-to-date\Views\MainPage.xaml.cs:line 12
+   at or1n_rename_file_name_to_date_created.or1n_rename_file_name_to_date_created_XamlTypeInfo.XamlTypeInfoProvider.Activate_7_MainPage() in N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\XamlTypeInfo.g.cs:line 295
+   at or1n_rename_file_name_to_date_created.or1n_rename_file_name_to_date_created_XamlTypeInfo.XamlUserType.ActivateInstance() in N:\92-apps\or1n_rename_file-names-to-date\obj\Debug\net10.0-windows10.0.19041.0\XamlTypeInfo.g.cs:line 791
+   at ABI.Microsoft.UI.Xaml.Markup.IXamlType.Do_Abi_ActivateInstance_13(IntPtr thisPtr, IntPtr* result)
+--- End of stack trace from previous location ---
+   at WinRT.ExceptionHelpers.<ThrowExceptionForHR>g__Throw|38_0(Int32 hr)
+   at WinRT.ExceptionHelpers.ThrowExceptionForHR(Int32 hr)
+   at ABI.Microsoft.UI.Xaml.Controls.IFrameMethods.Navigate(IObjectReference _obj, Type sourcePageType, Object parameter)
+   at Microsoft.UI.Xaml.Controls.Frame.Navigate(Type sourcePageType, Object parameter)
+   at or1n_rename_file_name_to_date_created.App.OnLaunched(LaunchActivatedEventArgs e) in N:\92-apps\or1n_rename_file-names-to-date\App.xaml.cs:line 60

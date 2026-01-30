@@ -8,6 +8,7 @@ namespace or1n_rename_file_name_to_date_created
     public partial class App : Application
     {
         private Window window = Window.Current;
+        public static Window? WindowInstance { get; private set; }
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -15,7 +16,26 @@ namespace or1n_rename_file_name_to_date_created
         /// </summary>
         public App()
         {
-            this.InitializeComponent();
+            // this.InitializeComponent(); // Not needed in WinUI 3
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            {
+                try
+                {
+                    var ex = e.ExceptionObject as Exception;
+                    var msg = $"[UNHANDLED] {DateTime.Now}: {ex?.ToString() ?? e.ExceptionObject.ToString()}\n";
+                    System.IO.File.AppendAllText("app_crash.log", msg);
+                }
+                catch { }
+            };
+            System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (s, e) =>
+            {
+                try
+                {
+                    var msg = $"[UNOBSERVED TASK] {DateTime.Now}: {e.Exception.ToString()}\n";
+                    System.IO.File.AppendAllText("app_crash.log", msg);
+                }
+                catch { }
+            };
         }
 
         /// <summary>
@@ -25,17 +45,57 @@ namespace or1n_rename_file_name_to_date_created
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            window ??= new Window();
-
-            if (window.Content is not Frame rootFrame)
+            try
             {
-                rootFrame = new Frame();
-                rootFrame.NavigationFailed += OnNavigationFailed;
-                window.Content = rootFrame;
-            }
+                window ??= new Window();
+                WindowInstance = window;
 
-            _ = rootFrame.Navigate(typeof(MainPage), e.Arguments);
-            window.Activate();
+                if (window.Content is not Frame rootFrame)
+                {
+                    rootFrame = new Frame();
+                    rootFrame.NavigationFailed += OnNavigationFailed;
+                    window.Content = rootFrame;
+                }
+
+                _ = rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                window.Activate();
+
+                // Bring window to foreground
+                try
+                {
+                    var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+                    if (hwnd != IntPtr.Zero)
+                    {
+                        Win32.BringWindowToFront(hwnd);
+                    }
+                }
+                catch { /* Ignore if fails */ }
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    var msg = $"[ONLAUNCHED] {DateTime.Now}: {ex.ToString()}\n";
+                    System.IO.File.AppendAllText("app_crash.log", msg);
+                }
+                catch { }
+                throw;
+            }
+        }
+
+        private static class Win32
+        {
+            [System.Runtime.InteropServices.DllImport("user32.dll")]
+            public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+            [System.Runtime.InteropServices.DllImport("user32.dll")]
+            public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+            public static void BringWindowToFront(IntPtr hwnd)
+            {
+                ShowWindow(hwnd, 5); // SW_SHOW
+                SetForegroundWindow(hwnd);
+            }
         }
 
         /// <summary>

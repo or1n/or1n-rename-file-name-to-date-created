@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "N:\\92-apps\\or1n_app_rename_file-name_to_date-created\\or1n-rename-file-name-to-date-created.csproj": {}
+    "N:\\92-apps\\or1n_rename_file-names-to-date\\or1n-rename-file-name-to-date-created.csproj": {}
   },
   "projects": {
-    "N:\\92-apps\\or1n_app_rename_file-name_to_date-created\\or1n-rename-file-name-to-date-created.csproj": {
+    "N:\\92-apps\\or1n_rename_file-names-to-date\\or1n-rename-file-name-to-date-created.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "N:\\92-apps\\or1n_app_rename_file-name_to_date-created\\or1n-rename-file-name-to-date-created.csproj",
+        "projectUniqueName": "N:\\92-apps\\or1n_rename_file-names-to-date\\or1n-rename-file-name-to-date-created.csproj",
         "projectName": "or1n-rename-file-name-to-date-created",
-        "projectPath": "N:\\92-apps\\or1n_app_rename_file-name_to_date-created\\or1n-rename-file-name-to-date-created.csproj",
+        "projectPath": "N:\\92-apps\\or1n_rename_file-names-to-date\\or1n-rename-file-name-to-date-created.csproj",
         "packagesPath": "C:\\Users\\orinm\\.nuget\\packages\\",
-        "outputPath": "N:\\92-apps\\or1n_app_rename_file-name_to_date-created\\obj\\",
+        "outputPath": "N:\\92-apps\\or1n_rename_file-names-to-date\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

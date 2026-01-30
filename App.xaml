@@ -14,36 +14,45 @@
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
-            <Color x:Key="Primary">#512BD4</Color>
+                <!-- Monochrome palette -->
+                <Color x:Key="Primary">#222222</Color>
+                <Color x:Key="Secondary">#444444</Color>
+                <Color x:Key="Accent">#888888</Color>
+                <Color x:Key="Background">#FFFFFF</Color>
+                <Color x:Key="Foreground">#111111</Color>
+                <Color x:Key="Border">#CCCCCC</Color>
 
-            <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}" />
-            <SolidColorBrush x:Key="WhiteBrush" Color="White" />
-            <SolidColorBrush x:Key="BlackBrush" Color="Black" />
+                <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}" />
+                <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}" />
+                <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource Accent}" />
+                <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource Background}" />
+                <SolidColorBrush x:Key="ForegroundBrush" Color="{StaticResource Foreground}" />
+                <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource Border}" />
 
-            <x:Double x:Key="AppFontSize">14</x:Double>
+                <!-- Fix: Add TitleBrush to prevent XAML resource error -->
+                <SolidColorBrush x:Key="TitleBrush" Color="#FFFFFFFF" />
 
-            <Style x:Key="MyLabel" TargetType="TextBlock">
-                <Setter Property="Foreground"
-                        Value="{StaticResource PrimaryBrush}" />
-            </Style>
+                <x:Double x:Key="AppFontSize">14</x:Double>
 
-            <Style x:Key="Action" TargetType="Button">
-                <Setter Property="FontSize"
-                        Value="{StaticResource AppFontSize}" />
-                <Setter Property="Padding"
-                        Value="14,10" />
-            </Style>
+                <Style x:Key="MyLabel" TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="{StaticResource TitleBrush}" />
+                </Style>
 
-            <Style x:Key="PrimaryAction"
-                   TargetType="Button"
-                   BasedOn="{StaticResource Action}">
-                <Setter Property="Background"
-                        Value="{StaticResource PrimaryBrush}" />
-                <Setter Property="CornerRadius"
-                        Value="8" />
-                <Setter Property="Foreground"
-                        Value="{StaticResource WhiteBrush}" />
-            </Style>
+                <Style x:Key="Action" TargetType="Button">
+                <Setter Property="FontSize" Value="{StaticResource AppFontSize}" />
+                <Setter Property="Padding" Value="14,10" />
+                <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="8" />
+                </Style>
+
+                <Style x:Key="PrimaryAction" TargetType="Button" BasedOn="{StaticResource Action}">
+                <Setter Property="Background" Value="{StaticResource ForegroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource BackgroundBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource ForegroundBrush}" />
+                </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
