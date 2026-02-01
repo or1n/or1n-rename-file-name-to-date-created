@@ -1,0 +1,25 @@
+{
+  "MSBuild": {
+    "LoadProjectsOnDemand": false,
+    "UseLegacySdkResolver": false
+  },
+  "RoslynExtensionsOptions": {
+    "EnableAnalyzersSupport": true,
+    "EnableImportCompletion": true,
+    "EnableDecompilationSupport": true
+  },
+  "FormattingOptions": {
+    "EnableEditorConfigSupport": true
+  },
+  "Diagnostics": {
+    "DisabledDiagnosticIds": ["CS0103", "CS1061"],
+    "Enabled": true,
+    "SuppressedDiagnosticIds": ["CS0103", "CS1061"]
+  },
+  "script": {
+    "enabled": true
+  },
+  "analyzersEnabled": false,
+  "enableRoslynAnalyzers": false,
+  "suppressHiddenDiagnostics": true
+}

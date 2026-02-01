@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Page
+    x:Class="Or1nRenameFileNameToDateCreated.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Or1nRenameFileNameToDateCreated"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d">
+    <Page.Content>
+        <Grid Background="{ThemeResource PageBackgroundBrush}"
+              Padding="{StaticResource Grid.Padding}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" /> <!-- Title -->
+                <RowDefinition Height="Auto" /> <!-- Description -->
+                <RowDefinition Height="Auto" /> <!-- Theme ComboBox -->
+                <RowDefinition Height="Auto" /> <!-- Folder Picker -->
+                <RowDefinition Height="*" />   <!-- Log Area -->
+            </Grid.RowDefinitions>
+
+            <!-- Title -->
+            <TextBlock Grid.Row="0"
+                       Margin="{StaticResource TextBlock.Margin}"
+                       FontSize="{StaticResource FontSize.Title}"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Foreground="{ThemeResource TitleBrush}"
+                       Text="or1n Rename File Name To Date Created" />
+
+            <!-- Short Description -->
+            <TextBlock Grid.Row="1"
+                       Margin="0,0,0,16"
+                       FontSize="{StaticResource FontSize.Subtitle}"
+                       Foreground="{ThemeResource SubtitleBrush}"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       MaxWidth="700"
+                       Text="A modern WinUI 3 app to batch rename files in a selected folder to their original date created/taken, with customizable formatting and smart options." />
+
+            <!-- Theme Toggle ComboBox -->
+            <ComboBox x:Name="ThemeComboBox"
+                      Grid.Row="2"
+                      HorizontalAlignment="Center"
+                      Width="{StaticResource ComboBox.Width}"
+                      Margin="{StaticResource ComboBox.Margin}"
+                      SelectionChanged="ThemeComboBox_SelectionChanged">
+                <ComboBoxItem Content="System theme" Tag="Default" IsSelected="True" />
+                <ComboBoxItem Content="Light theme" Tag="Light" />
+                <ComboBoxItem Content="Dark theme" Tag="Dark" />
+            </ComboBox>
+
+            <!-- Folder Picker and Scan Button -->
+            <StackPanel Grid.Row="3"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Spacing="{StaticResource StackPanel.Spacing}"
+                        Margin="{StaticResource StackPanel.Margin}">
+                <Button x:Name="OpenFolderButton"
+                        Content="Open"
+                        Padding="{StaticResource Button.Padding}"
+                        Click="OpenFolderButton_Click" />
+                <Button x:Name="ScanButton"
+                        Content="Scan"
+                        Padding="{StaticResource Button.Padding}"
+                        Click="ScanButton_Click" />
+            </StackPanel>
+
+            <!-- Log/Terminal Area -->
+            <Border Grid.Row="4"
+                    Margin="{StaticResource Border.Margin}"
+                    Background="{ThemeResource LogBackgroundBrush}"
+                    CornerRadius="{StaticResource Border.CornerRadius}"
+                    Padding="{StaticResource Border.Padding}"
+                    BorderBrush="{ThemeResource BorderBrush}"
+                    BorderThickness="{StaticResource BorderThickness.Default}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              Padding="{StaticResource ScrollViewer.Padding}"
+                              Margin="{StaticResource ScrollViewer.Margin}">
+                    <TextBlock x:Name="InfoTextBlock"
+                               FontSize="{StaticResource FontSize.Normal}"
+                               Foreground="{ThemeResource AccentBrush}"
+                               Margin="{StaticResource InfoTextBlock.Margin}"
+                               Text="Action: Select a folder to start"
+                               TextWrapping="Wrap"/>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Page.Content>
+</Page>
+

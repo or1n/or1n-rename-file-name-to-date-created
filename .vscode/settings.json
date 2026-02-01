@@ -40,6 +40,26 @@
         "git push": true,
         "msbuild": true,
         "dotnet restore": true,
-        "git status": true
+        "git status": true,
+        "del": true,
+        "rmdir": true,
+        ".\\obj": true
+    },
+    "[csharp]": {
+        "editor.defaultFormatter": "ms-dotnettools.csharp"
+    },
+    "omnisharp.enableRoslynAnalyzers": false,
+    "omnisharp.suppressRoslynAnalyzerNotifications": true,
+    "csharp.showBackground": "off",
+    "csharp.inlayHints.enableInlayHints": false,
+    "csharp.diagnosticsOptions": {
+        "disabled": ["CS0103", "CS1061"]
+    },
+    "problems.maxProblemsPerSource": 1000,
+    "problems.exclude": {
+        "**/*.xaml.cs": {
+            "CS0103": true,
+            "CS1061": true
+        }
     }
 }

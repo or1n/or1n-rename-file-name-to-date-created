@@ -3,7 +3,7 @@
 
 ## ⚠️ Status: Early Development (v1.0 Shell)
 
-**This is a foundation release (v1.0) and currently a shell/framework with UI and theming only.** The core rename functionality, file metadata extraction, and batch operations are **not yet implemented**. See [docs/TODO.md](docs/TODO.md) for the development roadmap.
+**This is a foundation release (v1.0) and currently a shell/framework with UI and theming only.** The core rename functionality, file metadata extraction, and batch operations are **not yet implemented**. See the roadmap below for planned features.
 
 ---
 
@@ -38,7 +38,7 @@ A modern WinUI 3 desktop app (Windows 11) to batch rename files in a selected fo
 
 ### ❌ Not Yet Implemented (Planned)
 
-The following features are **not yet implemented** and are tracked in [docs/TODO.md](docs/TODO.md):
+The following features are **not yet implemented** and are tracked in [TODO.md](TODO.md):
 
 - **Batch rename functionality**: Core renaming engine not yet built
 - **File metadata extraction**: No image/video/file date reading (date created, date taken, EXIF, etc.)
@@ -50,28 +50,28 @@ The following features are **not yet implemented** and are tracked in [docs/TODO
 - **Advanced filters**: No file type or date range filtering
 - **Settings/profiles**: No save/load configuration
 
-**See [docs/TODO.md](docs/TODO.md) for the detailed roadmap and tracking.**
+**See [TODO.md](TODO.md) for the detailed roadmap and tracking.**
 
-### Phase 2 (v1.1) Planned Items
+Phase 2 (v1.1) planned items:
 
 - ProgressRing for file operations
 - Enhanced error messages and recovery
 - More comprehensive code documentation
 
-### Phase 3 (v2.0) Planned Items
+Phase 3 (v2.0) planned items:
 
 - **Batch Rename Engine**: Date/time formatting, prefix/suffix, smart numbering
 - **Advanced WinUI 3 Controls**: RichEditBox, NumberBox, ContentDialog, ProgressRing, InfoBar
 - **File Filtering**: Select by file type, date range, size criteria
 - **Preview & Results**: Inline file preview, rename preview, detailed results
 
-### Phase 4 (v2.1) Planned Items
+Phase 4 (v2.1) planned items:
 
 - Full keyboard navigation
 - Screen reader optimization
 - High contrast mode support
 
-### Phase 5+ (v3.0+) Planned Items
+Phase 5+ (v3.0+) planned items:
 
 - Save/load rename profiles
 - Undo/redo support

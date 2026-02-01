@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+            <MSBuildDisableNodeReuse>true</MSBuildDisableNodeReuse>
+            <AlwaysCompileMarkupFilesInSeparateDomain>true</AlwaysCompileMarkupFilesInSeparateDomain>
+        <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
         <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
         <OutputType>WinExe</OutputType>
 
@@ -14,7 +16,13 @@
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
-        <RootNamespace>or1n_rename_file_name_to_date_created</RootNamespace>
+        <RootNamespace>Or1nRenameFileNameToDateCreated</RootNamespace>
+        <StartupObject>Or1nRenameFileNameToDateCreated.Program</StartupObject>
+        <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+        
+        <!-- Disable auto-include so we can manually control file locations -->
+        <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+        <EnableDefaultPageItems>false</EnableDefaultPageItems>
 
         <!-- App Options -->
         <UseRidGraph>true</UseRidGraph>
@@ -37,16 +45,32 @@
 
     <ItemGroup>
         <None Remove="or1n-rename-file-name-to-date-created.slnx" />
+        
+        <!-- Manually include all source files with Link to appear at root in build output -->
+        <Compile Include="src\**\*.cs" Link="%(RecursiveDir)%(Filename)%(Extension)" />
+        
+        <!-- App.xaml must be ApplicationDefinition, not Page -->
+        <ApplicationDefinition Include="src\App.xaml" Link="App.xaml" />
+        
+        <!-- All other XAML files as Page -->
+        <Page Include="src\MainWindow.xaml" Link="MainWindow.xaml" />
+        <Page Include="src\UIConfig.xaml" Link="UIConfig.xaml" />
+        <Page Include="src\Views\*.xaml" Link="Views\%(Filename)%(Extension)" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.*" />
-        <PackageReference Include="Microsoft.Web.WebView2" Version="1.*" />
-        <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.*" />
+        <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3179.45" />
+        <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />
 
         <Manifest Include="$(ApplicationManifest)" />
 
-        <PackageReference Include="WinUIEx" Version="2.9.0" />
+        <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260101001" />
+
+    </ItemGroup>
+
+    <!-- Ensure generated XAML files are discoverable by the compiler and IntelliSense -->
+    <ItemGroup>
+        <GeneratedCompile Include="$(IntermediateOutputPath)**/*.g.i.cs" />
     </ItemGroup>
 
     <!-- 

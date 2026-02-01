@@ -1,32 +1,58 @@
 {
     "version": "0.2.0",
     "configurations": [
+        
         {
-            "name": ".NET Core Launch (console)",
+            "name": ".NET Core Launch (WinUI 3, Debug)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/Debug/net10.0-windows10.0.19041.0/or1n-rename-file-name-to-date-created.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}",
-            "console": "internalConsole",
-            "stopAtEntry": false
-        },
-        {
-            "name": ".NET Core Launch (x64, native debug)",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/Debug/net10.0-windows10.0.19041.0/win-x64/or1n-rename-file-name-to-date-created.exe",
+            "program": "${workspaceFolder}/bin/Debug/net8.0-windows10.0.19041.0/or1n-rename-file-name-to-date-created.exe",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
             "stopAtEntry": false,
             "logging": {
-                "engineLogging": true,
+                "diagnosticsLog.protocolMessages": true,
+                "programOutput": true,
+                "exceptions": true
+            },
+            "env": {
+                // Add environment variables for debugging if needed
+            }
+        },
+        {
+            "name": ".NET Core Launch (x64, native debug)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "publish",
+            "program": "${workspaceFolder}/bin/Debug/net8.0-windows10.0.19041.0/win-x64/publish/or1n-rename-file-name-to-date-created.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "logging": {
+                "diagnosticsLog.protocolMessages": true,
                 "programOutput": true,
                 "exceptions": true
             }
+        },
+        {
+            "name": ".NET Core Launch (Debug, break on all exceptions)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/bin/Debug/net8.0-windows10.0.19041.0/or1n-rename-file-name-to-date-created.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "logging": {
+                "diagnosticsLog.protocolMessages": true,
+                "programOutput": true,
+                "exceptions": true
+            },
+            "justMyCode": false
         },
         {
             "name": ".NET Core Attach",
