@@ -23,11 +23,15 @@ Modern 2026 WinUI 3 best practices implementation progress:
 - [x] **Accessibility labels** — AutomationProperties.Name/HelpText on all controls. ✅ COMPLETE
 - [ ] **Keyboard navigation** — Tab order verified; non-interactive items not tab-stoppable. ⚠️ NEEDS VERIFICATION
 - [ ] **Log styling** — Monospace log area with theme-aware colors and proper padding. ⚠️ NEEDS VERIFICATION (current uses regular font)
+- [ ] **Log text selection** — Click to select, CTRL+A select all, CTRL+C copy support. ❌ NOT IMPLEMENTED
+- [ ] **Log context menu** — Right-click menu with Copy, Copy All, Clear Log, Search options. ❌ NOT IMPLEMENTED
+- [ ] **Log scrollbar responsiveness** — Auto-scroll on new entries, scrollbar appears dynamically. ⚠️ PARTIAL - scroll works but needs improvement
+- [ ] **Log resizing** — Log section grows/shrinks properly when main window resized. ❌ NEEDS FIX
 - [ ] **Control polish** — Consistent button sizes, spacing, and corner radius. ⚠️ PARTIAL - buttons are 40x40px but needs full review
 - [x] **Resource dictionary hygiene** — Centralized naming conventions in UIConfig.xaml. ✅ COMPLETE
 - [ ] **High contrast readiness** — Test and adjust for HC mode visibility. ❌ NOT IMPLEMENTED
 
-**Summary: 9/15 complete, 4/15 partial, 2/15 not started - ~70% progress**
+**Summary: 9/15 complete, 6/15 partial, 3/15 not started - ~70% progress**
 
 ---
 

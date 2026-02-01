@@ -5,8 +5,6 @@
 
 **Phase 1 (Foundation & Core UI) is ~70% complete.** Window persistence (position, size, theme) is fully functional. WinUI 3 design system implementation is ongoing. Core rename functionality not yet started (Phase 2). See [docs/TODO.md](docs/TODO.md) for the development roadmap.
 
----
-
 ## Title
 
 or1n Rename File Name To Date Created

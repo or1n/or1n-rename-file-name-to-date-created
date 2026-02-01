@@ -20,6 +20,9 @@ namespace Or1nRenameFileNameToDateCreated
         private int _minWidth = 710;   // Based on user testing: minimum to show title + description (2 lines) + buttons (1 row) + log area without cutoff
         private int _minHeight = 640;  // Based on user testing: minimum to show all UI elements including full log area with 7+ lines
         private bool _isInitializing = true;
+        
+        // Backdrop diagnostics for UI display
+        public static string BackdropStatus { get; private set; } = "Not initialized";
 
         public MainWindow()
         {
@@ -73,25 +76,39 @@ namespace Or1nRenameFileNameToDateCreated
 
         /// <summary>
         /// Applies the preferred system backdrop with a safe fallback when unsupported.
+        /// Desktop Acrylic provides a more visible frosted glass effect compared to subtle Mica.
         /// </summary>
         private void ApplySystemBackdrop()
         {
+            // Try DesktopAcrylic first - more noticeable frosted glass effect
+            if (DesktopAcrylicController.IsSupported())
+            {
+                SystemBackdrop = new DesktopAcrylicBackdrop();
+                BackdropStatus = "DesktopAcrylic (frosted glass) - IsSupported=TRUE, Applied=YES";
+                return;
+            }
+            else
+            {
+                BackdropStatus = "DesktopAcrylic - IsSupported=FALSE, Trying Mica...";
+            }
+
+            // Fallback to Mica Alt if Acrylic not supported
             if (MicaController.IsSupported())
             {
                 SystemBackdrop = new MicaBackdrop
                 {
                     Kind = MicaKind.BaseAlt
                 };
+                BackdropStatus += " | Mica Alt - IsSupported=TRUE, Applied=YES";
                 return;
             }
-
-            if (DesktopAcrylicController.IsSupported())
+            else
             {
-                SystemBackdrop = new DesktopAcrylicBackdrop();
-                return;
+                BackdropStatus += " | Mica - IsSupported=FALSE";
             }
 
             SystemBackdrop = null;
+            BackdropStatus += " | Final: NO BACKDROP (both unsupported)";
         }
 
         private void ApplyMinimumWindowSize()
