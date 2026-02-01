@@ -1,9 +1,9 @@
 
 # or1n-rename-file-name-to-date-created
 
-## ⚠️ Status: Early Development (v1.0 Shell)
+## 🔄 Status: Foundation In Progress (Phase 1: ~70% Complete)
 
-**This is a foundation release (v1.0) and currently a shell/framework with UI and theming only.** The core rename functionality, file metadata extraction, and batch operations are **not yet implemented**. See [docs/TODO.md](docs/TODO.md) for the development roadmap.
+**Phase 1 (Foundation & Core UI) is ~70% complete.** Window persistence (position, size, theme) is fully functional. WinUI 3 design system implementation is ongoing. Core rename functionality not yet started (Phase 2). See [docs/TODO.md](docs/TODO.md) for the development roadmap.
 
 ---
 
@@ -153,7 +153,7 @@ This project uses **timestamp-based versioning** for simplicity and reproducibil
 
 ### Current Version
 
-**v2026.02.01.17.15.39.288** (Foundation Release: Core UI & Theme System)
+**v2026.02.01.22.27.000** (Window State Persistence Complete - Phase 1.5)
 
 ## Accessibility
 
