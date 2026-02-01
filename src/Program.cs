@@ -28,7 +28,8 @@ namespace Or1nRenameFileNameToDateCreated
                 var app = new App();
 
                 var window = new MainWindow();
-                window.AppWindow.Resize(new Windows.Graphics.SizeInt32 { Width = 900, Height = 700 });
+                // Note: Window sizing is handled by MainWindow's RestoreOrCenterWindow()
+                // which restores the last saved size or centers at default size
                 window.Activate();
             });
         }

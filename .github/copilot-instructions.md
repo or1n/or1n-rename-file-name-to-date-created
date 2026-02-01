@@ -12,7 +12,22 @@ This file provides custom guidance for GitHub Copilot when working in this repos
 - XAML for UI
 - C# 12 for backend
 
-**Current Status:** Foundation complete (UI, theming, window management). Core rename engine planned for Phase 5 (v3.0).
+**Current Status:** Foundation complete (UI, theming, window management, Mica Alt backdrop, responsive design, entrance animations). Core rename engine planned for Phase 5 (v3.0).
+
+---
+
+## 🎨 WinUI 3 Design System
+
+**CRITICAL: Always consult `docs/WINUI3_DESIGN_GUIDE.md` before implementing UI features.**
+
+The design guide contains:
+- Mica Alt backdrop implementation
+- Animation timing standards
+- Responsive breakpoint patterns
+- Accessibility requirements
+- Resource naming conventions
+- Focus indicator patterns
+- Spacing system (4px base unit)
 
 ---
 

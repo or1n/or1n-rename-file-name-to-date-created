@@ -1,9 +1,9 @@
 
 # or1n-rename-file-name-to-date-created
 
-## ⚠️ Status: Early Development (v1.0 Shell)
+## 🔄 Status: Foundation In Progress (Phase 1: ~70% Complete)
 
-**This is a foundation release (v1.0) and currently a shell/framework with UI and theming only.** The core rename functionality, file metadata extraction, and batch operations are **not yet implemented**. See the roadmap below for planned features.
+**Phase 1 (Foundation & Core UI) is ~70% complete.** The app has window persistence (position, size, theme), theme system, and responsive UI foundation. WinUI 3 design system implementation is ongoing. Core rename functionality not yet started (Phase 2).
 
 ---
 
@@ -20,21 +20,48 @@ A modern WinUI 3 desktop app (Windows 11) to batch rename files in a selected fo
 ### Current Features ✅
 
 - **Modern WinUI 3 UI** with responsive design and custom styling
+  - Mica Alt backdrop with fallback for excellent Windows 11 integration
+  - Responsive breakpoints (Compact < 720px, Medium 720-1079px, Wide > 1080px)
+  - Entrance animations with proper staggered timing (0/40/80/160ms delays)
+
 - **Professional Theme System**: Light, Dark, and System theme support
   - Centralized UIConfig.xaml with 40+ theme resources
   - Instant theme switching with no app restart
   - Custom title bar colors matching theme
+  - Persistent theme preference across sessions
+
+- **Complete Window State Persistence**
+  - Position save/restore (X, Y coordinates)
+  - Size save/restore (width, height)
+  - Theme preference save/restore (Light/Dark)
+  - Multi-monitor aware (prevents off-screen restoration)
+  - Intelligent minimum size (710x640px ensures no UI cutoff)
+  - JSON-based settings: `LocalAppData\Or1nRenameFileNameToDate\window-settings.json`
+
+- **Performance & UX Polish**
+  - Instant app close (200ms timeout, previously 5 seconds)
+  - Debug logging for troubleshooting (`or1n-window-debug.log`)
+  - Graceful error handling with silent fallback to defaults
+
 - **Core UI Foundation**:
   - Folder picker for selecting target directory (UI only, no functionality yet)
   - File scanner placeholder (UI only, lists files by extension as demo)
-  - Real-time logging of operations
+  - Real-time logging of operations with timestamps
   - Clean, modern layout with title, subtitle, and controls
+
 - **Customizable Appearance**:
-  - Theme-aware colors (white/light gray → light text for Light theme)
-  - Theme-aware colors (black/dark gray → light text for Dark theme)
+  - Theme-aware colors (white/light gray for light theme)
+  - Theme-aware colors (black/dark gray for dark theme)
   - Named sizing system for margins, padding, font sizes
   - Centered, wrapped subtitle for responsive text
-  - Accessible button layout
+  - Accessible button layout with 40x40px buttons
+
+- **Accessibility & Compliance**
+  - UseSystemFocusVisuals on all interactive controls
+  - AutomationProperties.Name/HelpText for screen readers
+  - IsTextScaleFactorEnabled for text scaling up to 225%
+  - WCAG AA color contrast ratios
+  - Keyboard navigation with proper tab order
 
 ### ❌ Not Yet Implemented (Planned)
 

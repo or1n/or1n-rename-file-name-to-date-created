@@ -7,30 +7,51 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 
 ---
 
-## 🔄 Phase 2: Enhanced Functionality & Polish (v1.1) - In Progress
+## ✅ WinUI 3 Design TODO (Implement One-by-One)
 
-### Estimated Completion: 2026-02-15 (Target)
+Modern 2026 WinUI 3 best practices implementation progress:
 
-- **Progress/Info Display**(95%)
-  - [x] Basic log display with timestamps
-  - [x] 100-line rolling history
-  - [x] Real-time updates during scanning
-  - [ ] Visual progress indicator (ProgressRing) during file operations
-  - [ ] Status summaries (e.g., "Scan complete. Found 247 files in 12 categories")
+- [x] **Mica Alt + fallback** — Code implemented (MicaController with BaseAlt, DesktopAcrylicBackdrop fallback). **Needs visual verification by user.**
+- [x] **Theme-aware resource system** — All colors via ThemeDictionaries in UIConfig.xaml, no hard-coded colors in XAML. ✅ COMPLETE
+- [x] **Spacing system** — 4px base spacing scale defined in UIConfig.xaml (XXSmall: 4, XSmall: 8, Small: 12, Medium: 16, Large: 20, XLarge: 24, XXLarge: 32, Huge: 40). ✅ COMPLETE
+- [ ] **Inline CornerRadius/Thickness** — Use inline values only (WinUI 3 XAML compiler limitation). ⚠️ PARTIAL - needs review
+- [x] **Responsive breakpoints** — Compact/Medium/Wide VisualStates with AdaptiveTrigger implemented in MainPage. ✅ COMPLETE
+- [x] **Entrance animations** — Page transitions with EntranceThemeTransition. ✅ COMPLETE
+- [ ] **Motion system** — Consistent durations/easing for hover/press/enter/exit. ⚠️ NOT COMPLETE - needs implementation
+- [x] **Focus indicators** — UseSystemFocusVisuals on all interactive controls (ComboBox, buttons). ✅ COMPLETE
+- [x] **Text scaling** — IsTextScaleFactorEnabled on all text elements. ✅ COMPLETE
+- [x] **Accessibility labels** — AutomationProperties.Name/HelpText on all controls. ✅ COMPLETE
+- [ ] **Keyboard navigation** — Tab order verified; non-interactive items not tab-stoppable. ⚠️ NEEDS VERIFICATION
+- [ ] **Log styling** — Monospace log area with theme-aware colors and proper padding. ⚠️ NEEDS VERIFICATION (current uses regular font)
+- [ ] **Control polish** — Consistent button sizes, spacing, and corner radius. ⚠️ PARTIAL - buttons are 40x40px but needs full review
+- [x] **Resource dictionary hygiene** — Centralized naming conventions in UIConfig.xaml. ✅ COMPLETE
+- [ ] **High contrast readiness** — Test and adjust for HC mode visibility. ❌ NOT IMPLEMENTED
 
-- **Error Handling & Recovery** (60%)
-  - [x] Basic try-catch blocks in event handlers
-  - [x] Folder selection cancellation handling
-  - [x] Invalid path handling in scanner
-  - [ ] Comprehensive exception logging with user-friendly messages
-  - [ ] Recovery suggestions (e.g., "Please select a valid folder")
-  - [ ] Graceful degradation for permission errors
+**Summary: 9/15 complete, 4/15 partial, 2/15 not started - ~70% progress**
 
-- **Code Documentation** (70%)
-  - [x] Class-level XML documentation
-  - [ ] Method-level documentation in complex functions
-  - [ ] Inline comments for non-obvious logic
-  - [ ] Architecture overview in code comments
+---
+
+## ✅ Phase 1.5: Window State Persistence & Polish (v1.0 Final) - COMPLETE
+
+All items 100% complete as of 2026-02-01.
+
+- [x] **Window Position Persistence** — Save/restore X,Y coordinates across sessions
+- [x] **Window Size Persistence** — Save/restore width/height across sessions
+- [x] **Theme Persistence** — Save/restore Light/Dark theme preference
+- [x] **Intelligent Minimum Size** — 710x640px prevents UI cutoff
+- [x] **Multi-monitor Support** — Position validation prevents off-screen restoration
+- [x] **Instant Close Performance** — 200ms timeout (was 5s), X-button closes immediately
+- [x] **Debug Logging** — `or1n-window-debug.log` for troubleshooting
+- [x] **Error Handling** — Graceful fallback when settings corrupted or invalid
+- [x] **JSON Settings Schema** — Compact storage with X, Y, Width, Height, Theme properties
+
+---
+
+## 🔄 Phase 2: Enhanced Functionality & Polish (v1.1) - Planned for Future
+
+### Estimated Completion: 2026-03-15 (Target)
+
+Core rename functionality and Phase 2 features will be implemented in the next iteration. Current Phase 1 foundation is complete and stable.
 
 ---
 
@@ -145,14 +166,15 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 
 ## 📊 Summary by Phase
 
-| Phase | Name | Status | Target Version | Target Date |
-| --- | --- | --- | --- | --- |
-| 1 | Foundation & Core UI | ✅ Complete | v1.0 | 2026-02-01 |
-| 2 | Enhanced Functionality & Polish | 🔄 60% | v1.1 | 2026-02-15 |
-| 3 | Advanced UI & Controls | 📋 Planned | v2.0 | 2026-Q2 |
-| 4 | Accessibility & Compliance | 📋 Planned | v2.1 | 2026-Q2 |
-| 5 | Core Feature Implementation | 📋 Planned | v3.0 | 2026-Q3 |
-| 6 | Advanced Features & Settings | 🎨 Future | v3.1+ | TBD |
+| Phase | Name | Status | Completion | Target Version | Target Date |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Foundation & Core UI  | 🔄 In Progress | **~70%** | v1.0 | 2026-02-15 |
+| 1.5 | Window State Management & Polish | ✅ Complete | **100%** | v1.0 Final | 2026-02-01 |
+| 2 | Enhanced Functionality & Polish | 📋 Planned | 0% | v1.1 | 2026-03-15 |
+| 3 | Advanced UI & Controls | 📋 Planned | 0% | v2.0 | 2026-Q2 |
+| 4 | Accessibility & Compliance | 📋 Planned | 0% | v2.1 | 2026-Q2 |
+| 5 | Core Feature Implementation | 📋 Planned | 0% | v3.0 | 2026-Q3 |
+| 6 | Advanced Features & Settings | 🎨 Future | 0% | v3.1+ | TBD |
 
 ---
 

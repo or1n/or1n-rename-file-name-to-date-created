@@ -6,87 +6,200 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:Or1nRenameFileNameToDateCreated"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
-    mc:Ignorable="d">
-    <Page.Content>
-        <Grid Background="{ThemeResource PageBackgroundBrush}"
-              Padding="{StaticResource Grid.Padding}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" /> <!-- Title -->
-                <RowDefinition Height="Auto" /> <!-- Description -->
-                <RowDefinition Height="Auto" /> <!-- Theme ComboBox -->
-                <RowDefinition Height="Auto" /> <!-- Folder Picker -->
-                <RowDefinition Height="*" />   <!-- Log Area -->
-            </Grid.RowDefinitions>
+    mc:Ignorable="d"
+    Loaded="MainPage_Loaded">
+    
+    <!-- Page entrance animation -->
+    <Page.Transitions>
+        <TransitionCollection>
+            <EntranceThemeTransition/>
+        </TransitionCollection>
+    </Page.Transitions>
+    
+    <Grid x:Name="RootGrid" Background="{ThemeResource PageBackgroundBrush}">
+        
+        <!-- Responsive Visual States -->
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="WindowSizeStates">
+                
+                <!-- Compact Mode (0-719px) - Mobile/Narrow -->
+                <VisualState x:Name="CompactMode">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource Breakpoint.Compact}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="RootGrid.Padding" Value="16"/>
+                        <Setter Target="TitleText.FontSize" Value="20"/>
+                        <Setter Target="DescriptionText.MaxWidth" Value="520"/>
+                        <Setter Target="ButtonStack.Orientation" Value="Vertical"/>
+                        <Setter Target="ButtonStack.Spacing" Value="{StaticResource Spacing.Small}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                
+                <!-- Medium Mode (720-1079px) - Tablet/Snapped -->
+                <VisualState x:Name="MediumMode">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource Breakpoint.Medium}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="RootGrid.Padding" Value="20"/>
+                        <Setter Target="TitleText.FontSize" Value="24"/>
+                        <Setter Target="DescriptionText.MaxWidth" Value="700"/>
+                    </VisualState.Setters>
+                </VisualState>
+                
+                <!-- Wide Mode (1080px+) - Full Desktop -->
+                <VisualState x:Name="WideMode">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource Breakpoint.Wide}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="RootGrid.Padding" Value="32"/>
+                        <Setter Target="TitleText.FontSize" Value="28"/>
+                        <Setter Target="DescriptionText.MaxWidth" Value="760"/>
+                    </VisualState.Setters>
+                </VisualState>
+                
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-            <!-- Title -->
-            <TextBlock Grid.Row="0"
-                       Margin="{StaticResource TextBlock.Margin}"
-                       FontSize="{StaticResource FontSize.Title}"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"
-                       Foreground="{ThemeResource TitleBrush}"
-                       Text="or1n Rename File Name To Date Created" />
+        <!-- Title with entrance animation -->
+        <TextBlock x:Name="TitleText"
+                   Grid.Row="0"
+                   FontSize="{StaticResource FontSize.Title}"
+                   FontWeight="SemiBold"
+                   HorizontalAlignment="Center"
+                   Foreground="{ThemeResource TitleBrush}"
+                   Text="or1n Rename File Name To Date Created"
+                   IsTextScaleFactorEnabled="True"
+                   RenderTransformOrigin="0.5,0.5">
+            <TextBlock.RenderTransform>
+                <TranslateTransform x:Name="TitleTransform"/>
+            </TextBlock.RenderTransform>
+        </TextBlock>
 
-            <!-- Short Description -->
-            <TextBlock Grid.Row="1"
-                       Margin="0,0,0,16"
-                       FontSize="{StaticResource FontSize.Subtitle}"
-                       Foreground="{ThemeResource SubtitleBrush}"
-                       HorizontalAlignment="Center"
-                       TextAlignment="Center"
-                       TextWrapping="Wrap"
-                       MaxWidth="700"
-                       Text="A modern WinUI 3 app to batch rename files in a selected folder to their original date created/taken, with customizable formatting and smart options." />
+        <!-- Short Description with entrance animation -->
+        <TextBlock x:Name="DescriptionText"
+                   Grid.Row="1"
+                   Margin="0,16,0,0"
+                   FontSize="{StaticResource FontSize.Subtitle}"
+                   Foreground="{ThemeResource SubtitleBrush}"
+                   HorizontalAlignment="Center"
+                   TextAlignment="Center"
+                   TextWrapping="Wrap"
+                   MaxWidth="700"
+                   Text="A modern WinUI 3 app to batch rename files by original date created/taken with customizable formatting and smart options."
+                   IsTextScaleFactorEnabled="True"
+                   RenderTransformOrigin="0.5,0.5">
+            <TextBlock.RenderTransform>
+                <TranslateTransform x:Name="DescriptionTransform"/>
+            </TextBlock.RenderTransform>
+        </TextBlock>
 
-            <!-- Theme Toggle ComboBox -->
+        <!-- Theme dropdown + actions in one row -->
+        <StackPanel x:Name="ActionRow"
+                    Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Spacing="{StaticResource Spacing.Small}"
+                    Margin="0,24,0,0"
+                    RenderTransformOrigin="0.5,0.5">
+            <StackPanel.RenderTransform>
+                <TranslateTransform x:Name="ThemeComboTransform"/>
+            </StackPanel.RenderTransform>
+
             <ComboBox x:Name="ThemeComboBox"
-                      Grid.Row="2"
-                      HorizontalAlignment="Center"
-                      Width="{StaticResource ComboBox.Width}"
-                      Margin="{StaticResource ComboBox.Margin}"
-                      SelectionChanged="ThemeComboBox_SelectionChanged">
-                <ComboBoxItem Content="System theme" Tag="Default" IsSelected="True" />
-                <ComboBoxItem Content="Light theme" Tag="Light" />
-                <ComboBoxItem Content="Dark theme" Tag="Dark" />
+                      Width="75"
+                      Height="40"
+                      HorizontalContentAlignment="Center"
+                      VerticalContentAlignment="Center"
+                      SelectionChanged="ThemeComboBox_SelectionChanged"
+                      UseSystemFocusVisuals="True"
+                      FocusVisualMargin="-3"
+                      CornerRadius="4"
+                      AutomationProperties.Name="Theme Selector"
+                      AutomationProperties.HelpText="Choose between Light or Dark theme">
+                <ComboBoxItem Tag="Light">
+                    <FontIcon Glyph="&#xE706;" FontSize="16" />
+                </ComboBoxItem>
+                <ComboBoxItem Tag="Dark">
+                    <FontIcon Glyph="&#xE708;" FontSize="16" />
+                </ComboBoxItem>
             </ComboBox>
 
-            <!-- Folder Picker and Scan Button -->
-            <StackPanel Grid.Row="3"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        Spacing="{StaticResource StackPanel.Spacing}"
-                        Margin="{StaticResource StackPanel.Margin}">
-                <Button x:Name="OpenFolderButton"
-                        Content="Open"
-                        Padding="{StaticResource Button.Padding}"
-                        Click="OpenFolderButton_Click" />
-                <Button x:Name="ScanButton"
-                        Content="Scan"
-                        Padding="{StaticResource Button.Padding}"
-                        Click="ScanButton_Click" />
-            </StackPanel>
+            <Button x:Name="OpenFolderButton"
+                    Width="40"
+                    Height="40"
+                    Padding="0"
+                    Click="OpenFolderButton_Click"
+                    UseSystemFocusVisuals="True"
+                    FocusVisualMargin="-3"
+                    CornerRadius="4"
+                    AutomationProperties.Name="Open"
+                    AutomationProperties.HelpText="Open a folder picker (not implemented yet)">
+                <FontIcon Glyph="&#xE8B7;" FontSize="16" />
+            </Button>
+            
+            <Button x:Name="ScanButton"
+                    Width="40"
+                    Height="40"
+                    Padding="0"
+                    Click="ScanButton_Click"
+                    UseSystemFocusVisuals="True"
+                    FocusVisualMargin="-3"
+                    CornerRadius="4"
+                    AutomationProperties.Name="Scan"
+                    AutomationProperties.HelpText="Scan the selected folder">
+                <FontIcon Glyph="&#xE721;" FontSize="16" />
+            </Button>
+        </StackPanel>
 
-            <!-- Log/Terminal Area -->
-            <Border Grid.Row="4"
-                    Margin="{StaticResource Border.Margin}"
-                    Background="{ThemeResource LogBackgroundBrush}"
-                    CornerRadius="{StaticResource Border.CornerRadius}"
-                    Padding="{StaticResource Border.Padding}"
-                    BorderBrush="{ThemeResource BorderBrush}"
-                    BorderThickness="{StaticResource BorderThickness.Default}">
-                <ScrollViewer VerticalScrollBarVisibility="Auto"
-                              Padding="{StaticResource ScrollViewer.Padding}"
-                              Margin="{StaticResource ScrollViewer.Margin}">
+
+        <!-- Log/Terminal Area with entrance animation -->
+        <Border x:Name="LogBorder"
+            Grid.Row="3"
+                Margin="0,24,0,0"
+                Background="{ThemeResource LogBackgroundBrush}"
+                CornerRadius="8"
+                Padding="16"
+                BorderBrush="{ThemeResource BorderBrush}"
+                BorderThickness="1"
+            MinHeight="192"
+                RenderTransformOrigin="0.5,0.5">
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="LogBorderTransform"/>
+            </Border.RenderTransform>
+            
+            <StackPanel>
+                <TextBlock x:Name="ActionTextBlock"
+                           FontSize="{StaticResource FontSize.Normal}"
+                           Foreground="{ThemeResource AccentBrush}"
+                           FontFamily="Consolas,Cascadia Mono,Courier New"
+                           Text="Action: Select a folder to start"
+                           TextWrapping="Wrap"
+                           IsTextScaleFactorEnabled="True"
+                           LineHeight="20"/>
+
+                <ScrollViewer x:Name="LogScrollViewer"
+                              VerticalScrollBarVisibility="Auto"
+                              Padding="0"
+                              Margin="0">
                     <TextBlock x:Name="InfoTextBlock"
                                FontSize="{StaticResource FontSize.Normal}"
-                               Foreground="{ThemeResource AccentBrush}"
-                               Margin="{StaticResource InfoTextBlock.Margin}"
-                               Text="Action: Select a folder to start"
-                               TextWrapping="Wrap"/>
+                               Foreground="{ThemeResource LogForegroundBrush}"
+                               FontFamily="Consolas,Cascadia Mono,Courier New"
+                               TextWrapping="Wrap"
+                               IsTextScaleFactorEnabled="True"
+                               LineHeight="20"/>
                 </ScrollViewer>
-            </Border>
-        </Grid>
-    </Page.Content>
+            </StackPanel>
+        </Border>
+    </Grid>
 </Page>
-

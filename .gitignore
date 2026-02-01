@@ -41,6 +41,3 @@ artifacts/
 *.pri
 *.xbf
 
-# Keep these folders but ignore contents
-!bin/.gitkeep
-!obj/.gitkeep

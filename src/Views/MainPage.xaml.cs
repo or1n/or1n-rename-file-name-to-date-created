@@ -1,17 +1,22 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Or1nRenameFileNameToDateCreated.Views
 {
+    /// <summary>
+    /// Main page with responsive layout, entrance animations, and enhanced accessibility.
+    /// </summary>
     public sealed partial class MainPage : Page
     {
         private List<string> _logLines = new();
         private bool _folderSelected = false;
         private string _selectedFolderPath = string.Empty;
+        private const string DEFAULT_ACTION_TEXT = "Action: Select a folder to start";
 
         public MainPage()
         {
@@ -19,9 +24,94 @@ namespace Or1nRenameFileNameToDateCreated.Views
             Loaded += MainPage_Loaded;
         }
 
+        /// <summary>
+        /// Performs entrance animations when page is loaded.
+        /// </summary>
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("[MainPage_Loaded] Page loaded");
+            
+            // Staggered entrance animations for a polished appearance
+            AnimateElementEntrance(TitleText, TitleTransform, 0);
+            AnimateElementEntrance(DescriptionText, DescriptionTransform, 40);
+            AnimateElementEntrance(ActionRow, ThemeComboTransform, 80);
+            AnimateElementEntrance(LogBorder, LogBorderTransform, 160);
+
+            SetAction(DEFAULT_ACTION_TEXT);
+
+            SetThemeComboToSystemPreference();
+        }
+
+        private void SetThemeComboToSystemPreference()
+        {
+            if (ThemeComboBox == null) return;
+
+            // Try to load saved theme preference
+            var task = Task.Run(async () =>
+            {
+                var settings = await Or1nRenameFileNameToDateCreated.Helpers.WindowSettings.LoadAsync();
+                return settings?.Theme;
+            });
+            task.Wait();
+            var savedTheme = task.Result;
+
+            if (!string.IsNullOrEmpty(savedTheme))
+            {
+                // Use saved theme
+                ThemeComboBox.SelectedIndex = savedTheme == "Dark" ? 1 : 0;
+            }
+            else
+            {
+                // Use system preference
+                var systemTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark
+                    ? ElementTheme.Dark
+                    : ElementTheme.Light;
+
+                ThemeComboBox.SelectedIndex = systemTheme == ElementTheme.Dark ? 1 : 0;
+            }
+        }
+
+        /// <summary>
+        /// Animates an element's entrance with slide-up and fade-in.
+        /// </summary>
+        /// <param name="element">The UI element to animate.</param>
+        /// <param name="transform">The TranslateTransform to animate.</param>
+        /// <param name="delayMs">Delay before animation starts in milliseconds.</param>
+        private void AnimateElementEntrance(FrameworkElement element, TranslateTransform transform, int delayMs)
+        {
+            if (element == null || transform == null) return;
+
+            // Initial state
+            element.Opacity = 0;
+            transform.Y = 20;
+            
+            var storyboard = new Storyboard();
+            storyboard.BeginTime = TimeSpan.FromMilliseconds(delayMs);
+
+            // Slide up animation
+            var slideAnimation = new DoubleAnimation
+            {
+                From = 20,
+                To = 0,
+                Duration = TimeSpan.FromMilliseconds(250),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+            Storyboard.SetTarget(slideAnimation, transform);
+            Storyboard.SetTargetProperty(slideAnimation, "Y");
+            storyboard.Children.Add(slideAnimation);
+
+            // Fade in animation
+            var fadeAnimation = new DoubleAnimation
+            {
+                From = 0,
+                To = 1,
+                Duration = TimeSpan.FromMilliseconds(250)
+            };
+            Storyboard.SetTarget(fadeAnimation, element);
+            Storyboard.SetTargetProperty(fadeAnimation, "Opacity");
+            storyboard.Children.Add(fadeAnimation);
+
+            storyboard.Begin();
         }
 
         private static void SetWindowSize(int width, int height)
@@ -38,12 +128,31 @@ namespace Or1nRenameFileNameToDateCreated.Views
             if (InfoTextBlock != null)
             {
                 InfoTextBlock.Text = string.Join("\n", _logLines.Skip(Math.Max(0, _logLines.Count - 10)));
+                AutoScrollLog();
             }
+        }
+
+        private void SetAction(string actionText)
+        {
+            if (ActionTextBlock != null)
+            {
+                ActionTextBlock.Text = actionText;
+            }
+        }
+
+        private void AutoScrollLog()
+        {
+            if (LogScrollViewer == null) return;
+
+            LogScrollViewer.DispatcherQueue.TryEnqueue(() =>
+            {
+                LogScrollViewer.ChangeView(null, LogScrollViewer.ScrollableHeight, null);
+            });
         }
 
         private void ThemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine($"[ThemeComboBox_SelectionChanged] Selection changed");
+            System.Diagnostics.Debug.WriteLine("[ThemeComboBox_SelectionChanged] Selection changed");
             try
             {
                 if (ThemeComboBox != null && ThemeComboBox.SelectedItem is ComboBoxItem item && item.Tag is string tag)
@@ -71,6 +180,9 @@ namespace Or1nRenameFileNameToDateCreated.Views
                     {
                         mainWindow.UpdateTitleBarTheme(theme);
                     }
+
+                    // Save theme preference
+                    _ = Or1nRenameFileNameToDateCreated.Helpers.WindowSettings.SaveThemeAsync(tag);
                 }
             }
             catch (Exception ex)
@@ -80,25 +192,9 @@ namespace Or1nRenameFileNameToDateCreated.Views
             }
         }
 
-        private async void OpenFolderButton_Click(object sender, RoutedEventArgs e)
+        private void OpenFolderButton_Click(object sender, RoutedEventArgs e)
         {
-            var picker = new Windows.Storage.Pickers.FolderPicker();
-            picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
-            picker.FileTypeFilter.Add("*");
-            var folder = await picker.PickSingleFolderAsync();
-            if (folder != null)
-            {
-                _folderSelected = true;
-                _selectedFolderPath = folder.Path;
-                Log($"Selected folder: {folder.Path}");
-            }
-            else
-            {
-                if (_folderSelected)
-                {
-                    Log("Folder selection cancelled.");
-                }
-            }
+            Log("Function \"Open file explorer to select a folder\" is not implemented yet.");
         }
 
         private async void ScanButton_Click(object sender, RoutedEventArgs e)

@@ -26,15 +26,14 @@ or1n_rename_file-names-to-date/
 │   ├── WORKFLOW.md
 │   ├── TODO.md
 │   ├── CHANGELOG.md
-│   └── FILES_AND_FOLDERS.md
+│   ├── FILES_AND_FOLDERS.md
+│   └── WINUI3_DESIGN_GUIDE.md    # WinUI 3 design patterns & best practices
 │
 ├── 📂 .github/                      GitHub configuration
 ├── 📂 .vscode/                      VS Code settings & tasks
 ├── 📂 Assets/                       App icons and images
-├── 📂 tests/                        Unit tests (for future phases)
-│
-├── 📂 bin/                          Build output (auto-generated, ignore in git)
-├── 📂 obj/                          Intermediate build files (auto-generated, ignore in git)
+├── 📂 bin/                          Build output (auto-generated, ignored in git)
+├── 📂 obj/                          Intermediate build files (auto-generated, ignored in git)
 ├── 📂 artifacts/                    Build artifacts (auto-generated, ignore in git)
 │
 ├── ⚙️  Configuration Files
@@ -45,7 +44,7 @@ or1n_rename_file-names-to-date/
 
 ---
 
-## � Source Code Structure (`src/`)
+## 📦 Source Code Structure (`src/`)
 
 ### Core Application Files (in `src/`)
 
@@ -147,6 +146,39 @@ or1n_rename_file-names-to-date/
 - **Key methods**: `GetWindowForElement()` - finds window for a UI element
 - **Usage**: Used by MainPage to update MainWindow's title bar when themes change
 
+#### `Helpers/WindowSettings.cs`
+
+- **Purpose**: Persistent storage for window state (position, size, theme)
+
+- **Location**: `src/Helpers/WindowSettings.cs`
+- **What it does**:
+  - Manages JSON-based settings file in `LocalAppData\Or1nRenameFileNameToDate\window-settings.json`
+  - Smart path resolution: tries ApplicationData.LocalFolder, falls back to LocalAppData
+  - Saves/loads window position (X, Y), size (Width, Height), and theme preference
+  - Validates saved position against current display configuration (multi-monitor safe)
+  - Provides debug logging to `or1n-window-debug.log` for troubleshooting
+
+- **Key methods**:
+  - `LoadAsync()` - Loads settings from JSON file; returns cached result on subsequent calls
+  - `SaveAsync(x, y, w, h)` - Saves position/size while preserving theme
+  - `SaveThemeAsync(theme)` - Saves theme independently
+  - `IsValidPosition(settings, size)` - Validates position against current display
+  - `GetCenteredPosition(displayArea)` - Centers window on specified display
+
+- **JSON Schema**:
+  ```json
+  {
+    "X": number,
+    "Y": number,
+    "Width": number,
+    "Height": number,
+    "Theme": "Light" | "Dark"
+  }
+  ```
+
+- **Usage**: Called by MainWindow during startup and on resize/move, called by MainPage on theme change
+- **Namespace**: `Or1nRenameFileNameToDateCreated.Helpers`
+
 ---
 
 ### `src/Views/` Folder
@@ -157,20 +189,22 @@ or1n_rename_file-names-to-date/
 
 - **Location**: `src/Views/MainPage.xaml` and `src/Views/MainPage.xaml.cs`
 - **What it does**:
-  - 5-row grid layout: Title → Subtitle → Theme Selector → Buttons → Log Area
+  - 4-row grid layout: Title → Subtitle → Theme Selector → Buttons → Log Area
   - Implements folder picker functionality
   - Implements file scanner (currently demo/placeholder)
   - Manages real-time logging with 100-line rolling buffer
-  - Handles theme switching and propagates to MainWindow
+  - Handles theme switching and persists preference via WindowSettings
+  - Responsive design with 3 visual states (Compact/Medium/Wide)
 
 - **When to modify**: When adding new UI controls or changing layout
 - **Key methods**:
-  - `ThemeComboBox_SelectionChanged()` - handles theme changes
+  - `ThemeComboBox_SelectionChanged()` - handles theme changes and calls `WindowSettings.SaveThemeAsync()`
+  - `SetThemeComboToSystemPreference()` - loads saved theme preference on startup
   - `OpenFolderButton_Click()` - folder picker dialog
   - `ScanButton_Click()` - file scanner placeholder
   - `Log()` - real-time logging system
 
-- **Related**: `src/UIConfig.xaml` (theme resources), `src/MainWindow.xaml.cs` (title bar updates)
+- **Related**: `src/UIConfig.xaml` (theme resources), `src/MainWindow.xaml.cs` (title bar updates), `src/Helpers/WindowSettings.cs` (theme persistence)
 - **Namespace**: `Or1nRenameFileNameToDateCreated.Views`
 
 ---
@@ -474,30 +508,6 @@ All documentation files are organized in the `docs/` folder for easy discovery a
 
 ---
 
-## 📁 Tests Folder (`tests/`)
-
-### `tests/`
-
-- **Location**: `tests/` folder at root level
-
-- **Purpose**: Unit tests and integration tests (for future phases)
-- **Current Status**: Empty, prepared for Phase 4+
-
-- **When populated** (Phase 4+):
-
-  ```text
-  tests/
-  ├── ViewTests/           # Tests for UI pages (MainPage, etc.)
-  ├── HelperTests/         # Tests for utilities (WindowHelper, etc.)
-  ├── ServiceTests/        # Tests for business logic
-  └── IntegrationTests/    # End-to-end tests
-  ```
-
-- **Testing Framework**: Will use xUnit or MSTest
-- **Why it's here**: Following professional standards - tests are versioned with code
-
----
-
 ## 📁 Build Artifacts (Auto-Generated - Ignore in Git)
 
 ### `bin/` Directory
@@ -570,9 +580,9 @@ All documentation files are organized in the `docs/` folder for easy discovery a
 
 ## 🔧 Special Tips
 
-### About `.csproj` Magic
+### About `.csproj` File Includes
 
-The `.csproj` file automatically includes all `.cs` and `.xaml` files in subdirectories. No manual configuration needed!
+This project disables default file includes and manually declares `.cs` and `.xaml` items to preserve the `src/` structure in build output.
 
 ### Namespaces Match Folders
 
