@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,32 @@ namespace Or1nRenameFileNameToDateCreated.Views
             SetAction(DEFAULT_ACTION_TEXT);
 
             SetThemeComboToSystemPreference();
+            
+            // Add keyboard navigation support for arrow keys
+            this.KeyDown += MainPage_KeyDown;
+        }
+        
+        /// <summary>
+        /// Handles keyboard navigation with arrow keys and Enter/Space.
+        /// </summary>
+        private void MainPage_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            var key = e.Key;
+            var focusedElement = FocusManager.GetFocusedElement(this.XamlRoot) as Control;
+            
+            if (focusedElement == null) return;
+
+            // Handle arrow key navigation
+            if (key == Windows.System.VirtualKey.Right || key == Windows.System.VirtualKey.Down)
+            {
+                FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Next);
+                e.Handled = true;
+            }
+            else if (key == Windows.System.VirtualKey.Left || key == Windows.System.VirtualKey.Up)
+            {
+                FocusManager.TryMoveFocus(Microsoft.UI.Xaml.Input.FocusNavigationDirection.Previous);
+                e.Handled = true;
+            }
         }
 
         private void SetThemeComboToSystemPreference()
@@ -123,10 +150,14 @@ namespace Or1nRenameFileNameToDateCreated.Views
         {
             var timestamp = DateTime.Now.ToString("HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
             _logLines.Add($"[{timestamp}] {message}");
+            
+            // Remove from BEGINNING (oldest entries) when exceeding 100 lines
             while (_logLines.Count > 100)
-                _logLines.RemoveAt(_logLines.Count - 1);
+                _logLines.RemoveAt(0);
+            
             if (InfoTextBlock != null)
             {
+                // Show LAST 10 lines (most recent)
                 InfoTextBlock.Text = string.Join("\n", _logLines.Skip(Math.Max(0, _logLines.Count - 10)));
                 AutoScrollLog();
             }
@@ -144,9 +175,11 @@ namespace Or1nRenameFileNameToDateCreated.Views
         {
             if (LogScrollViewer == null) return;
 
-            LogScrollViewer.DispatcherQueue.TryEnqueue(() =>
+            // Force immediate scroll to bottom with slight delay to ensure content is rendered
+            LogScrollViewer.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
             {
-                LogScrollViewer.ChangeView(null, LogScrollViewer.ScrollableHeight, null);
+                LogScrollViewer.UpdateLayout();
+                LogScrollViewer.ChangeView(null, LogScrollViewer.ScrollableHeight, null, true);
             });
         }
 
@@ -223,6 +256,77 @@ namespace Or1nRenameFileNameToDateCreated.Views
                 Log($"Error: {ex.Message}");
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Hover/Press Animation Handlers for WinUI 3 Motion System
+        /// </summary>
+        private void Button_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is Button button)
+            {
+                // Get or create ScaleTransform
+                if (button.RenderTransform == null || button.RenderTransform is not ScaleTransform)
+                {
+                    button.RenderTransform = new ScaleTransform { CenterX = 20, CenterY = 20 };
+                    button.RenderTransformOrigin = new Windows.Foundation.Point(0.5, 0.5);
+                }
+                if (button.RenderTransform is ScaleTransform scale)
+                {
+                    AnimateScale(scale, 1.05, 100); // Scale up slightly on hover
+                }
+            }
+        }
+
+        private void Button_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is Button button && button.RenderTransform is ScaleTransform scale)
+            {
+                AnimateScale(scale, 1.0, 100); // Return to normal size
+            }
+        }
+
+        private void Button_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is Button button && button.RenderTransform is ScaleTransform scale)
+            {
+                AnimateScale(scale, 0.95, 50); // Scale down on press
+            }
+        }
+
+        private void Button_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is Button button && button.RenderTransform is ScaleTransform scale)
+            {
+                AnimateScale(scale, 1.05, 50); // Return to hover size
+            }
+        }
+
+        private void AnimateScale(ScaleTransform transform, double toScale, int durationMs)
+        {
+            var storyboard = new Storyboard();
+            
+            var scaleXAnimation = new DoubleAnimation
+            {
+                To = toScale,
+                Duration = TimeSpan.FromMilliseconds(durationMs),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+            Storyboard.SetTarget(scaleXAnimation, transform);
+            Storyboard.SetTargetProperty(scaleXAnimation, "ScaleX");
+            storyboard.Children.Add(scaleXAnimation);
+
+            var scaleYAnimation = new DoubleAnimation
+            {
+                To = toScale,
+                Duration = TimeSpan.FromMilliseconds(durationMs),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+            Storyboard.SetTarget(scaleYAnimation, transform);
+            Storyboard.SetTargetProperty(scaleYAnimation, "ScaleY");
+            storyboard.Children.Add(scaleYAnimation);
+
+            storyboard.Begin();
         }
     }
 }
