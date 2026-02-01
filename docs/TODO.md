@@ -31,7 +31,7 @@ Modern 2026 WinUI 3 best practices implementation progress:
 - [x] **Resource dictionary hygiene** — Centralized naming conventions in UIConfig.xaml. ✅ COMPLETE
 - [ ] **High contrast readiness** — Test and adjust for HC mode visibility. ❌ NOT IMPLEMENTED
 
-**Summary: 9/15 complete, 6/15 partial, 3/15 not started - ~70% progress**
+## Summary: 9/15 complete, 6/15 partial, 3/15 not started - ~70% progress**
 
 ---
 
@@ -172,7 +172,7 @@ Core rename functionality and Phase 2 features will be implemented in the next i
 
 | Phase | Name | Status | Completion | Target Version | Target Date |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Foundation & Core UI  | 🔄 In Progress | **~70%** | v1.0 | 2026-02-15 |
+| 1 | Foundation & Core UI | 🔄 In Progress | **~70%** | v1.0 | 2026-02-15 |
 | 1.5 | Window State Management & Polish | ✅ Complete | **100%** | v1.0 Final | 2026-02-01 |
 | 2 | Enhanced Functionality & Polish | 📋 Planned | 0% | v1.1 | 2026-03-15 |
 | 3 | Advanced UI & Controls | 📋 Planned | 0% | v2.0 | 2026-Q2 |
