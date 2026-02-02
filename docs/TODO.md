@@ -9,14 +9,9 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 
 ## 🔄 Active Tasks (Prioritized by Importance)
 
-### Folder Picker UX (Complete)
+### Core Rename Functionality
 
-- [x] **Inline path editing** — Click path to edit in place; Enter saves, Escape cancels. (2026-02-02 05:10)
-- [x] **Move Home button** — Place Home in top quick access row (left of Desktop). (2026-02-02 05:10)
-
-### WinUI 3 Design & Polish
-
-- [ ] **High contrast readiness** — Test and adjust for HC mode visibility. (0%)
+- [ ] **Batch rename engine** — Parse filename, extension, and date components. (0%)
 
 ### Core Rename Functionality
 
@@ -104,6 +99,17 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 - [x] **Accessibility labels** — AutomationProperties on all controls. (2026-02-01 19:38)
 - [x] **Resource dictionary hygiene** — Centralized naming conventions. (2026-02-01 19:38)
 
+### Folder Picker UX Enhancements (Completed)
+
+- [x] **Inline path editing (same location)** — Click path text to edit in place; TextBox replaces TextBlock in same grid cell. (2026-02-02 05:40)
+- [x] **Drives/This PC button** — Quick access button to select from all available drives via dialog. (2026-02-02 05:40)
+- [x] **Hover feedback on path text** — Opacity change and tooltip indicate path is clickable. (2026-02-02 05:40)
+- [x] **Fixed quick access button icons** — Increased button size (48x42) and icon size (18px) for proper display. (2026-02-02 05:40)
+- [x] **Select Drive dialog theme support** — Dialog respects light/dark theme matching folder picker window. (2026-02-02 05:40)
+- [x] **Select Drive dialog auto-close** — Dialog closes immediately when a drive is selected. (2026-02-02 05:40)
+- [x] **Select Drive centered Cancel button** — Cancel button positioned at center with proper spacing. (2026-02-02 05:40)
+- [x] **Handle non-ready drives gracefully** — Skips unmounted/non-ready drives and logs notices instead of crashing. (2026-02-02 05:40)
+
 ### Window State Management
 
 - [x] **Window Position Persistence** — Save/restore X,Y coordinates. (2026-02-01 17:15)
@@ -135,11 +141,11 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 
 ## 📊 Summary
 
-**Total Progress**: 41 completed, 48 incomplete  
-**Overall Completion**: 46%
+**Total Progress**: 51 completed, 46 incomplete  
+**Overall Completion**: 53%
 
-**Current Focus**: Folder picker UX polishing (inline path editing + quick access layout)  
-**Current Version**: `v2026.02.02.04.52.000`
+**Current Focus**: Core rename engine implementation  
+**Current Version**: `v2026.02.02.05.40.000`
 
 ---
 

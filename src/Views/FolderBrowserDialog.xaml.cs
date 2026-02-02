@@ -301,13 +301,16 @@ namespace Or1nRenameFileNameToDateCreated.Views
             var rootGrid = new Grid { Padding = new Thickness(20), RowSpacing = 12 };
             rootGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Quick access
             rootGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Navigation
-            rootGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Path edit
             rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // Folder list
             rootGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Info text
             rootGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Action buttons
 
-            // Quick access buttons - icon-only with consistent width (Home on left, then Desktop, Documents, Downloads, Pictures)
+            // Quick access buttons - icon-only with consistent width (Drives on left, then Home, Desktop, Documents, Downloads, Pictures)
             var quickAccessPanel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, Margin = new Thickness(0, 0, 0, 8) };
+            
+            var drivesBtn = new Button { Content = new FontIcon { Glyph = "\uE8EC", FontSize = 18 }, Width = 48, Height = 42, Padding = new Thickness(4) };
+            ToolTipService.SetToolTip(drivesBtn, "Drives");
+            drivesBtn.Click += DrivesButton_Click;
             
             var homeBtn = CreateQuickAccessButton("\uE80F", "Home", Environment.SpecialFolder.UserProfile); // Home icon
             var desktopBtn = CreateQuickAccessButton("\uE8FC", "Desktop", Environment.SpecialFolder.Desktop); // Desktop icon
@@ -315,6 +318,7 @@ namespace Or1nRenameFileNameToDateCreated.Views
             var downloadsBtn = CreateQuickAccessButton("\uE896", "Downloads", Environment.SpecialFolder.UserProfile); // Download icon
             var picturesBtn = CreateQuickAccessButton("\uEB9F", "Pictures", Environment.SpecialFolder.MyPictures); // Picture icon
             
+            quickAccessPanel.Children.Add(drivesBtn);
             quickAccessPanel.Children.Add(homeBtn);
             quickAccessPanel.Children.Add(desktopBtn);
             quickAccessPanel.Children.Add(documentsBtn);
@@ -324,31 +328,50 @@ namespace Or1nRenameFileNameToDateCreated.Views
             Grid.SetRow(quickAccessPanel, 0);
             rootGrid.Children.Add(quickAccessPanel);
 
-            // Navigation buttons - consistent width (Up button on left, then Path display)
+            // Navigation buttons - consistent width (Up button on left, then Path display/edit)
             var navGrid = new Grid { ColumnSpacing = 8 };
             navGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Up
             navGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // Path
 
-            var upButton = new Button { Content = new FontIcon { Glyph = "\uE74A", FontSize = 16 }, Width = 40, Height = 36 };
+            var upButton = new Button { Content = new FontIcon { Glyph = "\uE74A", FontSize = 18 }, Width = 48, Height = 42, Padding = new Thickness(4) };
             ToolTipService.SetToolTip(upButton, "Up");
             upButton.Click += UpButton_Click;
             Grid.SetColumn(upButton, 0);
             navGrid.Children.Add(upButton);
 
-            currentPathText = new TextBlock { Text = currentPath, VerticalAlignment = VerticalAlignment.Center, TextTrimming = TextTrimming.CharacterEllipsis, FontSize = 13, Margin = new Thickness(8, 0, 8, 0) };
+            // Path display/edit container - overlapping TextBlock and TextBox in same location
+            var pathContainer = new Grid { Margin = new Thickness(8, 0, 8, 0) };
+            
+            currentPathText = new TextBlock 
+            { 
+                Text = currentPath, 
+                VerticalAlignment = VerticalAlignment.Center, 
+                TextTrimming = TextTrimming.CharacterEllipsis, 
+                FontSize = 13
+            };
             currentPathText.PointerPressed += CurrentPathText_PointerPressed;
+            currentPathText.PointerEntered += CurrentPathText_PointerEntered;
+            currentPathText.PointerExited += CurrentPathText_PointerExited;
             ToolTipService.SetToolTip(currentPathText, "Click to edit path");
-            Grid.SetColumn(currentPathText, 1);
-            navGrid.Children.Add(currentPathText);
+            pathContainer.Children.Add(currentPathText);
+
+            // Path edit textBox - overlays the TextBlock when editing
+            pathEditBox = new TextBox 
+            { 
+                Text = currentPath, 
+                PlaceholderText = "Enter folder path (e.g., C:\\Users)...", 
+                Visibility = Visibility.Collapsed,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            pathEditBox.KeyDown += PathEditBox_KeyDown;
+            pathContainer.Children.Add(pathEditBox);
+            
+            Grid.SetColumn(pathContainer, 1);
+            navGrid.Children.Add(pathContainer);
 
             Grid.SetRow(navGrid, 1);
             rootGrid.Children.Add(navGrid);
 
-            // Path edit textBox
-            pathEditBox = new TextBox { Text = currentPath, PlaceholderText = "Enter folder path (e.g., C:\\Users)...", Visibility = Visibility.Collapsed };
-            pathEditBox.KeyDown += PathEditBox_KeyDown;
-            Grid.SetRow(pathEditBox, 2);
-            rootGrid.Children.Add(pathEditBox);
             var border = new Border 
             { 
                 CornerRadius = new CornerRadius(8),
@@ -363,12 +386,12 @@ namespace Or1nRenameFileNameToDateCreated.Views
             };
             folderListView.DoubleTapped += FolderListView_DoubleTapped;
             border.Child = folderListView;
-            Grid.SetRow(border, 3);
+            Grid.SetRow(border, 2);
             rootGrid.Children.Add(border);
 
             // Info text
             infoText = new TextBlock { Text = "Ready to select folder", FontSize = 12, Opacity = 0.7, Margin = new Thickness(0, 0, 0, 8) };
-            Grid.SetRow(infoText, 4);
+            Grid.SetRow(infoText, 3);
             rootGrid.Children.Add(infoText);
 
             // Action buttons
@@ -383,7 +406,7 @@ namespace Or1nRenameFileNameToDateCreated.Views
             buttonPanel.Children.Add(selectButton);
             buttonPanel.Children.Add(cancelButton);
             
-            Grid.SetRow(buttonPanel, 5);
+            Grid.SetRow(buttonPanel, 4);
             rootGrid.Children.Add(buttonPanel);
 
             this.Content = rootGrid;
@@ -393,9 +416,10 @@ namespace Or1nRenameFileNameToDateCreated.Views
         {
             var btn = new Button 
             { 
-                Content = new FontIcon { Glyph = iconGlyph, FontSize = 16 },
-                Width = 40,
-                Height = 36
+                Content = new FontIcon { Glyph = iconGlyph, FontSize = 18 },
+                Width = 48,
+                Height = 42,
+                Padding = new Thickness(4)
             };
             ToolTipService.SetToolTip(btn, tooltip);
             btn.Click += (s, e) =>
@@ -519,10 +543,131 @@ namespace Or1nRenameFileNameToDateCreated.Views
             // Show edit box when path is clicked
             if (pathEditBox.Visibility == Visibility.Collapsed)
             {
+                currentPathText.Visibility = Visibility.Collapsed;
                 pathEditBox.Visibility = Visibility.Visible;
                 pathEditBox.Focus(FocusState.Programmatic);
                 pathEditBox.SelectAll();
                 e.Handled = true;
+            }
+        }
+
+        private void CurrentPathText_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            // Add hover feedback - make text slightly transparent to indicate it's interactive
+            if (currentPathText.Visibility == Visibility.Visible)
+            {
+                currentPathText.Opacity = 0.7;
+            }
+        }
+
+        private void CurrentPathText_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            // Remove hover feedback
+            currentPathText.Opacity = 1.0;
+        }
+
+        private async void DrivesButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Get all available drives
+                var drives = DriveInfo.GetDrives();
+                
+                if (drives.Length == 0)
+                {
+                    infoText.Text = "No drives found";
+                    return;
+                }
+
+                // Create a simple dialog with drive options
+                var drivesPanel = new StackPanel { Spacing = 8 };
+                
+                // ContentDialog for drive selection (create early so we can close it from button handler)
+                var dialog = new ContentDialog 
+                { 
+                    Title = "Select Drive",
+                    XamlRoot = this.Content.XamlRoot
+                };
+
+                // Apply theme to dialog matching the parent window
+                if (this.Content is FrameworkElement element)
+                {
+                    dialog.RequestedTheme = element.ActualTheme;
+                }
+
+                foreach (var drive in drives.OrderBy(d => d.Name))
+                {
+                    try
+                    {
+                        // Check if drive is ready before accessing properties
+                        if (!drive.IsReady)
+                        {
+                            infoText.Text = $"(Skipped {drive.Name}: drive not ready)";
+                            continue;
+                        }
+
+                        var driveButton = new Button 
+                        { 
+                            Content = $"{drive.Name} ({drive.VolumeLabel})",
+                            HorizontalAlignment = HorizontalAlignment.Stretch,
+                            Padding = new Thickness(12, 8, 12, 8)
+                        };
+                        
+                        var drivePath = drive.Name.TrimEnd('\\');
+                        driveButton.Click += (s, args) =>
+                        {
+                            currentPath = drivePath;
+                            LoadFolders();
+                            dialog.Hide(); // Close dialog after selection
+                        };
+                        
+                        drivesPanel.Children.Add(driveButton);
+                    }
+                    catch (Exception driveEx)
+                    {
+                        // Log error but continue with other drives
+                        infoText.Text = $"(Error accessing {drive.Name}: {driveEx.Message})";
+                    }
+                }
+
+                if (drivesPanel.Children.Count == 0)
+                {
+                    infoText.Text = "No accessible drives found";
+                    return;
+                }
+
+                // Scroll viewer for drive list
+                var scrollViewer = new ScrollViewer 
+                { 
+                    Content = drivesPanel, 
+                    MaxHeight = 300,
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+                };
+
+                // Create a container with centered content
+                var container = new Grid();
+                var closeButton = new Button 
+                { 
+                    Content = "Cancel",
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    MinWidth = 100
+                };
+
+                var contentPanel = new StackPanel { Spacing = 12 };
+                contentPanel.Children.Add(scrollViewer);
+                contentPanel.Children.Add(closeButton);
+
+                // Set dialog content
+                dialog.Content = contentPanel;
+
+                // Close dialog when cancel button is clicked
+                closeButton.Click += (s, args) => dialog.Hide();
+
+                await dialog.ShowAsync();
+            }
+            catch (Exception ex)
+            {
+                infoText.Text = $"Error loading drives: {ex.Message}";
             }
         }
 
@@ -535,6 +680,7 @@ namespace Or1nRenameFileNameToDateCreated.Views
                 {
                     currentPath = enteredPath;
                     pathEditBox.Visibility = Visibility.Collapsed;
+                    currentPathText.Visibility = Visibility.Visible;
                     LoadFolders();
                     e.Handled = true;
                 }
@@ -546,6 +692,7 @@ namespace Or1nRenameFileNameToDateCreated.Views
             else if (e.Key == Windows.System.VirtualKey.Escape)
             {
                 pathEditBox.Visibility = Visibility.Collapsed;
+                currentPathText.Visibility = Visibility.Visible;
                 e.Handled = true;
             }
         }

@@ -4,7 +4,40 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project uses timestamp-based versioning in the format `v{YYYY}.{MM}.{DD}.{HH}.{mm}.{MSS}`.
 
-## [v2026.02.02.05.10.000] - 2026-02-02 - Folder Picker UX Improvements
+## [v2026.02.02.05.40.000] - 2026-02-02 - Folder Picker UX Comprehensive Improvements
+
+### Added (v2026.02.02.05.40.000)
+
+- **Inline path editing** — Path text now editable inline; TextBox replaces TextBlock in the same grid location when clicked
+- **Drives/This PC button** — New quick access button to browse and select from all available drives via dialog
+- **Select Drive dialog** — Modal dialog listing all ready drives with drive name and volume label
+- **Hover visual feedback** — Path text opacity changes (70%) on hover to indicate it's clickable
+- **Fixed quick access button sizing** — Buttons now 48x42 with proper icon sizing (18px) for better visibility
+
+### Changed (v2026.02.02.05.40.000)
+
+- **Select Drive dialog theme** — Dialog respects light/dark theme matching the folder picker window theme
+- **Select Drive button spacing** — Improved padding and spacing in drive list buttons
+- **Navigation bar icons** — Up button also increased to 48x42 for consistency with quick access row
+
+### Fixed (v2026.02.02.05.40.000)
+
+- **Non-ready drive handling** — Drives that are not ready (USB unplugged, optical drive empty, etc.) are now skipped gracefully with log notices instead of crashing the dialog
+- **Select Drive auto-close** — Dialog now closes immediately when a drive is selected
+- **Select Drive Cancel button layout** — Cancel button is now horizontally centered in the dialog
+- **Button icon clipping** — Quick access button icons no longer clip at edges
+
+### Technical Details (v2026.02.02.05.40.000)
+
+- **Path editing**: Uses overlapping Grid container with TextBlock/TextBox visibility toggle
+- **Drive selection**: Checks `DriveInfo.IsReady` before accessing drive properties
+- **Dialog closure**: Drive buttons call `dialog.Hide()` immediately after path change
+- **Theme matching**: Dialog gets `RequestedTheme` from parent window's `ActualTheme`
+- **Button improvements**: Width=48, Height=42, FontIcon.FontSize=18, Padding=4
+
+---
+
+## [v2026.02.02.05.10.000] - 2026-02-02 - Initial Folder Picker UX Improvements
 
 ### Added (v2026.02.02.05.10.000)
 
