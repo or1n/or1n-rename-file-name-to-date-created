@@ -180,6 +180,24 @@ or1n_rename_file-names-to-date/
 - **Usage**: Called by MainWindow during startup and on resize/move, called by MainPage on theme change
 - **Namespace**: `Or1nRenameFileNameToDateCreated.Helpers`
 
+#### `Helpers/FolderBrowserSettings.cs`
+
+- **Purpose**: Persistent storage for the folder picker window (position, size, last path)
+
+- **Location**: `src/Helpers/FolderBrowserSettings.cs`
+- **What it does**:
+  - Manages JSON-based settings file in `LocalAppData\Or1nRenameFileNameToDate\folder-browser-settings.json`
+  - Saves/loads window position (X, Y), size (Width, Height), and last selected folder path
+  - Validates saved position against current display configuration (multi-monitor safe)
+
+- **Key methods**:
+  - `LoadAsync()` - Loads settings from JSON file
+  - `SaveAsync(x, y, w, h, lastPath)` - Saves position/size/path
+  - `IsValidPosition(settings, size)` - Validates position against current display
+
+- **Usage**: Called by FolderBrowserDialog during open/close
+- **Namespace**: `Or1nRenameFileNameToDateCreated.Helpers`
+
 ---
 
 ### `src/Views/` Folder

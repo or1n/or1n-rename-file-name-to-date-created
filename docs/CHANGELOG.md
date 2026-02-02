@@ -4,6 +4,40 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project uses timestamp-based versioning in the format `v{YYYY}.{MM}.{DD}.{HH}.{mm}.{MSS}`.
 
+## [v2026.02.02.04.52.000] - 2026-02-02 - Folder Picker Window Improvements
+
+### Added (v2026.02.02.04.52.000)
+
+- **Folder picker window persistence** — Save/restore position, size, and last path with center fallback
+
+### Changed (v2026.02.02.04.52.000)
+
+- **Main window backdrop** — Apply DesktopAcrylic frosted glass effect for parity with folder picker
+- **Folder picker title bar** — Theme-matched title bar colors for light/dark mode
+- **Folder picker UX** — Removed confusing “Selected” status text and removed refresh button
+
+### Fixed (v2026.02.02.04.52.000)
+
+- **Folder picker crash** — Removed blocking async pattern to prevent AggregateException on open
+
+## [v2026.02.02.03.05.000] - 2026-02-02 - Motion System & Control Polish Complete
+
+### Added (v2026.02.02.03.05.000)
+
+- **Motion System** — Consistent hover/press animations aligned to WinUI 3 timing guidance
+- **Keyboard Navigation** — Verified tab order with non-interactive elements removed from tab stop
+
+### Changed (v2026.02.02.03.05.000)
+
+- **MainPage.xaml** — Control polish
+  - Consistent 40x40 control sizing and inline CornerRadius/Thickness usage
+  - Shared pointer handlers for hover/press feedback
+  - Explicit TabIndex ordering for primary controls
+
+- **MainPage.xaml.cs** — Motion timings
+  - Entrance animation timing adjusted to 167ms
+  - Hover scale 1.02 and press scale 0.98 with 100ms durations
+
 ## [v2026.02.02.02.50.000] - 2026-02-02 - Console Log Scroll Perfected
 
 ### Changed (v2026.02.02.02.50.000)
@@ -57,7 +91,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - All core UI features implemented and tested
   - All Phase 1 features working correctly (0 errors, 0 warnings in build)
   - Ready for Phase 2 implementation (batch rename engine, file metadata, advanced features)
-
 
 ## [v2026.02.01.22.27.000] - 2026-02-01 - Window State Persistence System (Phase 1.5 Complete)
 

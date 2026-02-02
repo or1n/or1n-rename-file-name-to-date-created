@@ -80,16 +80,15 @@ namespace Or1nRenameFileNameToDateCreated
         /// </summary>
         private void ApplySystemBackdrop()
         {
-            // Try DesktopAcrylic first - more noticeable frosted glass effect
-            if (DesktopAcrylicController.IsSupported())
+            try
             {
                 SystemBackdrop = new DesktopAcrylicBackdrop();
-                BackdropStatus = "DesktopAcrylic (frosted glass) - IsSupported=TRUE, Applied=YES";
+                BackdropStatus = "DesktopAcrylic (frosted glass) - Applied";
                 return;
             }
-            else
+            catch
             {
-                BackdropStatus = "DesktopAcrylic - IsSupported=FALSE, Trying Mica...";
+                BackdropStatus = "DesktopAcrylic failed - Trying Mica...";
             }
 
             // Fallback to Mica Alt if Acrylic not supported

@@ -11,6 +11,8 @@ using Windows.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Or1nRenameFileNameToDateCreated.Views
 {
@@ -141,7 +143,7 @@ namespace Or1nRenameFileNameToDateCreated.Views
             {
                 From = 20,
                 To = 0,
-                Duration = TimeSpan.FromMilliseconds(250),
+                Duration = TimeSpan.FromMilliseconds(167),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             };
             Storyboard.SetTarget(slideAnimation, transform);
@@ -153,7 +155,7 @@ namespace Or1nRenameFileNameToDateCreated.Views
             {
                 From = 0,
                 To = 1,
-                Duration = TimeSpan.FromMilliseconds(250)
+                Duration = TimeSpan.FromMilliseconds(167)
             };
             Storyboard.SetTarget(fadeAnimation, element);
             Storyboard.SetTargetProperty(fadeAnimation, "Opacity");
@@ -427,9 +429,81 @@ namespace Or1nRenameFileNameToDateCreated.Views
             _resizeLogTimer?.Start();
         }
 
-        private void OpenFolderButton_Click(object sender, RoutedEventArgs e)
+        private async void OpenFolderButton_Click(object sender, RoutedEventArgs e)
         {
-            Log("Function \"Open file explorer to select a folder\" is not implemented yet");
+            try
+            {
+                Log("=== [FOLDER PICKER] Button clicked ===");
+                Log("[FOLDER PICKER] Creating custom WinUI 3 folder browser dialog...");
+
+                // Show custom folder browser window (now a proper Window, not ContentDialog)
+                var folderBrowserDialog = new FolderBrowserDialog();
+                var result = await folderBrowserDialog.ShowAsync();
+
+                if (result)
+                {
+                    string selectedPath = folderBrowserDialog.SelectedPath;
+                    Log("[FOLDER PICKER] Folder selected successfully");
+                    
+                    try
+                    {
+                        _selectedFolderPath = selectedPath;
+                        _folderSelected = true;
+                        Log($"[FOLDER PICKER] Path: {_selectedFolderPath}");
+
+                        // Get files in folder using sync Directory API (works in unpackaged apps)
+                        Log("[FOLDER PICKER] Querying folder contents...");
+                        var files = Directory.GetFiles(_selectedFolderPath, "*", SearchOption.TopDirectoryOnly);
+                        Log($"[FOLDER PICKER] Total files: {files.Length}");
+
+                        if (files.Length > 0)
+                        {
+                            var grouped = files
+                                .GroupBy(f => Path.GetExtension(f).ToLowerInvariant())
+                                .OrderByDescending(g => g.Count())
+                                .Take(10)
+                                .ToList();
+                            
+                            Log($"[FOLDER PICKER] File types: {grouped.Count} found");
+                            foreach (var group in grouped)
+                            {
+                                string ext = string.IsNullOrEmpty(group.Key) ? "[no extension]" : group.Key;
+                                Log($"[FOLDER PICKER]   {ext}: {group.Count()}");
+                            }
+
+                            if (grouped.Count > 10)
+                                Log($"[FOLDER PICKER]   ... and more");
+                        }
+
+                        // Update UI
+                        SetAction("Action: Scan folder to analyze files");
+
+                        Log($"[FOLDER PICKER] === SUCCESS ===");
+                        Log($"[FOLDER PICKER] Folder ready for processing");
+                    }
+                    catch (Exception ex)
+                    {
+                        Log($"[FOLDER PICKER] ERROR: {ex.Message}");
+                    }
+                }
+                else
+                {
+                    Log("[FOLDER PICKER] Folder selection cancelled by user");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log($"[FOLDER PICKER] CRITICAL ERROR: {ex.GetType().Name}");
+                Log($"[FOLDER PICKER] Message: {(string.IsNullOrEmpty(ex.Message) ? "(empty)" : ex.Message)}");
+                if (ex is COMException comEx)
+                {
+                    Log($"[FOLDER PICKER] HResult: 0x{comEx.HResult:X8}");
+                }
+                if (ex.InnerException != null)
+                {
+                    Log($"[FOLDER PICKER] Inner: {ex.InnerException.Message}");
+                }
+            }
         }
 
         private async void ScanButton_Click(object sender, RoutedEventArgs e)
@@ -463,44 +537,44 @@ namespace Or1nRenameFileNameToDateCreated.Views
         /// <summary>
         /// Hover/Press Animation Handlers for WinUI 3 Motion System
         /// </summary>
-        private void Button_PointerEntered(object sender, PointerRoutedEventArgs e)
+        private void InteractiveControl_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            if (sender is Button button)
+            if (sender is Control control)
             {
                 // Get or create ScaleTransform
-                if (button.RenderTransform == null || button.RenderTransform is not ScaleTransform)
+                if (control.RenderTransform == null || control.RenderTransform is not ScaleTransform)
                 {
-                    button.RenderTransform = new ScaleTransform { CenterX = 20, CenterY = 20 };
-                    button.RenderTransformOrigin = new Windows.Foundation.Point(0.5, 0.5);
+                    control.RenderTransform = new ScaleTransform { CenterX = 20, CenterY = 20 };
+                    control.RenderTransformOrigin = new Windows.Foundation.Point(0.5, 0.5);
                 }
-                if (button.RenderTransform is ScaleTransform scale)
+                if (control.RenderTransform is ScaleTransform scale)
                 {
-                    AnimateScale(scale, 1.05, 100); // Scale up slightly on hover
+                    AnimateScale(scale, 1.02, 100); // Hover response
                 }
             }
         }
 
-        private void Button_PointerExited(object sender, PointerRoutedEventArgs e)
+        private void InteractiveControl_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            if (sender is Button button && button.RenderTransform is ScaleTransform scale)
+            if (sender is Control control && control.RenderTransform is ScaleTransform scale)
             {
                 AnimateScale(scale, 1.0, 100); // Return to normal size
             }
         }
 
-        private void Button_PointerPressed(object sender, PointerRoutedEventArgs e)
+        private void InteractiveControl_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            if (sender is Button button && button.RenderTransform is ScaleTransform scale)
+            if (sender is Control control && control.RenderTransform is ScaleTransform scale)
             {
-                AnimateScale(scale, 0.95, 50); // Scale down on press
+                AnimateScale(scale, 0.98, 100); // Press feedback
             }
         }
 
-        private void Button_PointerReleased(object sender, PointerRoutedEventArgs e)
+        private void InteractiveControl_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            if (sender is Button button && button.RenderTransform is ScaleTransform scale)
+            if (sender is Control control && control.RenderTransform is ScaleTransform scale)
             {
-                AnimateScale(scale, 1.05, 50); // Return to hover size
+                AnimateScale(scale, 1.02, 100); // Return to hover size
             }
         }
 

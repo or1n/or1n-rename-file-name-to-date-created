@@ -20,9 +20,12 @@ A modern WinUI 3 desktop app (Windows 11) to batch rename files in a selected fo
 ### Current Features ✅
 
 - **Modern WinUI 3 UI** with responsive design and custom styling
-  - Mica Alt backdrop with fallback for excellent Windows 11 integration
+  - DesktopAcrylic frosted glass with Mica Alt fallback
   - Responsive breakpoints (Compact < 720px, Medium 720-1079px, Wide > 1080px)
   - Entrance animations with proper staggered timing (0/40/80/160ms delays)
+  - Consistent motion system for hover/press feedback
+  - Keyboard navigation with verified tab order
+  - Polished controls (consistent sizing, spacing, corner radius)
 
 - **Professional Theme System**: Light, Dark, and System theme support
   - Centralized UIConfig.xaml with 40+ theme resources
@@ -47,7 +50,8 @@ A modern WinUI 3 desktop app (Windows 11) to batch rename files in a selected fo
   - Always auto-scrolls to the newest entry on new log output
 
 - **Core UI Foundation**:
-  - Folder picker for selecting target directory (UI only, no functionality yet)
+  - Custom WinUI 3 folder picker window with theme-matched title bar
+  - Folder picker remembers last path, size, and position
   - File scanner placeholder (UI only, lists files by extension as demo)
   - Real-time logging of operations with timestamps
   - Clean, modern layout with title, subtitle, and controls
@@ -183,7 +187,7 @@ This project uses **timestamp-based versioning** for simplicity and reproducibil
 
 ### Current Version
 
-**v2026.02.02.02.50.000** (Console Log Scroll Perfected - Phase 1 Complete)
+**v2026.02.02.03.05.000** (Motion System & Control Polish Complete)
 
 ## Accessibility
 

@@ -9,14 +9,13 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 
 ## 🔄 Active Tasks (Prioritized by Importance)
 
+### Folder Picker UX (Current Focus)
+
+- [ ] **Inline path editing** — Click path to edit in place; Enter saves, Escape cancels. (0%)
+- [ ] **Move Home button** — Place Home in top quick access row (left of Desktop). (0%)
+
 ### WinUI 3 Design & Polish
 
-- [x] **Log context menu** — Right-click menu with Copy Selected, Copy All, and Clear Log options. (100% - 2026-02-02)
-- [x] **Console output line snapping** — Snap scroll offsets to full line heights, preserve full scrollback, and always jump to the newest entry on new logs. (100% - 2026-02-02)
-- [ ] **Motion system** — Consistent durations/easing for hover/press/enter/exit. (20%)
-- [ ] **Keyboard navigation** — Tab order verified; non-interactive items not tab-stoppable. (60%)
-- [ ] **Inline CornerRadius/Thickness** — Use inline values only (WinUI 3 XAML compiler limitation). (70%)
-- [ ] **Control polish** — Consistent button sizes, spacing, and corner radius. (75%)
 - [ ] **High contrast readiness** — Test and adjust for HC mode visibility. (0%)
 
 ### Core Rename Functionality (v2.0+)
@@ -78,10 +77,23 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 
 ## ✅ Completed Tasks
 
+### Folder Picker Window (Completed)
+
+- [x] **Custom WinUI 3 folder picker window** — Replaced native picker with custom Window-based dialog. (2026-02-02 04:52)
+- [x] **Folder picker title bar theming** — Matches light/dark title bar colors from main window. (2026-02-02 04:52)
+- [x] **Folder picker state persistence** — Position, size, and last path save/restore with center fallback. (2026-02-02 04:52)
+- [x] **Folder picker UX cleanup** — Removed confusing “Selected” status text and refresh button. (2026-02-02 04:52)
+- [x] **Main window acrylic parity** — DesktopAcrylic applied to main window for consistent frosted glass effect. (2026-02-02 04:52)
+
 ### WinUI 3 Design & Polish (Completed)
 
 - [x] **Log text selection** — Click to select text, CTRL+A select all, CTRL+C copy to clipboard. Native TextBox selection and copying fully functional. (2026-02-02 00:51)
+- [x] **Log context menu** — Right-click menu with Copy Selected, Copy All, and Clear Log options. (2026-02-02 02:50)
 - [x] **Log scrolling & line snapping** — Full scrollback with line-height snapping to prevent partial lines and auto-jump to newest entry on new logs. (2026-02-02 02:50)
+- [x] **Motion system** — Consistent durations/easing for hover/press/enter/exit. (2026-02-02 03:05)
+- [x] **Keyboard navigation** — Tab order verified; non-interactive items not tab-stoppable. (2026-02-02 03:05)
+- [x] **Inline CornerRadius/Thickness** — Use inline values only (WinUI 3 XAML compiler limitation). (2026-02-02 03:05)
+- [x] **Control polish** — Consistent button sizes, spacing, and corner radius. (2026-02-02 03:05)
 - [x] **Mica Alt + fallback** — MicaController with BaseAlt, DesktopAcrylicBackdrop fallback. (2026-02-01 23:55)
 - [x] **Theme-aware resource system** — All colors via ThemeDictionaries in UIConfig.xaml. (2026-02-01 19:38)
 - [x] **Spacing system** — 4px base spacing scale defined. (2026-02-01 19:38)
@@ -123,11 +135,11 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 
 ## 📊 Summary
 
-**Total Progress**: 32 completed, 50 incomplete  
-**Overall Completion**: 39%
+**Total Progress**: 41 completed, 48 incomplete  
+**Overall Completion**: 46%
 
-**Current Focus**: Log console improvements (scrolling, text selection, context menu)  
-**Current Version**: `v2026.02.02.02.50.000`
+**Current Focus**: Folder picker UX polishing (inline path editing + quick access layout)  
+**Current Version**: `v2026.02.02.04.52.000`
 
 ---
 

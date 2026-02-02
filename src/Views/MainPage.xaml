@@ -72,6 +72,7 @@
                    HorizontalAlignment="Center"
                    Foreground="{ThemeResource TitleBrush}"
                    Text="or1n Rename File Name To Date Created"
+                   IsTabStop="False"
                    IsTextScaleFactorEnabled="True"
                    RenderTransformOrigin="0.5,0.5">
             <TextBlock.RenderTransform>
@@ -89,6 +90,7 @@
                    TextAlignment="Center"
                    TextWrapping="Wrap"
                    Text="A modern WinUI 3 app to batch rename files by original date created/taken with customizable formatting and smart options."
+                   IsTabStop="False"
                    IsTextScaleFactorEnabled="True"
                    RenderTransformOrigin="0.5,0.5">
             <TextBlock.RenderTransform>
@@ -101,23 +103,28 @@
                     Grid.Row="2"
                     Orientation="Horizontal"
                     HorizontalAlignment="Center"
-                    MinWidth="220"
                     Spacing="{StaticResource Spacing.Small}"
                     Margin="0,24,0,0"
+                    VerticalAlignment="Center"
                     RenderTransformOrigin="0.5,0.5">
             <StackPanel.RenderTransform>
                 <TranslateTransform x:Name="ThemeComboTransform"/>
             </StackPanel.RenderTransform>
 
             <ComboBox x:Name="ThemeComboBox"
-                      Width="75"
+                      Width="80"
                       Height="40"
                       HorizontalContentAlignment="Center"
                       VerticalContentAlignment="Center"
+                      TabIndex="0"
                       SelectionChanged="ThemeComboBox_SelectionChanged"
                       UseSystemFocusVisuals="True"
                       FocusVisualMargin="-3"
                       CornerRadius="4"
+                      PointerEntered="InteractiveControl_PointerEntered"
+                      PointerExited="InteractiveControl_PointerExited"
+                      PointerPressed="InteractiveControl_PointerPressed"
+                      PointerReleased="InteractiveControl_PointerReleased"
                       AutomationProperties.Name="Theme Selector"
                       AutomationProperties.HelpText="Choose between Light or Dark theme">
                 <ComboBoxItem Tag="Light">
@@ -132,10 +139,15 @@
                     Width="40"
                     Height="40"
                     Padding="0"
+                    TabIndex="1"
                     Click="OpenFolderButton_Click"
                     UseSystemFocusVisuals="True"
                     FocusVisualMargin="-3"
                     CornerRadius="4"
+                    PointerEntered="InteractiveControl_PointerEntered"
+                    PointerExited="InteractiveControl_PointerExited"
+                    PointerPressed="InteractiveControl_PointerPressed"
+                    PointerReleased="InteractiveControl_PointerReleased"
                     AutomationProperties.Name="Open"
                     AutomationProperties.HelpText="Open a folder picker (not implemented yet)">
                 <FontIcon Glyph="&#xE8B7;" FontSize="16" />
@@ -145,10 +157,15 @@
                     Width="40"
                     Height="40"
                     Padding="0"
+                    TabIndex="2"
                     Click="ScanButton_Click"
                     UseSystemFocusVisuals="True"
                     FocusVisualMargin="-3"
                     CornerRadius="4"
+                    PointerEntered="InteractiveControl_PointerEntered"
+                    PointerExited="InteractiveControl_PointerExited"
+                    PointerPressed="InteractiveControl_PointerPressed"
+                    PointerReleased="InteractiveControl_PointerReleased"
                     AutomationProperties.Name="Scan"
                     AutomationProperties.HelpText="Scan the selected folder">
                 <FontIcon Glyph="&#xE721;" FontSize="16" />
@@ -183,6 +200,7 @@
                            Text="Action: Select a folder to start"
                            TextWrapping="Wrap"
                            LineHeight="20"
+                           IsTabStop="False"
                            Margin="0,0,0,8"/>
 
                 <ScrollViewer x:Name="LogScrollViewer"
@@ -193,6 +211,7 @@
                               HorizontalAlignment="Stretch"
                               Padding="0"
                               Margin="0"
+                              TabIndex="3"
                               ViewChanged="LogScrollViewer_ViewChanged"
                               SizeChanged="LogScrollViewer_SizeChanged">
                     <RichTextBlock x:Name="InfoRichTextBlock"

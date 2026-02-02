@@ -106,10 +106,40 @@ When adding new UI elements:
 3. Add XML documentation to public methods
 4. Test theme switching (both Light and Dark)
 5. Run build: `dotnet build` (should be 0 errors, 0 warnings)
-### After Completing Each Task (CRITICAL)
-**AUTOMATE IN USER'S POWER POWERSHELL EXTENSION TERMINAL:**
+### Workflow for New Features (CRITICAL)
 
-After every task completion, run this sequence in the user's open PowerShell Extension terminal:
+When implementing new features or making changes:
+
+1. **FIRST: Provide complete, detailed directions** to the user BEFORE running anything:
+   - What the feature does
+   - Step-by-step instructions on how to test it
+   - What they should expect to see
+   - Any special steps or edge cases
+   - Where the feature is located in the app
+
+2. **SECOND: Run `dotnet clean; dotnet restore; dotnet build`** - wait for completion
+
+3. **THIRD: Run `dotnet run`** - start the command immediately
+
+4. **FOURTH: Immediately announce** (right at the moment you start `dotnet run`):
+   - **⚠️ RUNNING APP - APPLICATION IS NOW RUNNING**
+   - Then repeat the testing instructions from step 1
+
+5. **FINALLY: After user closes app**, announce:
+   - **✅ CLOSED APP - APPLICATION HAS EXITED**
+
+**CRITICAL ORDER - Do NOT deviate:**
+- Provide all testing directions FIRST (before any build/run commands)
+- Build/restore/clean SECOND
+- Run THIRD
+- Announce "RUNNING APP" at the SAME TIME as running (immediately, no waiting)
+- Repeat directions after announce
+- Announce "CLOSED APP" only after command finishes
+
+### After Completing Each Task (CRITICAL)
+**AUTOMATE IN USER'S POWER POWERSHELL EXTENSION TERMINAL ONLY WHEN THE PROGRAM CHANGES:**
+
+Only after changes that modify the actual application (C#/XAML/WinUI behavior), run this sequence in the user's open PowerShell Extension terminal:
 
 ```powershell
 dotnet clean
@@ -123,7 +153,20 @@ dotnet run
 - NEVER use `run_in_terminal` with isBackground=true
 - NEVER create hidden pwsh instances or child processes
 
-After `dotnet run` completes, display alert: **⚠️ RUNNING APP - APPLICATION IS NOW RUNNING** (with emojis and capital text)
+**Run Messaging Order (CRITICAL):**
+
+Do this EXACT sequence:
+1. Run: `dotnet clean; dotnet restore; dotnet build` (wait for completion)
+2. Start: `dotnet run` command
+3. **Immediately** (before waiting) announce: **⚠️ RUNNING APP - APPLICATION IS NOW RUNNING**
+4. Wait for the user to close the app (dotnet run blocks until then)
+5. When `dotnet run` command finishes/returns, announce: **✅ CLOSED APP - APPLICATION HAS EXITED**
+
+**Key Points:**
+- Announce "RUNNING APP" AS SOON AS you start `dotnet run`, NOT after it finishes
+- Announce "CLOSED APP" only AFTER the command returns (when user closes the app window)
+- The app window appears between steps 2-3
+- Use `isBackground=false` and `timeout=0` so the tool blocks until app closes
 
 **Terminal Requirements:**
 - User's PowerShell Extension terminal is the ONLY execution environment
@@ -209,6 +252,11 @@ The Log method:
 - Maintains 100-line rolling buffer (auto-removes old entries)
 - Updates UI in real-time
 - Visible in the log area at bottom of screen
+
+### Documentation Rules (CRITICAL)
+
+- In `docs/TODO.md`, always keep completed items only in the **Completed Tasks** section at the bottom.
+- Always follow markdownlint best practices (avoid MD012: no multiple consecutive blank lines).
 
 ---
 
