@@ -55,6 +55,15 @@ namespace Or1nRenameFileNameToDateCreated.Views
             this.KeyDown += MainPage_KeyDown;
 
             InitializeResizeLogging();
+            
+            // Display current application version without the "v" prefix
+            if (VersionText != null)
+            {
+                var fullVersion = Or1nRenameFileNameToDateCreated.Helpers.VersionService.GetCurrentVersion();
+                // Remove the "v" prefix (e.g., "v2026.02.02..." -> "2026.02.02...")
+                var versionWithoutPrefix = fullVersion.TrimStart('v');
+                VersionText.Text = $"version {versionWithoutPrefix}";
+            }
         }
 
         private void InitializeResizeLogging()
@@ -603,6 +612,43 @@ namespace Or1nRenameFileNameToDateCreated.Views
             storyboard.Children.Add(scaleYAnimation);
 
             storyboard.Begin();
+        }
+
+        /// <summary>
+        /// GitHub Link - Hover and Click Handlers
+        /// </summary>
+        private void GitHubLink_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is TextBlock link && link.RenderTransform is ScaleTransform scale)
+            {
+                // Subtle scale animation on hover
+                AnimateScale(scale, 1.05, 100);
+            }
+        }
+
+        private void GitHubLink_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            if (sender is TextBlock link && link.RenderTransform is ScaleTransform scale)
+            {
+                // Return to normal size
+                AnimateScale(scale, 1.0, 100);
+            }
+        }
+
+        private async void GitHubLink_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            try
+            {
+                const string GITHUB_URL = "https://github.com/or1n/or1n-rename-file-name-to-date-created";
+                Log($"Opening GitHub repository: {GITHUB_URL}");
+                
+                var uri = new Uri(GITHUB_URL);
+                await Windows.System.Launcher.LaunchUriAsync(uri);
+            }
+            catch (Exception ex)
+            {
+                Log($"Error: Failed to open GitHub page - {ex.Message}");
+            }
         }
     }
 }

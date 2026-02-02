@@ -2,7 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project uses timestamp-based versioning in the format `v{YYYY}.{MM}.{DD}.{HH}.{mm}.{MSS}`.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project uses timestamp-based versioning in the format `v{YYYY}.{MM}.{DD}.{HH}.{mm}.{ss}.{fff}`.
+
+## [v2026.02.02.05.58.437] - 2026-02-02 - Application Infrastructure & Version Service
+
+### Added (v2026.02.02.05.58.437)
+
+- **VersionService utility class** — Dynamic version generation using system time with format `v{YYYY}.{MM}.{DD}.{HH}.{mm}.{ss}.{fff}` (e.g., v2026.02.02.05.58.437)
+- **Application version display** — Version shown at bottom right of main window ("version 2026.02.02.XX.XX.XX.XXX") with real-time timestamp
+- **GitHub repository link** — Clickable "github page" text at bottom left that opens https://github.com/or1n/or1n-rename-file-name-to-date-created
+
+### Changed (v2026.02.02.05.58.437)
+
+- **Footer layout** — New Grid-based footer with GitHub link (left), spacer (center), and version display (right)
+- **Version string format** — Removed "v" prefix and colon from UI display (shows "version 2026.02.02.XX.XX.XX.XXX" instead of "Version: vXXXX...")
+
+### Technical Details (v2026.02.02.05.58.437)
+
+- **VersionService**: Static utility in `Helpers/VersionService.cs` with `GetCurrentVersion()` method
+- **Dynamic versioning**: Retrieved at app startup; always shows actual system time when app launches
+- **GitHub link behavior**: Uses `Windows.System.Launcher.LaunchUriAsync()` to open URI in default browser
+- **GitHub link interaction**: Scales 1.0→1.05 on hover and 1.0 on exit for visual feedback
+- **Footer styling**: Uses AccentBrush for GitHub link, LogTimestampBrush for version text
+
+---
 
 ## [v2026.02.02.05.40.892] - 2026-02-02 - Folder Picker UX Comprehensive Improvements
 

@@ -80,6 +80,12 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 - [x] **Folder picker UX cleanup** — Removed confusing “Selected” status text and refresh button. (2026-02-02 04:52)
 - [x] **Main window acrylic parity** — DesktopAcrylic applied to main window for consistent frosted glass effect. (2026-02-02 04:52)
 
+### Application Infrastructure (Completed)
+
+- [x] **Dynamic version service** — VersionService utility for timestamp-based version generation (v{YYYY}.{MM}.{DD}.{HH}.{mm}.{ss}.{fff}). (2026-02-02 05:58)
+- [x] **Version display in UI** — Application version shown at bottom right of main window with real-time timestamp. (2026-02-02 05:58)
+- [x] **GitHub repository link** — Clickable "github page" link at bottom left that opens the GitHub repository in default browser. (2026-02-02 05:58)
+
 ### WinUI 3 Design & Polish (Completed)
 
 - [x] **Log text selection** — Click to select text, CTRL+A select all, CTRL+C copy to clipboard. Native TextBox selection and copying fully functional. (2026-02-02 00:51)

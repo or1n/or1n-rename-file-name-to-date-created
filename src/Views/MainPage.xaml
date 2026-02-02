@@ -62,6 +62,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!-- Title with entrance animation -->
@@ -236,5 +237,42 @@
                 </ScrollViewer>
             </Grid>
         </Border>
+
+        <!-- Footer: GitHub Link and Version Display -->
+        <Grid Grid.Row="4" Margin="0,12,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- GitHub Link -->
+            <TextBlock x:Name="GitHubLink"
+                       Grid.Column="0"
+                       FontSize="11"
+                       Foreground="{ThemeResource AccentBrush}"
+                       Text="github page"
+                       IsTabStop="False"
+                       PointerEntered="GitHubLink_PointerEntered"
+                       PointerExited="GitHubLink_PointerExited"
+                       PointerPressed="GitHubLink_PointerPressed"
+                       AutomationProperties.Name="GitHub Repository"
+                       AutomationProperties.HelpText="Click to go to the Github page"
+                       RenderTransformOrigin="0,0.5">
+                <TextBlock.RenderTransform>
+                    <ScaleTransform x:Name="GitHubLinkScale" ScaleX="1" ScaleY="1"/>
+                </TextBlock.RenderTransform>
+            </TextBlock>
+
+            <!-- Version Display -->
+            <TextBlock x:Name="VersionText"
+                       Grid.Column="2"
+                       FontSize="11"
+                       Foreground="{ThemeResource LogTimestampBrush}"
+                       Text="version loading..."
+                       IsTabStop="False"
+                       AutomationProperties.Name="Application Version"
+                       AutomationProperties.HelpText="Current application version with timestamp"/>
+        </Grid>
     </Grid>
 </Page>
