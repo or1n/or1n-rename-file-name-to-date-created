@@ -12,10 +12,6 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 ### Core Rename Functionality
 
 - [ ] **Batch rename engine** — Parse filename, extension, and date components. (0%)
-
-### Core Rename Functionality
-
-- [ ] **Batch rename engine** — Parse filename, extension, and date components. (0%)
 - [ ] **Apply formatting rules** — Date calculations and formatting logic. (0%)
 - [ ] **Preview renamed filenames** — Show preview before applying changes. (0%)
 - [ ] **Atomic batch rename** — All-or-nothing rename operation. (0%)
@@ -71,6 +67,29 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 ---
 
 ## ✅ Completed Tasks
+
+### Scan Progress & Metadata Accuracy (Completed)
+
+- [x] **Scan progress bar** — Progress bar replaces Action area during scans with % and ETA. (2026-02-02 06:27)
+- [x] **Per-file scan progress** — Log shows X/X, percent, and ETA for each processed file. (2026-02-02 06:27)
+- [x] **Filetype date-source summary** — Summary per extension showing which date source was used. (2026-02-02 06:27)
+- [x] **Middle mouse log scrolling** — Drag-scroll support for the log console. (2026-02-02 06:27)
+- [x] **RAW metadata parsing** — Improved date taken extraction for RAW formats like .arw. (2026-02-02 06:27)
+- [x] **Scan UI responsiveness** — Buffered log output and throttled progress updates to keep UI responsive. (2026-02-02 06:52)
+- [x] **Wait cursor during scan** — Pointer switches to wait cursor while scanning. (2026-02-02 06:52)
+- [x] **Thread-safe progress updates** — Progress and log UI updates marshaled to UI thread. (2026-02-02 06:52)
+
+### Scan Controls & Logging (Completed)
+
+- [x] **Scan filter dialog** — Select file types before scanning with confirm/cancel flow. (2026-02-02 06:27)
+- [x] **Unlimited log scrollback** — Removed log cap and enabled full scroll history. (2026-02-02 06:27)
+
+### Metadata Scan Pipeline (Completed)
+
+- [x] **Metadata scan service** — Extract EXIF/media tags and fall back to file system dates. (2026-02-02 06:19)
+- [x] **File type classification** — Categorize images, videos, audio, documents, executables, binaries. (2026-02-02 06:19)
+- [x] **Date selection rules** — Choose best date per file with explicit source labels. (2026-02-02 06:19)
+- [x] **Structured scan output** — Neat, color-aware log formatting for file list + summary. (2026-02-02 06:19)
 
 ### Folder Picker Window (Completed)
 
@@ -147,17 +166,17 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 
 ## 📊 Summary
 
-**Total Progress**: 51 completed, 46 incomplete  
-**Overall Completion**: 53%
+**Total Progress**: 61 completed, 45 incomplete  
+**Overall Completion**: 58%
 
 **Current Focus**: Core rename engine implementation  
-**Current Version**: `v2026.02.02.05.40.892`
+**Current Version**: `v2026.02.02.06.52.30.267`
 
 ---
 
 ## Versioning Scheme
 
-**Format**: `v{YYYY}.{MM}.{DD}.{HH}.{MM}.{SS}.{MSS}`
+**Format**: `v{YYYY}.{MM}.{DD}.{HH}.{mm}.{ss}.{fff}`
 
 - **Year (YYYY)**: Development year (2026+)
 - **Month (MM)**: Development month (01-12)

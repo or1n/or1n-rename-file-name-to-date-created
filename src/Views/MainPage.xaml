@@ -193,20 +193,38 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <TextBlock x:Name="ActionTextBlock"
-                           Grid.Row="0"
-                           FontSize="{StaticResource FontSize.Normal}"
-                           Foreground="{ThemeResource AccentBrush}"
-                           FontFamily="Consolas,Cascadia Mono,Courier New"
-                           Text="Action: Select a folder to start"
-                           TextWrapping="Wrap"
-                           LineHeight="20"
-                           IsTabStop="False"
-                           Margin="0,0,0,8"/>
+                <Grid Grid.Row="0">
+                    <TextBlock x:Name="ActionTextBlock"
+                               FontSize="{StaticResource FontSize.Normal}"
+                               Foreground="{ThemeResource AccentBrush}"
+                               FontFamily="Consolas,Cascadia Mono,Courier New"
+                               Text="Action: Select a folder to start"
+                               TextWrapping="Wrap"
+                               LineHeight="20"
+                               IsTabStop="False"
+                               Margin="0,0,0,8"/>
+
+                    <StackPanel x:Name="ScanProgressPanel"
+                                Orientation="Vertical"
+                                Spacing="6"
+                                Visibility="Collapsed"
+                                Margin="0,0,0,8">
+                        <ProgressBar x:Name="ScanProgressBar"
+                                     Height="10"
+                                     Minimum="0"
+                                     Maximum="100"
+                                     Value="0" />
+                        <TextBlock x:Name="ScanProgressText"
+                                   FontSize="{StaticResource FontSize.Small}"
+                                   Foreground="{ThemeResource AccentBrush}"
+                                   FontFamily="Consolas,Cascadia Mono,Courier New"
+                                   Text="Scanning..." />
+                    </StackPanel>
+                </Grid>
 
                 <ScrollViewer x:Name="LogScrollViewer"
                               Grid.Row="1"
-                              VerticalScrollBarVisibility="Hidden"
+                              VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled"
                               VerticalAlignment="Stretch"
                               HorizontalAlignment="Stretch"
@@ -214,7 +232,10 @@
                               Margin="0"
                               TabIndex="3"
                               ViewChanged="LogScrollViewer_ViewChanged"
-                              SizeChanged="LogScrollViewer_SizeChanged">
+                              SizeChanged="LogScrollViewer_SizeChanged"
+                              PointerPressed="LogScrollViewer_PointerPressed"
+                              PointerReleased="LogScrollViewer_PointerReleased"
+                              PointerMoved="LogScrollViewer_PointerMoved">
                     <RichTextBlock x:Name="InfoRichTextBlock"
                                    FontSize="{StaticResource FontSize.Normal}"
                                    Foreground="{ThemeResource LogForegroundBrush}"

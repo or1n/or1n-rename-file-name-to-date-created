@@ -1,10 +1,71 @@
 # Changelog
 
-**Current Version: v2026.02.02.05.58.437**
+**Current Version: v2026.02.02.06.52.30.267**
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project uses timestamp-based versioning in the format `v{YYYY}.{MM}.{DD}.{HH}.{mm}.{ss}.{fff}`.
+
+## [v2026.02.02.06.52.30.267] - 2026-02-02 - Scan UI Responsiveness & Progress Updates
+
+### Added (v2026.02.02.06.52.30.267)
+
+- **Scan wait cursor** — Pointer switches to wait cursor while scans run
+
+### Changed (v2026.02.02.06.52.30.267)
+
+- **Log output buffering** — Batched log updates to keep the UI responsive during large scans
+- **Progress updates** — Throttled progress bar updates to prevent UI stalls
+- **UI thread marshaling** — Scan progress/log updates safely dispatched to UI thread
+
+### Technical Details (v2026.02.02.06.52.30.267)
+
+- **Log queue**: Concurrent queue with a 200ms dispatcher flush
+- **Progress throttling**: UI updates limited to ~100ms cadence
+- **Cursor**: `ProtectedCursor` set to Wait/Arrow during scans
+
+---
+
+## [v2026.02.02.06.27.26.345] - 2026-02-02 - Scan Filters & Log Scrollback
+
+### Added (v2026.02.02.06.27.26.345)
+
+- **Scan filter dialog** — Select file types to include before starting a metadata scan
+- **Column-based file type selector** — 10 items per column, auto-expands horizontally
+
+### Changed (v2026.02.02.06.27.26.345)
+
+- **Log scrollback** — Removed log entry cap and enabled full scroll history
+- **Scan workflow** — Scan begins only after file types are confirmed
+
+### Technical Details (v2026.02.02.06.27.26.345)
+
+- **ScrollViewer**: Vertical scroll bar set to Auto for log output
+- **Filtering**: Metadata scan now accepts extension filters for precise selection
+
+---
+
+## [v2026.02.02.06.19.24.458] - 2026-02-02 - Metadata Scan Pipeline
+
+### Added (v2026.02.02.06.19.24.458)
+
+- **MetadataScanService** — Centralized metadata scanning with EXIF for images, media tags for audio/video, and file system fallback
+- **Scan button pipeline** — Scan now extracts filename, extension, file size, and date components for each file
+- **File type categorization** — Images, videos, audio, documents, executables, binaries, archives, and other
+- **Structured scan output** — Detailed per-file log lines plus category/date-source summaries
+
+### Changed (v2026.02.02.06.19.24.458)
+
+- **Scan performance** — Parallelized file processing with CPU-aware throttling
+- **Date selection logic** — Prioritizes DateTaken → MediaTaggedDate → DateCreated for consistent results
+
+### Technical Details (v2026.02.02.06.19.24.458)
+
+- **Libraries**: MetadataExtractor 2.9.0, TagLibSharp 2.3.0
+- **Parallel scan**: Uses `Parallel.ForEach` with `MaxDegreeOfParallelism = CPU - 1`
+- **Date formatting**: `yyyy-MM-dd HH:mm:ss.fff` with explicit parts logged per file
+
+---
 
 ## [v2026.02.02.05.58.437] - 2026-02-02 - Application Infrastructure & Version Service
 

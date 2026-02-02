@@ -5,10 +5,12 @@ using Microsoft.UI;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Microsoft.UI.Xaml.Documents;
 using Windows.UI;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -30,6 +32,13 @@ namespace Or1nRenameFileNameToDateCreated.Views
         private bool _isSnappingScroll = false;
         private DispatcherQueueTimer? _resizeLogTimer;
         private Windows.Foundation.Size _pendingWindowSize;
+        private bool _isMiddleMouseScrolling = false;
+        private double _middleScrollStartOffset = 0;
+        private Windows.Foundation.Point _middleScrollStartPoint;
+        private bool _isScanning = false;
+        private readonly ConcurrentQueue<LogEntry> _logQueue = new();
+        private DispatcherQueueTimer? _logFlushTimer;
+        private DateTime _lastProgressUiUpdate = DateTime.MinValue;
 
         public MainPage()
         {
@@ -55,6 +64,7 @@ namespace Or1nRenameFileNameToDateCreated.Views
             this.KeyDown += MainPage_KeyDown;
 
             InitializeResizeLogging();
+            InitializeLogBuffer();
             
             // Display current application version without the "v" prefix
             if (VersionText != null)
@@ -182,13 +192,12 @@ namespace Or1nRenameFileNameToDateCreated.Views
         {
             var timestamp = DateTime.Now;
             var level = GetLogLevel(message);
-            _logEntries.Add(new LogEntry(timestamp, message, level));
-            
-            // Remove from BEGINNING (oldest entries) when exceeding 100 lines
-            while (_logEntries.Count > 100)
-                _logEntries.RemoveAt(0);
-            
-            UpdateLogText();
+            _logQueue.Enqueue(new LogEntry(timestamp, message, level));
+
+            if (DispatcherQueue.HasThreadAccess)
+            {
+                FlushLogQueue();
+            }
         }
 
         private void UpdateLogText()
@@ -202,7 +211,40 @@ namespace Or1nRenameFileNameToDateCreated.Views
                 AppendLogEntry(entry);
             }
 
-            ForceScrollToBottom();
+            AutoScrollLog();
+        }
+
+        private void InitializeLogBuffer()
+        {
+            _logFlushTimer = DispatcherQueue.CreateTimer();
+            _logFlushTimer.Interval = TimeSpan.FromMilliseconds(200);
+            _logFlushTimer.IsRepeating = true;
+            _logFlushTimer.Tick += (_, _) => FlushLogQueue();
+            _logFlushTimer.Start();
+        }
+
+        private void FlushLogQueue()
+        {
+            if (!DispatcherQueue.HasThreadAccess)
+            {
+                DispatcherQueue.TryEnqueue(FlushLogQueue);
+                return;
+            }
+
+            if (InfoRichTextBlock == null) return;
+
+            bool added = false;
+            while (_logQueue.TryDequeue(out var entry))
+            {
+                _logEntries.Add(entry);
+                AppendLogEntry(entry);
+                added = true;
+            }
+
+            if (added)
+            {
+                AutoScrollLog();
+            }
         }
 
         private void SetAction(string actionText)
@@ -362,7 +404,8 @@ namespace Or1nRenameFileNameToDateCreated.Views
 
             if (!e.IsIntermediate)
             {
-                _isAutoScrollEnabled = true;
+                var distanceToBottom = LogScrollViewer.ScrollableHeight - LogScrollViewer.VerticalOffset;
+                _isAutoScrollEnabled = distanceToBottom <= LOG_LINE_HEIGHT;
 
                 if (!_isSnappingScroll && LogScrollViewer.ScrollableHeight > 0)
                 {
@@ -380,6 +423,47 @@ namespace Or1nRenameFileNameToDateCreated.Views
         private void LogScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ForceScrollToBottom();
+        }
+
+        private void LogScrollViewer_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            if (LogScrollViewer == null) return;
+
+            var point = e.GetCurrentPoint(LogScrollViewer);
+            if (point.Properties.IsMiddleButtonPressed)
+            {
+                _isMiddleMouseScrolling = true;
+                _middleScrollStartPoint = point.Position;
+                _middleScrollStartOffset = LogScrollViewer.VerticalOffset;
+                LogScrollViewer.CapturePointer(e.Pointer);
+                e.Handled = true;
+            }
+        }
+
+        private void LogScrollViewer_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_isMiddleMouseScrolling || LogScrollViewer == null) return;
+
+            var point = e.GetCurrentPoint(LogScrollViewer);
+            var deltaY = point.Position.Y - _middleScrollStartPoint.Y;
+            var targetOffset = _middleScrollStartOffset - deltaY;
+            targetOffset = Math.Max(0, Math.Min(targetOffset, LogScrollViewer.ScrollableHeight));
+
+            LogScrollViewer.ChangeView(null, targetOffset, null, true);
+            e.Handled = true;
+        }
+
+        private void LogScrollViewer_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_isMiddleMouseScrolling || LogScrollViewer == null) return;
+
+            var point = e.GetCurrentPoint(LogScrollViewer);
+            if (!point.Properties.IsMiddleButtonPressed)
+            {
+                _isMiddleMouseScrolling = false;
+                LogScrollViewer.ReleasePointerCapture(e.Pointer);
+                e.Handled = true;
+            }
         }
 
         private void ThemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -519,27 +603,251 @@ namespace Or1nRenameFileNameToDateCreated.Views
         {
             if (!_folderSelected || string.IsNullOrWhiteSpace(_selectedFolderPath))
             {
-                Log("Please select a folder first.");
+                Log("[SCAN] Please select a folder first.");
                 return;
             }
             try
             {
-                Log($"Scanning folder: {_selectedFolderPath}");
-                var dir = await Windows.Storage.StorageFolder.GetFolderFromPathAsync(_selectedFolderPath);
-                var files = await dir.GetFilesAsync();
-                var groups = files.GroupBy(f => f.FileType.ToUpperInvariant())
-                    .Select(g => new { Type = g.Key, Count = g.Count() })
-                    .OrderByDescending(g => g.Count);
-                foreach (var group in groups)
+                var fileExtensions = GetFolderExtensions(_selectedFolderPath);
+                if (fileExtensions.Count == 0)
                 {
-                    Log($"{group.Type}: {group.Count}");
+                    Log("[SCAN] No files found in the selected folder.");
+                    return;
                 }
-                Log($"Scan complete | {files.Count} files found");
+
+                var selectedExtensions = await ShowScanFilterDialogAsync(fileExtensions);
+                if (selectedExtensions == null || selectedExtensions.Count == 0)
+                {
+                    Log("[SCAN] Scan cancelled or no file types selected.");
+                    return;
+                }
+
+                SetScanningState(true);
+                SetScanProgressActive(true);
+                UpdateScanProgress(0, 0, 0, TimeSpan.Zero, TimeSpan.Zero, "Preparing scan...");
+
+                Log("=== [SCAN] Metadata scan started ===");
+                Log($"[SCAN] Folder: {_selectedFolderPath}");
+                Log($"[SCAN] Selected types: {string.Join(", ", selectedExtensions)}");
+                Log("[SCAN] Reading file metadata (EXIF for images, tags for media, fallback to file system dates)...");
+
+                Action<Or1nRenameFileNameToDateCreated.Helpers.MetadataScanService.ScanProgress> progressReporter = scanProgress =>
+                {
+                    var now = DateTime.UtcNow;
+                    if (now - _lastProgressUiUpdate > TimeSpan.FromMilliseconds(100) || scanProgress.Index == scanProgress.Total)
+                    {
+                        _lastProgressUiUpdate = now;
+                        UpdateScanProgress(scanProgress.Index, scanProgress.Total, scanProgress.Percent, scanProgress.Elapsed, scanProgress.EstimatedRemaining,
+                            $"{scanProgress.Index}/{scanProgress.Total} ({scanProgress.Percent:0.0}%) | ETA {scanProgress.EstimatedRemaining:mm\\:ss}");
+                    }
+
+                    Log($"[SCAN] {scanProgress.Index}/{scanProgress.Total} ({scanProgress.Percent:0.0}%) | ETA {scanProgress.EstimatedRemaining:mm\\:ss} | {scanProgress.FileName}");
+                };
+
+                var scanResult = await Task.Run(() => Or1nRenameFileNameToDateCreated.Helpers.MetadataScanService.ScanFolder(_selectedFolderPath, selectedExtensions, progressReporter));
+
+                Log($"[SCAN] Total files: {scanResult.Summary.TotalFiles}");
+                LogScanSummary(scanResult.Summary);
+                LogScanResults(scanResult.Files);
+                LogFileTypeDateSourceSummary(scanResult.Files);
+
+                Log("[SCAN] SUCCESS: Metadata scan complete");
+                SetAction("Action: Review scan output and prepare rename rules");
             }
             catch (ArgumentException ex)
             {
-                Log($"Error: {ex.Message}");
+                Log($"[SCAN] ERROR: {ex.Message}");
                 throw;
+            }
+            finally
+            {
+                SetScanProgressActive(false);
+                SetScanningState(false);
+            }
+        }
+
+        private static List<string> GetFolderExtensions(string folderPath)
+        {
+            return System.IO.Directory.EnumerateFiles(folderPath, "*", SearchOption.TopDirectoryOnly)
+                .Select(path => Path.GetExtension(path))
+                .Where(ext => !string.IsNullOrWhiteSpace(ext))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(ext => ext, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+        }
+
+        private async Task<HashSet<string>?> ShowScanFilterDialogAsync(IReadOnlyList<string> extensions)
+        {
+            var rootGrid = new Grid
+            {
+                ColumnSpacing = 16
+            };
+
+            int columnCount = (int)Math.Ceiling(extensions.Count / 10.0);
+            for (int i = 0; i < columnCount; i++)
+            {
+                rootGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            }
+
+            var checkBoxes = new List<CheckBox>();
+            for (int i = 0; i < extensions.Count; i++)
+            {
+                int columnIndex = i / 10;
+                if (rootGrid.Children.OfType<StackPanel>().FirstOrDefault(panel => Grid.GetColumn(panel) == columnIndex) is not StackPanel columnPanel)
+                {
+                    columnPanel = new StackPanel
+                    {
+                        Orientation = Orientation.Vertical,
+                        Spacing = 8
+                    };
+                    Grid.SetColumn(columnPanel, columnIndex);
+                    rootGrid.Children.Add(columnPanel);
+                }
+
+                var checkBox = new CheckBox
+                {
+                    Content = extensions[i],
+                    IsChecked = true
+                };
+
+                checkBoxes.Add(checkBox);
+                columnPanel.Children.Add(checkBox);
+            }
+
+            var dialog = new ContentDialog
+            {
+                Title = "Select file types to scan",
+                Content = rootGrid,
+                PrimaryButtonText = "Confirm",
+                CloseButtonText = "Cancel",
+                XamlRoot = this.XamlRoot,
+                RequestedTheme = this.ActualTheme
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result != ContentDialogResult.Primary)
+            {
+                return null;
+            }
+
+            var selected = checkBoxes
+                .Where(cb => cb.IsChecked == true && cb.Content is string)
+                .Select(cb => cb.Content!.ToString()!)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            return selected;
+        }
+
+        private void LogScanSummary(Or1nRenameFileNameToDateCreated.Helpers.MetadataScanService.ScanSummary summary)
+        {
+            Log("[SCAN] Summary by category:");
+            foreach (var entry in summary.CategoryCounts.OrderByDescending(c => c.Value))
+            {
+                Log($"[SCAN]   {entry.Key}: {entry.Value}");
+            }
+
+            Log("[SCAN] Summary by date source:");
+            foreach (var entry in summary.DateSourceCounts.OrderByDescending(c => c.Value))
+            {
+                Log($"[SCAN]   {entry.Key}: {entry.Value}");
+            }
+
+            Log("[SCAN] Top file extensions:");
+            foreach (var entry in summary.ExtensionCounts.Take(10))
+            {
+                var extLabel = string.IsNullOrWhiteSpace(entry.Key) ? "[no extension]" : entry.Key;
+                Log($"[SCAN]   {extLabel}: {entry.Value}");
+            }
+        }
+
+        private void LogFileTypeDateSourceSummary(IReadOnlyList<Or1nRenameFileNameToDateCreated.Helpers.MetadataScanService.FileMetadataResult> files)
+        {
+            Log("[SCAN] Summary by filetype and date source:");
+
+            var groups = files
+                .GroupBy(file => file.Extension)
+                .OrderBy(group => group.Key, StringComparer.OrdinalIgnoreCase);
+
+            foreach (var group in groups)
+            {
+                var extLabel = string.IsNullOrWhiteSpace(group.Key) ? "[no extension]" : group.Key;
+                var sourceCounts = group
+                    .GroupBy(file => file.SelectedDateSource)
+                    .OrderByDescending(sourceGroup => sourceGroup.Count())
+                    .Select(sourceGroup => $"{sourceGroup.Key}: {sourceGroup.Count()}");
+
+                Log($"[SCAN]   {extLabel} -> {string.Join(", ", sourceCounts)}");
+            }
+        }
+
+        private void SetScanProgressActive(bool isActive)
+        {
+            if (!DispatcherQueue.HasThreadAccess)
+            {
+                DispatcherQueue.TryEnqueue(() => SetScanProgressActive(isActive));
+                return;
+            }
+
+            if (ScanProgressPanel != null && ActionTextBlock != null)
+            {
+                ScanProgressPanel.Visibility = isActive ? Visibility.Visible : Visibility.Collapsed;
+                ActionTextBlock.Visibility = isActive ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        private void UpdateScanProgress(int index, int total, double percent, TimeSpan elapsed, TimeSpan eta, string statusText)
+        {
+            if (!DispatcherQueue.HasThreadAccess)
+            {
+                DispatcherQueue.TryEnqueue(() => UpdateScanProgress(index, total, percent, elapsed, eta, statusText));
+                return;
+            }
+
+            if (ScanProgressBar != null)
+            {
+                ScanProgressBar.Maximum = 100;
+                ScanProgressBar.Value = Math.Min(100, Math.Max(0, percent));
+            }
+
+            if (ScanProgressText != null)
+            {
+                ScanProgressText.Text = $"{statusText} | Elapsed {elapsed:mm\\:ss}";
+            }
+        }
+
+        private void SetScanningState(bool isScanning)
+        {
+            if (!DispatcherQueue.HasThreadAccess)
+            {
+                DispatcherQueue.TryEnqueue(() => SetScanningState(isScanning));
+                return;
+            }
+
+            _isScanning = isScanning;
+
+            if (ScanButton != null)
+            {
+                ScanButton.IsEnabled = !isScanning;
+            }
+
+            this.ProtectedCursor = isScanning
+                ? InputSystemCursor.Create(InputSystemCursorShape.Wait)
+                : InputSystemCursor.Create(InputSystemCursorShape.Arrow);
+        }
+
+        private void LogScanResults(IReadOnlyList<Or1nRenameFileNameToDateCreated.Helpers.MetadataScanService.FileMetadataResult> files)
+        {
+            Log("[SCAN] Detailed file list:");
+            foreach (var file in files)
+            {
+                var takenLabel = file.TakenDate.HasValue ? file.TakenDate.Value.ToString("yyyy-MM-dd HH:mm:ss.fff") : "n/a";
+                var taggedLabel = file.MediaTaggedDate.HasValue ? file.MediaTaggedDate.Value.ToString("yyyy-MM-dd") : "n/a";
+
+                Log($"[SCAN] File: {file.FileName} | Ext: {file.Extension} | Type: {file.Category} | Size: {file.SizeDisplay}");
+                Log($"[SCAN]   Date Selected: {file.DateParts} ({file.SelectedDateSource})");
+                Log($"[SCAN]   Date Created: {file.CreatedDate:yyyy-MM-dd HH:mm:ss.fff} | Modified: {file.ModifiedDate:yyyy-MM-dd HH:mm:ss.fff}");
+                Log($"[SCAN]   Date Taken: {takenLabel} | Media Tagged: {taggedLabel}");
+                Log($"[SCAN]   Date Parts: Y={file.SelectedDate:yyyy} M={file.SelectedDate:MM} D={file.SelectedDate:dd} H={file.SelectedDate:HH} m={file.SelectedDate:mm} s={file.SelectedDate:ss} ms={file.SelectedDate:fff}");
             }
         }
 
