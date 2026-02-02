@@ -5,45 +5,63 @@
             "label": "Deep Clean WinUI",
             "type": "shell",
             "command": ".\\clean_winui.ps1",
-            "problemMatcher": []
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "focus": true,
+                "echo": true
+            }
         },
         {
             "label": "build",
-            "dependsOn": ["Deep Clean WinUI"],
             "command": "dotnet",
-            "type": "process",
+            "type": "shell",
             "args": [
                 "build",
                 "${workspaceFolder}/or1n-rename-file-name-to-date-created.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "always",
+                "focus": true,
+                "echo": true
+            }
         },
         {
             "label": "publish",
-            "dependsOn": ["Deep Clean WinUI"],
             "command": "dotnet",
-            "type": "process",
+            "type": "shell",
             "args": [
                 "publish",
                 "${workspaceFolder}/or1n-rename-file-name-to-date-created.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "always",
+                "focus": true,
+                "echo": true
+            }
         },
         {
             "label": "watch",
             "command": "dotnet",
-            "type": "process",
+            "type": "shell",
             "args": [
                 "watch",
                 "run",
                 "--project",
                 "${workspaceFolder}/or1n-rename-file-name-to-date-created.csproj"
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "reveal": "always",
+                "focus": true,
+                "echo": true
+            }
         }
     ]
 }

@@ -15,8 +15,8 @@
             <EntranceThemeTransition/>
         </TransitionCollection>
     </Page.Transitions>
-    
-    <Grid x:Name="RootGrid" Background="{ThemeResource PageBackgroundBrush}">
+
+    <Grid x:Name="RootGrid" Background="{ThemeResource PageBackgroundBrush}" SizeChanged="RootGrid_SizeChanged">
         
         <!-- Responsive Visual States -->
         <VisualStateManager.VisualStateGroups>
@@ -30,9 +30,6 @@
                     <VisualState.Setters>
                         <Setter Target="RootGrid.Padding" Value="16"/>
                         <Setter Target="TitleText.FontSize" Value="20"/>
-                        <Setter Target="DescriptionText.MaxWidth" Value="520"/>
-                        <Setter Target="ButtonStack.Orientation" Value="Vertical"/>
-                        <Setter Target="ButtonStack.Spacing" Value="{StaticResource Spacing.Small}"/>
                     </VisualState.Setters>
                 </VisualState>
                 
@@ -44,7 +41,6 @@
                     <VisualState.Setters>
                         <Setter Target="RootGrid.Padding" Value="20"/>
                         <Setter Target="TitleText.FontSize" Value="24"/>
-                        <Setter Target="DescriptionText.MaxWidth" Value="700"/>
                     </VisualState.Setters>
                 </VisualState>
                 
@@ -56,13 +52,11 @@
                     <VisualState.Setters>
                         <Setter Target="RootGrid.Padding" Value="32"/>
                         <Setter Target="TitleText.FontSize" Value="28"/>
-                        <Setter Target="DescriptionText.MaxWidth" Value="760"/>
                     </VisualState.Setters>
                 </VisualState>
                 
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -94,7 +88,6 @@
                    HorizontalAlignment="Center"
                    TextAlignment="Center"
                    TextWrapping="Wrap"
-                   MaxWidth="700"
                    Text="A modern WinUI 3 app to batch rename files by original date created/taken with customizable formatting and smart options."
                    IsTextScaleFactorEnabled="True"
                    RenderTransformOrigin="0.5,0.5">
@@ -108,6 +101,7 @@
                     Grid.Row="2"
                     Orientation="Horizontal"
                     HorizontalAlignment="Center"
+                    MinWidth="220"
                     Spacing="{StaticResource Spacing.Small}"
                     Margin="0,24,0,0"
                     RenderTransformOrigin="0.5,0.5">
@@ -171,35 +165,57 @@
                 Padding="16"
                 BorderBrush="{ThemeResource BorderBrush}"
                 BorderThickness="1"
-            MinHeight="192"
                 RenderTransformOrigin="0.5,0.5">
             <Border.RenderTransform>
                 <TranslateTransform x:Name="LogBorderTransform"/>
             </Border.RenderTransform>
-            
-            <StackPanel>
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
                 <TextBlock x:Name="ActionTextBlock"
+                           Grid.Row="0"
                            FontSize="{StaticResource FontSize.Normal}"
                            Foreground="{ThemeResource AccentBrush}"
                            FontFamily="Consolas,Cascadia Mono,Courier New"
                            Text="Action: Select a folder to start"
                            TextWrapping="Wrap"
-                           IsTextScaleFactorEnabled="True"
-                           LineHeight="20"/>
+                           LineHeight="20"
+                           Margin="0,0,0,8"/>
 
                 <ScrollViewer x:Name="LogScrollViewer"
-                              VerticalScrollBarVisibility="Auto"
+                              Grid.Row="1"
+                              VerticalScrollBarVisibility="Hidden"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalAlignment="Stretch"
+                              HorizontalAlignment="Stretch"
                               Padding="0"
-                              Margin="0">
-                    <TextBlock x:Name="InfoTextBlock"
-                               FontSize="{StaticResource FontSize.Normal}"
-                               Foreground="{ThemeResource LogForegroundBrush}"
-                               FontFamily="Consolas,Cascadia Mono,Courier New"
-                               TextWrapping="Wrap"
-                               IsTextScaleFactorEnabled="True"
-                               LineHeight="20"/>
+                              Margin="0"
+                              ViewChanged="LogScrollViewer_ViewChanged"
+                              SizeChanged="LogScrollViewer_SizeChanged">
+                    <RichTextBlock x:Name="InfoRichTextBlock"
+                                   FontSize="{StaticResource FontSize.Normal}"
+                                   Foreground="{ThemeResource LogForegroundBrush}"
+                                   FontFamily="Consolas,Cascadia Mono,Courier New"
+                                   IsTextSelectionEnabled="True"
+                                   TextWrapping="Wrap"
+                                   LineHeight="20"
+                                   VerticalAlignment="Stretch"
+                                   HorizontalAlignment="Stretch"
+                                   AutomationProperties.Name="Log Output"
+                                   AutomationProperties.HelpText="View application log output. Select text with mouse and copy with Ctrl+C">
+                        <RichTextBlock.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="Select All" Click="SelectAllMenuItem_Click" />
+                                <MenuFlyoutItem Text="Copy" Click="CopyMenuItem_Click" />
+                                <MenuFlyoutItem Text="Copy All" Click="CopyAllMenuItem_Click" />
+                            </MenuFlyout>
+                        </RichTextBlock.ContextFlyout>
+                    </RichTextBlock>
                 </ScrollViewer>
-            </StackPanel>
+            </Grid>
         </Border>
     </Grid>
 </Page>

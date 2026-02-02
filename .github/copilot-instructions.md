@@ -106,7 +106,28 @@ When adding new UI elements:
 3. Add XML documentation to public methods
 4. Test theme switching (both Light and Dark)
 5. Run build: `dotnet build` (should be 0 errors, 0 warnings)
+### After Completing Each Task (CRITICAL)
+**AUTOMATE IN USER'S POWER POWERSHELL EXTENSION TERMINAL:**
 
+After every task completion, run this sequence in the user's open PowerShell Extension terminal:
+
+```powershell
+dotnet clean
+dotnet restore
+dotnet build
+dotnet run
+```
+
+**CRITICAL: Do NOT create background processes or new pwsh terminals!**
+- ONLY the user's open PowerShell Extension terminal should run these commands
+- NEVER use `run_in_terminal` with isBackground=true
+- NEVER create hidden pwsh instances or child processes
+
+After `dotnet run` completes, display alert: **⚠️ RUNNING APP - APPLICATION IS NOW RUNNING** (with emojis and capital text)
+
+**Terminal Requirements:**
+- User's PowerShell Extension terminal is the ONLY execution environment
+- VS Code tasks.json has `"runOptions": { "runIn": "terminal" }` set for shell tasks
 ### Before Committing
 1. Run `dotnet build` - ensure 0 errors/warnings
 2. Test F5 debugging - app launches correctly
@@ -279,12 +300,19 @@ dotnet build
 - Follow C# conventions above
 - Add XML documentation
 - Create event handlers with proper naming
+- **After each task: Automatically run clean/restore/build/run in the user's PowerShell Extension terminal**
+- **Show alert with emojis when app launches: ⚠️ RUNNING APP - APPLICATION IS NOW RUNNING**
+- **ONLY use user's open PowerShell Extension terminal, never create hidden terminals**
+- **Do not create new pwsh terminals or background processes**
 
 ❌ **Bad suggestions to ignore:**
 - Hardcoding colors (#FFFFFF, etc.)
 - Using WPF patterns (this is WinUI 3, different)
 - Creating classes outside Views/Helpers folders
 - Skipping theme consideration for new UI
+- Creating hidden pwsh terminals or background processes
+- Using run_in_terminal with isBackground=true (creates new pwsh instances)
+- Skipping clean/restore/build/run after task completion
 
 ---
 

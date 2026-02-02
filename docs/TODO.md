@@ -3,182 +3,131 @@
 
 ## Overview
 
-This document tracks the development progress of or1n, a modern WinUI 3 desktop application for batch renaming files based on their creation date. The project has been architected with a solid foundation (v1.0), and roadmap items are organized by phase.
+This document tracks the development progress of or1n, a modern WinUI 3 desktop application for batch renaming files based on their creation date. Items are organized by priority with completion percentages for incomplete tasks and timestamps for completed ones.
 
 ---
 
-## ✅ WinUI 3 Design TODO (Implement One-by-One)
+## 🔄 Active Tasks (Prioritized by Importance)
 
-Modern 2026 WinUI 3 best practices implementation progress:
+### WinUI 3 Design & Polish
 
-- [x] **Mica Alt + fallback** — Code implemented (MicaController with BaseAlt, DesktopAcrylicBackdrop fallback). **Needs visual verification by user.**
-- [x] **Theme-aware resource system** — All colors via ThemeDictionaries in UIConfig.xaml, no hard-coded colors in XAML. ✅ COMPLETE
-- [x] **Spacing system** — 4px base spacing scale defined in UIConfig.xaml (XXSmall: 4, XSmall: 8, Small: 12, Medium: 16, Large: 20, XLarge: 24, XXLarge: 32, Huge: 40). ✅ COMPLETE
-- [ ] **Inline CornerRadius/Thickness** — Use inline values only (WinUI 3 XAML compiler limitation). ⚠️ PARTIAL - needs review
-- [x] **Responsive breakpoints** — Compact/Medium/Wide VisualStates with AdaptiveTrigger implemented in MainPage. ✅ COMPLETE
-- [x] **Entrance animations** — Page transitions with EntranceThemeTransition. ✅ COMPLETE
-- [ ] **Motion system** — Consistent durations/easing for hover/press/enter/exit. ⚠️ NOT COMPLETE - needs implementation
-- [x] **Focus indicators** — UseSystemFocusVisuals on all interactive controls (ComboBox, buttons). ✅ COMPLETE
-- [x] **Text scaling** — IsTextScaleFactorEnabled on all text elements. ✅ COMPLETE
-- [x] **Accessibility labels** — AutomationProperties.Name/HelpText on all controls. ✅ COMPLETE
-- [ ] **Keyboard navigation** — Tab order verified; non-interactive items not tab-stoppable. ⚠️ NEEDS VERIFICATION
-- [ ] **Log styling** — Monospace log area with theme-aware colors and proper padding. ⚠️ NEEDS VERIFICATION (current uses regular font)
-- [ ] **Log text selection** — Click to select, CTRL+A select all, CTRL+C copy support. ❌ NOT IMPLEMENTED
-- [ ] **Log context menu** — Right-click menu with Copy, Copy All, Clear Log, Search options. ❌ NOT IMPLEMENTED
-- [ ] **Log scrollbar responsiveness** — Auto-scroll on new entries, scrollbar appears dynamically. ⚠️ PARTIAL - scroll works but needs improvement
-- [ ] **Log resizing** — Log section grows/shrinks properly when main window resized. ❌ NEEDS FIX
-- [ ] **Control polish** — Consistent button sizes, spacing, and corner radius. ⚠️ PARTIAL - buttons are 40x40px but needs full review
-- [x] **Resource dictionary hygiene** — Centralized naming conventions in UIConfig.xaml. ✅ COMPLETE
-- [ ] **High contrast readiness** — Test and adjust for HC mode visibility. ❌ NOT IMPLEMENTED
+- [x] **Log context menu** — Right-click menu with Copy Selected, Copy All, and Clear Log options. (100% - 2026-02-02)
+- [x] **Console output line snapping** — Snap scroll offsets to full line heights, preserve full scrollback, and always jump to the newest entry on new logs. (100% - 2026-02-02)
+- [ ] **Motion system** — Consistent durations/easing for hover/press/enter/exit. (20%)
+- [ ] **Keyboard navigation** — Tab order verified; non-interactive items not tab-stoppable. (60%)
+- [ ] **Inline CornerRadius/Thickness** — Use inline values only (WinUI 3 XAML compiler limitation). (70%)
+- [ ] **Control polish** — Consistent button sizes, spacing, and corner radius. (75%)
+- [ ] **High contrast readiness** — Test and adjust for HC mode visibility. (0%)
 
-## Summary: 9/15 complete, 6/15 partial, 3/15 not started - ~70% progress**
+### Core Rename Functionality (v2.0+)
 
----
+- [ ] **Batch rename engine** — Parse filename, extension, and date components. (0%)
+- [ ] **Apply formatting rules** — Date calculations and formatting logic. (0%)
+- [ ] **Preview renamed filenames** — Show preview before applying changes. (0%)
+- [ ] **Atomic batch rename** — All-or-nothing rename operation. (0%)
+- [ ] **Handle name collisions** — Conflict resolution logic. (0%)
 
-## ✅ Phase 1.5: Window State Persistence & Polish (v1.0 Final) - COMPLETE
+### Enhanced UI & Controls (v2.0+)
 
-All items 100% complete as of 2026-02-01.
+- [ ] **Date/time format selector** — ComboBox for format selection. (0%)
+- [ ] **Prefix/suffix input fields** — TextBox controls for custom text. (0%)
+- [ ] **Custom separator options** — Separator character selection. (0%)
+- [ ] **Numbering scheme selector** — Support for 001, 1, i, I formats. (0%)
+- [ ] **File type filter combobox** — Filter by `*.jpg`, `*.mp4`, all files. (0%)
+- [ ] **Date range picker** — Filtering by date range. (0%)
+- [ ] **Size range slider** — Filtering by file size. (0%)
+- [ ] **ProgressRing** — Long-running operations feedback. (0%)
+- [ ] **ContentDialog** — Confirmation dialogs ("Apply 247 renames?"). (0%)
+- [ ] **InfoBar** — Operation results and warnings display. (0%)
+- [ ] **MenuBar** — File/Edit/View menu structure. (0%)
+- [ ] **RichEditBox** — Preview and details view. (0%)
 
-- [x] **Window Position Persistence** — Save/restore X,Y coordinates across sessions
-- [x] **Window Size Persistence** — Save/restore width/height across sessions
-- [x] **Theme Persistence** — Save/restore Light/Dark theme preference
-- [x] **Intelligent Minimum Size** — 710x640px prevents UI cutoff
-- [x] **Multi-monitor Support** — Position validation prevents off-screen restoration
-- [x] **Instant Close Performance** — 200ms timeout (was 5s), X-button closes immediately
-- [x] **Debug Logging** — `or1n-window-debug.log` for troubleshooting
-- [x] **Error Handling** — Graceful fallback when settings corrupted or invalid
-- [x] **JSON Settings Schema** — Compact storage with X, Y, Width, Height, Theme properties
+### Animations & Visual Effects (v2.0+)
 
----
+- [ ] **Smooth theme switching animations** — Animated theme transitions. (0%)
+- [ ] **Control entry/exit animations** — Element appearance animations. (0%)
+- [ ] **Button press feedback animations** — Visual feedback on interaction. (0%)
+- [ ] **Acrylic blur effects** — Layered blur effects. (0%)
+- [ ] **Theme-aware shadows and depth** — Modern shadow system. (0%)
+- [ ] **Card-based layouts** — Sectioned card design. (0%)
+- [ ] **Icon support** — FontIcon with theme variants. (0%)
+- [ ] **Custom brushes and gradients** — Enhanced color palette. (0%)
 
-## 🔄 Phase 2: Enhanced Functionality & Polish (v1.1) - Planned for Future
+### Accessibility & Compliance (v2.1+)
 
-### Estimated Completion: 2026-03-15 (Target)
+- [ ] **Screen reader support** — Full Narrator compatibility. (0%)
+- [ ] **Tab order optimization** — Logical keyboard navigation flow. (0%)
+- [ ] **Keyboard shortcuts** — Common action shortcuts. (0%)
+- [ ] **Focus indicators in all themes** — Visible focus outlines. (0%)
+- [ ] **WCAG AAA color contrast** — High contrast testing and compliance. (0%)
+- [ ] **High contrast theme** — HC mode in UIConfig.xaml. (0%)
 
-Core rename functionality and Phase 2 features will be implemented in the next iteration. Current Phase 1 foundation is complete and stable.
+### Advanced Features (v3.0+)
 
----
-
-## 📋 Phase 3: Advanced UI & Controls (v2.0) - Planned
-
-### Target Release: 2026-Q2
-
-#### Advanced WinUI 3 Controls
-
-- [ ] **Formatting options panel** (0%)
-  - [ ] Date/time format selector
-  - [ ] Prefix/suffix input fields
-  - [ ] Custom separator options
-  - [ ] Numbering scheme selector (001, 1, i, I, etc.)
-  - [ ] Option to preserve original filename
-
-- [ ] **File selection & filtering**(0%)
-  - [ ] File type filter combobox (`*.jpg`, `*.mp4`, all, etc.)
-  - [ ] Date range picker for filtering
-  - [ ] Size range slider
-
-- [ ] **WinUI Control Integration** (0%)
-  - [ ] ProgressRing for long-running operations
-  - [ ] ContentDialog for confirmations ("Apply 247 renames?")
-  - [ ] InfoBar for operation results and warnings
-  - [ ] MenuBar with File/Edit/View menus
-  - [ ] RichEditBox for preview/details view
-
-#### Visual & UX Enhancements
-
-- [ ] **Animations and transitions** (0%)
-  - [ ] Smooth theme switching animations
-  - [ ] Control entry/exit animations
-  - [ ] Button press feedback animations
-
-- [ ] **Modern visual effects** (0%)
-  - [ ] Mica backdrop effect (Windows 11 aesthetic)
-  - [ ] Acrylic blur effects for layers
-  - [ ] Theme-aware shadows and depth
-  - [ ] Subtle corner radius consistency
-
-- [ ] **Advanced visual design** (0%)
-  - [ ] Card-based layouts for sections
-  - [ ] Icon support (FontIcon with theme variants)
-  - [ ] Custom brushes and gradients
-  - [ ] Enhanced color palette with accent variations
+- [ ] **Save/load rename profiles** — Reusable rename configurations. (0%)
+- [ ] **Built-in presets** — Standard Date, ISO Date templates. (0%)
+- [ ] **Profile import/export** — Share configurations. (0%)
+- [ ] **Undo/redo support** — Transaction history management. (0%)
+- [ ] **Bulk undo** — Revert rename operations. (0%)
+- [ ] **Settings/preferences page** — Application configuration UI. (0%)
+- [ ] **Regular expressions** — RegEx pattern support. (0%)
+- [ ] **Complex date queries** — Advanced date range filtering. (0%)
+- [ ] **Custom scripting** — User script support. (0%)
 
 ---
 
-## ♿ Phase 4: Accessibility & Compliance (v2.1) - Planned
+## ✅ Completed Tasks
 
-### Target Release: 2026-Q3
+### WinUI 3 Design & Polish (Completed)
 
-- [ ] **Screen reader support** (0%)
-  - [ ] AutomationProperties on all controls
-  - [ ] Meaningful control names and descriptions
-  - [ ] Proper Narrator compatibility
+- [x] **Log text selection** — Click to select text, CTRL+A select all, CTRL+C copy to clipboard. Native TextBox selection and copying fully functional. (2026-02-02 00:51)
+- [x] **Log scrolling & line snapping** — Full scrollback with line-height snapping to prevent partial lines and auto-jump to newest entry on new logs. (2026-02-02 02:50)
+- [x] **Mica Alt + fallback** — MicaController with BaseAlt, DesktopAcrylicBackdrop fallback. (2026-02-01 23:55)
+- [x] **Theme-aware resource system** — All colors via ThemeDictionaries in UIConfig.xaml. (2026-02-01 19:38)
+- [x] **Spacing system** — 4px base spacing scale defined. (2026-02-01 19:38)
+- [x] **Responsive breakpoints** — Compact/Medium/Wide VisualStates with AdaptiveTrigger. (2026-02-01 19:38)
+- [x] **Entrance animations** — Page transitions with EntranceThemeTransition. (2026-02-01 19:38)
+- [x] **Focus indicators** — UseSystemFocusVisuals on all interactive controls. (2026-02-01 19:38)
+- [x] **Text scaling** — IsTextScaleFactorEnabled on all text elements. (2026-02-01 19:38)
+- [x] **Accessibility labels** — AutomationProperties on all controls. (2026-02-01 19:38)
+- [x] **Resource dictionary hygiene** — Centralized naming conventions. (2026-02-01 19:38)
 
-- [ ] **Keyboard navigation** (0%)
-  - [ ] Tab order optimization
-  - [ ] Keyboard shortcuts for common actions
-  - [ ] Focus indicators visible in all themes
+### Window State Management
 
-- [ ] **High contrast mode** (0%)
-  - [ ] Color contrast testing (WCAG AAA)
-  - [ ] High contrast theme in UIConfig.xaml
-  - [ ] Visible focus outlines in HC mode
+- [x] **Window Position Persistence** — Save/restore X,Y coordinates. (2026-02-01 17:15)
+- [x] **Window Size Persistence** — Save/restore width/height. (2026-02-01 17:15)
+- [x] **Theme Persistence** — Save/restore Light/Dark preference. (2026-02-01 17:15)
+- [x] **Intelligent Minimum Size** — 710x640px prevents UI cutoff. (2026-02-01 17:15)
+- [x] **Multi-monitor Support** — Position validation prevents off-screen. (2026-02-01 17:15)
+- [x] **Instant Close Performance** — 200ms timeout, X-button closes immediately. (2026-02-01 17:15)
+- [x] **Debug Logging** — `or1n-window-debug.log` for troubleshooting. (2026-02-01 17:15)
+- [x] **Error Handling** — Graceful fallback for corrupted settings. (2026-02-01 17:15)
+- [x] **JSON Settings Schema** — Compact storage (X, Y, Width, Height, Theme). (2026-02-01 17:15)
 
----
+### Foundation & Core UI
 
-## 🎯 Phase 5: Core Feature Implementation (v3.0) - Planned
-
-### Target Release: 2026-Q4
-
-- [ ] **Batch rename engine** (0%)
-  - [ ] Parse filename, extension, and date components
-  - [ ] Apply formatting rules and date calculations
-  - [ ] Preview renamed filenames before applying
-  - [ ] Atomic batch rename (all-or-nothing)
-  - [ ] Handle name collisions
-
-- [ ] **Results & feedback** (0%)
-  - [ ] Detailed results view (renamed/failed/skipped)
-  - [ ] Inline file preview
-  - [ ] Rename preview before applying changes
-
----
-
-## 🔧 Phase 6: Advanced Features & Settings (v3.1+) - Future
-
-- [ ] **Save/load rename profiles** (0%)
-  - [ ] Save current formatting as reusable profile
-  - [ ] Built-in presets (Standard Date, ISO Date, etc.)
-  - [ ] Profile import/export for sharing
-
-- [ ] **Undo/redo support** (0%)
-  - [ ] Transaction history
-  - [ ] Bulk undo of rename operations
-
-- [ ] **Settings/preferences page** (0%)
-  - [ ] Default theme selection
-  - [ ] Default folder
-  - [ ] History settings
-  - [ ] Backup options
-
-- [ ] **Advanced filtering** (0%)
-  - [ ] Regular expressions (RegEx patterns)
-  - [ ] Complex date range queries
-  - [ ] Custom scripting support
+- [x] **Main window setup** — Fixed size, custom title bar, window lifecycle. (2026-01-31 12:00)
+- [x] **Page layout with responsive grid** — 5-row grid layout. (2026-01-31 12:00)
+- [x] **Folder picker integration** — Native Windows folder browser. (2026-01-31 12:00)
+- [x] **File scanner** — Directory enumeration, file grouping by extension. (2026-01-31 12:00)
+- [x] **Real-time logging system** — 100-line rolling buffer, timestamped entries. (2026-01-31 12:00)
+- [x] **UIConfig.xaml centralized resources** — ThemeDictionaries for Light/Dark. (2026-01-31 12:00)
+- [x] **Dynamic theme switching** — ComboBox selection, instant application. (2026-01-31 12:00)
+- [x] **Custom title bar theming** — Theme-aware colors, styled buttons. (2026-01-31 12:00)
+- [x] **Accessibility & appearance** — WCAG AA contrast, readable fonts. (2026-01-31 12:00)
+- [x] **Project structure and naming** — Proper namespace organization. (2026-01-31 12:00)
+- [x] **Build configuration** — .NET 8.0, Windows App SDK 1.8.260101001. (2026-01-31 12:00)
+- [x] **Debugger configuration** — F5 debugging, launch.json setup. (2026-01-31 12:00)
 
 ---
 
-## 📊 Summary by Phase
+## 📊 Summary
 
-| Phase | Name | Status | Completion | Target Version | Target Date |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Foundation & Core UI | 🔄 In Progress | **~70%** | v1.0 | 2026-02-15 |
-| 1.5 | Window State Management & Polish | ✅ Complete | **100%** | v1.0 Final | 2026-02-01 |
-| 2 | Enhanced Functionality & Polish | 📋 Planned | 0% | v1.1 | 2026-03-15 |
-| 3 | Advanced UI & Controls | 📋 Planned | 0% | v2.0 | 2026-Q2 |
-| 4 | Accessibility & Compliance | 📋 Planned | 0% | v2.1 | 2026-Q2 |
-| 5 | Core Feature Implementation | 📋 Planned | 0% | v3.0 | 2026-Q3 |
-| 6 | Advanced Features & Settings | 🎨 Future | 0% | v3.1+ | TBD |
+**Total Progress**: 32 completed, 50 incomplete  
+**Overall Completion**: 39%
+
+**Current Focus**: Log console improvements (scrolling, text selection, context menu)  
+**Current Version**: `v2026.02.02.02.50.000`
 
 ---
 
@@ -187,61 +136,19 @@ Core rename functionality and Phase 2 features will be implemented in the next i
 **Format**: `v{YYYY}.{MM}.{DD}.{HH}.{MM}.{SS}.{MSS}`
 
 - **Year (YYYY)**: Development year (2026+)
-
 - **Month (MM)**: Development month (01-12)
 - **Day (DD)**: Development day (01-31)
-
 - **Hour (HH)**: Development hour in UTC (00-23)
 - **Minute (MM)**: Development minute (00-59)
-
 - **Second (SS)**: Development second (00-59)
 - **Millisecond (MSS)**: Development millisecond (000-999)
 
 **Benefits**:
 
 - Automatic versioning with each commit - no manual version bumps needed
-
 - Timestamp-based sorting for version clarity
 - Build reproducibility with millisecond precision
-
 - Easy to identify when changes were made
-
-**Current Version**: `v2026.02.01.17.15.39.288`
-
----
-
-## ✅ Completed: Phase 1 (Foundation & Core UI v1.0) - 2026-02-01
-
-All items in Phase 1 are 100% complete and actively maintained.
-
-### Window & Layout (100%)
-
-- [x] **Main window setup** - Fixed size (900x700), custom title bar with theme support, window lifecycle management
-
-- [x] **Page layout with responsive grid** - 5-row grid layout with proper spacing and alignment
-
-### Core Functionality (100%)
-
-- [x] **Folder picker integration** - Native Windows folder browser, path tracking, error handling
-
-- [x] **File scanner** - Directory enumeration, file grouping by extension, count reporting
-- [x] **Real-time logging system** - 100-line rolling buffer, timestamp-prefixed entries, live display
-
-### Theme System (100%)
-
-- [x] **UIConfig.xaml centralized resources** - ThemeDictionaries for Light/Dark/Default, 10 semantic colors per theme, 40+ resources
-
-- [x] **Dynamic theme switching** - ComboBox selection, instant application, real-time propagation
-- [x] **Custom title bar theming** - Theme-aware colors, properly styled buttons, correct contrast
-
-- [x] **Accessibility & appearance** - WCAG AA contrast, readable font sizes, clear hierarchy
-
-### Development & Build (100%)
-
-- [x] **Project structure and naming** - Proper namespace organization, logical folder structure
-
-- [x] **Build configuration** - .NET 8.0 framework, Windows App SDK 1.8.260101001, 0 errors/warnings
-- [x] **Debugger configuration** - F5 debugging, proper launch.json, .exe execution
 
 ---
 

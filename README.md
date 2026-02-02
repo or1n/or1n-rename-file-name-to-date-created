@@ -1,9 +1,9 @@
 
 # or1n-rename-file-name-to-date-created
 
-## 🔄 Status: Foundation In Progress (Phase 1: ~70% Complete)
+## 🔄 Status: Foundation Complete (Phase 1: 100% Complete)
 
-**Phase 1 (Foundation & Core UI) is ~70% complete.** Window persistence (position, size, theme) is fully functional. WinUI 3 design system implementation is ongoing. Core rename functionality not yet started (Phase 2). See [docs/TODO.md](docs/TODO.md) for the development roadmap.
+**Phase 1 (Foundation & Core UI) is 100% complete.** All core UI features, window persistence, theme system, and console output with line-height snapping and auto-scroll are fully functional. WinUI 3 design system implementation is complete. Core rename functionality is planned for Phase 2 (v2.0+). See [docs/TODO.md](docs/TODO.md) for the development roadmap.
 
 ## Title
 
@@ -18,21 +18,28 @@ A modern WinUI 3 desktop app (Windows 11) to batch rename files in a selected fo
 ### Current Features ✅
 
 - **Modern WinUI 3 UI** with responsive design and custom styling
+  - Mica Alt backdrop for Windows 11 integration
+  - Responsive breakpoints and entrance animations
 - **Professional Theme System**: Light, Dark, and System theme support
-  - Centralized UIConfig.xaml with 40+ theme resources
-  - Instant theme switching with no app restart
+  - Theme-aware colors and instant switching
   - Custom title bar colors matching theme
+  - Persistent theme preference across sessions
+- **Complete Window State Persistence**
+  - Position, size, and theme preference save/restore
+  - Multi-monitor aware (prevents off-screen restoration)
+  - Intelligent minimum size ensures no UI cutoff
+- **Professional Console Output**
+  - Real-time operation logging with timestamps
+  - Theme-aware coloring (dark text in light mode, bright text in dark mode)
+  - Right-click context menu (Select All, Copy, Copy All)
+  - Line-height snapping (no partial lines) with full scrollback
+  - Always auto-scrolls to the newest entry on new log output
+  - Color-coded messages by log level (Info, Warning, Error, Success, Debug)
 - **Core UI Foundation**:
-  - Folder picker for selecting target directory (UI only, no functionality yet)
-  - File scanner placeholder (UI only, lists files by extension as demo)
-  - Real-time logging of operations
-  - Clean, modern layout with title, subtitle, and controls
-- **Customizable Appearance**:
-  - Theme-aware colors (white/light gray → light text for Light theme)
-  - Theme-aware colors (black/dark gray → light text for Dark theme)
-  - Named sizing system for margins, padding, font sizes
-  - Centered, wrapped subtitle for responsive text
-  - Accessible button layout
+  - Folder picker UI (functionality pending Phase 2)
+  - File scanner UI showing files by extension (demo ready)
+  - Clean, modern responsive layout
+  - Accessible button controls
 
 ### ❌ Not Yet Implemented (Planned)
 
@@ -151,7 +158,7 @@ This project uses **timestamp-based versioning** for simplicity and reproducibil
 
 ### Current Version
 
-**v2026.02.01.22.27.000** (Window State Persistence Complete - Phase 1.5)
+**v2026.02.02.02.50.000** (Console Log Scroll Perfected - Phase 1 Complete)
 
 ## Accessibility
 

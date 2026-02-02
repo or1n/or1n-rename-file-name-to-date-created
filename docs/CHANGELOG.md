@@ -4,6 +4,61 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project uses timestamp-based versioning in the format `v{YYYY}.{MM}.{DD}.{HH}.{mm}.{MSS}`.
 
+## [v2026.02.02.02.50.000] - 2026-02-02 - Console Log Scroll Perfected
+
+### Changed (v2026.02.02.02.50.000)
+
+- **MainPage.xaml.cs Log Output Rendering** — Restored full scrollback while eliminating partial lines
+  - Renders all log entries again (no clipping of history)
+  - Always auto-scrolls to the newest entry when new logs are added (even if user scrolled up)
+  - Snaps scroll offsets to exact line-height increments to prevent partial line display
+  - Size changes now preserve consistent scroll alignment
+
+## [v2026.02.02.18.45.000] - 2026-02-02 - Theme-Aware Console & Line Clipping (Phase 1 Complete)
+
+### Added (v2026.02.02.18.45.000)
+
+- **Console Output Line Clipping** — Prevents partial text display when terminal size cuts off lines
+  - Algorithm: Calculates visible ScrollViewer height ÷ 20px line height = max complete lines
+  - Only displays lines that fit completely within visible area (no mid-line text cutoff)
+  - Shows most recent log entries that fit, maintains 100-line rolling buffer in memory
+  - Improves professional appearance of console output
+
+### Changed (v2026.02.02.18.45.000)
+
+- **MainPage.xaml.cs GetThemeAwareBrush()** — Critical root cause fix for light mode text color issue
+  - **Root Cause Identified**: Method was calling `Application.Current.Resources.TryGetValue()` which doesn't reliably access WinUI 3 ResourceDictionary.ThemeDictionaries at runtime
+  - **Solution**: Removed resource lookup entirely; now uses only `this.ActualTheme == ElementTheme.Light` property (checked at render time)
+  - **Color Mapping**: Light theme = dark text RGB(26,26,26); Dark theme = bright text RGB(255,255,255)
+  - **Result**: Light mode now correctly displays dark text on light background; dark mode displays bright text on dark background
+  - All 7 color types properly theme-aware: LogTimestampBrush, LogInfoBrush, LogWarningBrush, LogErrorBrush, LogSuccessBrush, LogDebugBrush, default
+
+- **MainPage.xaml.cs UpdateLogText()** — Implemented line clipping calculation
+  - Added height calculation: `visible height / 20px line height = max complete lines`
+  - Filters log entries before rendering to only show lines that fit completely
+  - Prevents partial text display at terminal boundaries
+
+### Fixed (v2026.02.02.18.45.000)
+
+- **settings.json JSON Schema Validation Errors**
+  - Removed conflicting extension settings that violated schema (chat.tools.terminal.autoApprove, etc.)
+  - Cleaned up MCP server settings to prevent validation errors
+  - Result: 0 schema validation errors; clean JSON structure
+
+- **WORKFLOW.md Markdown Linting Violations**
+  - MD032: Fixed lists not surrounded by blank lines (removed internal blank lines from single lists)
+  - MD022: Added blank line before "## Code Organization" heading
+  - Removed duplicate code lines in PowerShell examples
+  - Result: All markdownlint violations resolved; file validates cleanly
+
+### Status (v2026.02.02.18.45.000)
+
+- ✅ **Phase 1 (v1.0 Shell) — 100% Complete**
+  - All core UI features implemented and tested
+  - All Phase 1 features working correctly (0 errors, 0 warnings in build)
+  - Ready for Phase 2 implementation (batch rename engine, file metadata, advanced features)
+
+
 ## [v2026.02.01.22.27.000] - 2026-02-01 - Window State Persistence System (Phase 1.5 Complete)
 
 ### Added (v2026.02.01.22.27.000)

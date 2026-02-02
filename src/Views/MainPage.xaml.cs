@@ -1,8 +1,13 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Input;
+using Windows.ApplicationModel.DataTransfer;
+using Microsoft.UI.Xaml.Documents;
+using Windows.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +19,15 @@ namespace Or1nRenameFileNameToDateCreated.Views
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private List<string> _logLines = new();
+        private readonly List<LogEntry> _logEntries = new();
         private bool _folderSelected = false;
         private string _selectedFolderPath = string.Empty;
-        private const string DEFAULT_ACTION_TEXT = "Action: Select a folder to start";
+        private const string DEFAULT_ACTION_TEXT = "Action: Select a folder to start processing";
+        private const double LOG_LINE_HEIGHT = 20;
+        private bool _isAutoScrollEnabled = true;
+        private bool _isSnappingScroll = false;
+        private DispatcherQueueTimer? _resizeLogTimer;
+        private Windows.Foundation.Size _pendingWindowSize;
 
         public MainPage()
         {
@@ -37,13 +47,24 @@ namespace Or1nRenameFileNameToDateCreated.Views
             AnimateElementEntrance(DescriptionText, DescriptionTransform, 40);
             AnimateElementEntrance(ActionRow, ThemeComboTransform, 80);
             AnimateElementEntrance(LogBorder, LogBorderTransform, 160);
-
-            SetAction(DEFAULT_ACTION_TEXT);
-
             SetThemeComboToSystemPreference();
-            
+            SetAction(DEFAULT_ACTION_TEXT);
             // Add keyboard navigation support for arrow keys
             this.KeyDown += MainPage_KeyDown;
+
+            InitializeResizeLogging();
+        }
+
+        private void InitializeResizeLogging()
+        {
+
+            _resizeLogTimer = DispatcherQueue.CreateTimer();
+            _resizeLogTimer.Interval = TimeSpan.FromMilliseconds(500);
+            _resizeLogTimer.IsRepeating = false;
+            _resizeLogTimer.Tick += (_, _) =>
+            {
+                Log($"Window resized to {(int)_pendingWindowSize.Width}x{(int)_pendingWindowSize.Height}");
+            };
         }
         
         /// <summary>
@@ -148,19 +169,29 @@ namespace Or1nRenameFileNameToDateCreated.Views
 
         private void Log(string message)
         {
-            var timestamp = DateTime.Now.ToString("HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-            _logLines.Add($"[{timestamp}] {message}");
+            var timestamp = DateTime.Now;
+            var level = GetLogLevel(message);
+            _logEntries.Add(new LogEntry(timestamp, message, level));
             
             // Remove from BEGINNING (oldest entries) when exceeding 100 lines
-            while (_logLines.Count > 100)
-                _logLines.RemoveAt(0);
+            while (_logEntries.Count > 100)
+                _logEntries.RemoveAt(0);
             
-            if (InfoTextBlock != null)
+            UpdateLogText();
+        }
+
+        private void UpdateLogText()
+        {
+            if (InfoRichTextBlock == null) return;
+
+            InfoRichTextBlock.Blocks.Clear();
+
+            foreach (var entry in _logEntries)
             {
-                // Show LAST 10 lines (most recent)
-                InfoTextBlock.Text = string.Join("\n", _logLines.Skip(Math.Max(0, _logLines.Count - 10)));
-                AutoScrollLog();
+                AppendLogEntry(entry);
             }
+
+            ForceScrollToBottom();
         }
 
         private void SetAction(string actionText)
@@ -171,9 +202,140 @@ namespace Or1nRenameFileNameToDateCreated.Views
             }
         }
 
+        private void CopyAllMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var text = string.Join(Environment.NewLine, _logEntries.Select(FormatLogLine));
+            var dataPackage = new DataPackage();
+            dataPackage.SetText(text ?? string.Empty);
+            Clipboard.SetContent(dataPackage);
+        }
+
+        private void CopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (InfoRichTextBlock != null && !string.IsNullOrEmpty(InfoRichTextBlock.SelectedText))
+            {
+                var dataPackage = new DataPackage();
+                dataPackage.SetText(InfoRichTextBlock.SelectedText);
+                Clipboard.SetContent(dataPackage);
+            }
+        }
+
+        private void SelectAllMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (InfoRichTextBlock != null)
+            {
+                InfoRichTextBlock.SelectAll();
+            }
+        }
+
+        private static LogLevel GetLogLevel(string message)
+        {
+            if (string.IsNullOrWhiteSpace(message)) return LogLevel.Info;
+
+            var normalized = message.ToLowerInvariant();
+            if (normalized.Contains("error") || normalized.StartsWith("error")) return LogLevel.Error;
+            if (normalized.Contains("warn")) return LogLevel.Warning;
+            if (normalized.Contains("success") || normalized.Contains("complete")) return LogLevel.Success;
+            if (normalized.Contains("debug") || normalized.Contains("trace")) return LogLevel.Debug;
+            return LogLevel.Info;
+        }
+
+        private void AppendLogEntry(LogEntry entry)
+        {
+            if (InfoRichTextBlock == null) return;
+
+            var timestamp = entry.Timestamp.ToString("yy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            var paragraph = new Paragraph { Margin = new Thickness(0, 0, 0, 0), LineHeight = LOG_LINE_HEIGHT };
+
+            // Get timestamp brush - light gray in both themes
+            var timestampBrush = GetThemeAwareBrush("LogTimestampBrush");
+            paragraph.Inlines.Add(new Run
+            {
+                Text = $"[{timestamp}] ",
+                Foreground = timestampBrush
+            });
+
+            // Get message brush - theme-aware via resource lookup or theme
+            var messageBrush = GetThemeAwareBrush(GetBrushKey(entry.Level));
+            paragraph.Inlines.Add(new Run
+            {
+                Text = entry.Message,
+                Foreground = messageBrush
+            });
+
+            InfoRichTextBlock.Blocks.Add(paragraph);
+        }
+
+        private static string FormatLogLine(LogEntry entry)
+        {
+            var timestamp = entry.Timestamp.ToString("yy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            return $"[{timestamp}] {entry.Message}";
+        }
+
+        private static string GetBrushKey(LogLevel level)
+        {
+            return level switch
+            {
+                LogLevel.Error => "LogErrorBrush",
+                LogLevel.Warning => "LogWarningBrush",
+                LogLevel.Success => "LogSuccessBrush",
+                LogLevel.Debug => "LogDebugBrush",
+                _ => "LogInfoBrush"
+            };
+        }
+
+        private SolidColorBrush GetThemeAwareBrush(string resourceKey)
+        {
+            // Always determine theme dynamically - don't cache theme at load time
+            // this.ActualTheme will be correct at render time
+            var isLightTheme = this.ActualTheme == ElementTheme.Light;
+
+            return resourceKey switch
+            {
+                "LogTimestampBrush" => new SolidColorBrush(new Color { A = 255, R = 97, G = 97, B = 97 }),
+                "LogInfoBrush" => new SolidColorBrush(new Color { A = 255, R = (byte)(isLightTheme ? 26 : 255), G = (byte)(isLightTheme ? 26 : 255), B = (byte)(isLightTheme ? 26 : 255) }),
+                "LogWarningBrush" => new SolidColorBrush(new Color { A = 255, R = (byte)(isLightTheme ? 184 : 255), G = (byte)(isLightTheme ? 134 : 201), B = (byte)(isLightTheme ? 11 : 60) }),
+                "LogErrorBrush" => new SolidColorBrush(new Color { A = 255, R = (byte)(isLightTheme ? 180 : 255), G = (byte)(isLightTheme ? 55 : 107), B = (byte)(isLightTheme ? 59 : 107) }),
+                "LogSuccessBrush" => new SolidColorBrush(new Color { A = 255, R = (byte)(isLightTheme ? 11 : 81), G = (byte)(isLightTheme ? 102 : 207), B = (byte)(isLightTheme ? 35 : 102) }),
+                "LogDebugBrush" => new SolidColorBrush(new Color { A = 255, R = (byte)(isLightTheme ? 74 : 197), G = (byte)(isLightTheme ? 74 : 197), B = (byte)(isLightTheme ? 74 : 197) }),
+                _ => new SolidColorBrush(new Color { A = 255, R = (byte)(isLightTheme ? 26 : 255), G = (byte)(isLightTheme ? 26 : 255), B = (byte)(isLightTheme ? 26 : 255) })
+            };
+        }
+
+        private static SolidColorBrush GetLogBrush(string resourceKey, SolidColorBrush fallback)
+        {
+            return Application.Current.Resources[resourceKey] as SolidColorBrush ?? fallback;
+        }
+
+        private enum LogLevel
+        {
+            Info,
+            Warning,
+            Error,
+            Success,
+            Debug
+        }
+
+        private sealed record LogEntry(DateTime Timestamp, string Message, LogLevel Level);
+
+
+        private void ForceScrollToBottom()
+        {
+            if (LogScrollViewer == null) return;
+
+            // Always force scroll to bottom to show latest content
+            LogScrollViewer.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
+            {
+                LogScrollViewer.UpdateLayout();
+                LogScrollViewer.ChangeView(null, LogScrollViewer.ScrollableHeight, null, true);
+            });
+        }
+
         private void AutoScrollLog()
         {
             if (LogScrollViewer == null) return;
+
+            if (!_isAutoScrollEnabled) return;
 
             // Force immediate scroll to bottom with slight delay to ensure content is rendered
             LogScrollViewer.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
@@ -181,6 +343,32 @@ namespace Or1nRenameFileNameToDateCreated.Views
                 LogScrollViewer.UpdateLayout();
                 LogScrollViewer.ChangeView(null, LogScrollViewer.ScrollableHeight, null, true);
             });
+        }
+
+        private void LogScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            if (LogScrollViewer == null) return;
+
+            if (!e.IsIntermediate)
+            {
+                _isAutoScrollEnabled = true;
+
+                if (!_isSnappingScroll && LogScrollViewer.ScrollableHeight > 0)
+                {
+                    var snappedOffset = Math.Round(LogScrollViewer.VerticalOffset / LOG_LINE_HEIGHT) * LOG_LINE_HEIGHT;
+                    if (Math.Abs(snappedOffset - LogScrollViewer.VerticalOffset) > 0.5)
+                    {
+                        _isSnappingScroll = true;
+                        LogScrollViewer.ChangeView(null, snappedOffset, null, true);
+                        _isSnappingScroll = false;
+                    }
+                }
+            }
+        }
+
+        private void LogScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ForceScrollToBottom();
         }
 
         private void ThemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -216,6 +404,8 @@ namespace Or1nRenameFileNameToDateCreated.Views
 
                     // Save theme preference
                     _ = Or1nRenameFileNameToDateCreated.Helpers.WindowSettings.SaveThemeAsync(tag);
+
+                    Log($"Theme changed to {tag}");
                 }
             }
             catch (Exception ex)
@@ -225,9 +415,21 @@ namespace Or1nRenameFileNameToDateCreated.Views
             }
         }
 
+        private void RootGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            _pendingWindowSize = e.NewSize;
+            if (_resizeLogTimer == null)
+            {
+                InitializeResizeLogging();
+            }
+
+            _resizeLogTimer?.Stop();
+            _resizeLogTimer?.Start();
+        }
+
         private void OpenFolderButton_Click(object sender, RoutedEventArgs e)
         {
-            Log("Function \"Open file explorer to select a folder\" is not implemented yet.");
+            Log("Function \"Open file explorer to select a folder\" is not implemented yet");
         }
 
         private async void ScanButton_Click(object sender, RoutedEventArgs e)
@@ -249,7 +451,7 @@ namespace Or1nRenameFileNameToDateCreated.Views
                 {
                     Log($"{group.Type}: {group.Count}");
                 }
-                Log($"Scan complete. {files.Count} files found.");
+                Log($"Scan complete | {files.Count} files found");
             }
             catch (ArgumentException ex)
             {

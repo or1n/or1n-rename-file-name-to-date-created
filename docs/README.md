@@ -1,9 +1,9 @@
 
 # or1n-rename-file-name-to-date-created
 
-## 🔄 Status: Foundation In Progress (Phase 1: ~70% Complete)
+## 🔄 Status: Foundation Complete (Phase 1: 100% Complete)
 
-**Phase 1 (Foundation & Core UI) is ~70% complete.** The app has window persistence (position, size, theme), theme system, and responsive UI foundation. WinUI 3 design system implementation is ongoing. Core rename functionality not yet started (Phase 2).
+**Phase 1 (Foundation & Core UI) is 100% complete.** All core UI, window persistence, theme system, and console output features are fully functional. WinUI 3 design system implementation is complete. Core rename functionality is planned for Phase 2 (v2.0+).
 
 ---
 
@@ -39,9 +39,12 @@ A modern WinUI 3 desktop app (Windows 11) to batch rename files in a selected fo
   - JSON-based settings: `LocalAppData\Or1nRenameFileNameToDate\window-settings.json`
 
 - **Performance & UX Polish**
-  - Instant app close (200ms timeout, previously 5 seconds)
+  - Instant app close (200ms timeout)
   - Debug logging for troubleshooting (`or1n-window-debug.log`)
   - Graceful error handling with silent fallback to defaults
+  - Professional console output with theme-aware colors (dark text in light mode, bright text in dark mode)
+  - Line-height snapping (no partial lines) with full scrollback
+  - Always auto-scrolls to the newest entry on new log output
 
 - **Core UI Foundation**:
   - Folder picker for selecting target directory (UI only, no functionality yet)
@@ -180,7 +183,7 @@ This project uses **timestamp-based versioning** for simplicity and reproducibil
 
 ### Current Version
 
-**v2026.02.01.17.15.39.288** (Foundation Release: Core UI & Theme System)
+**v2026.02.02.02.50.000** (Console Log Scroll Perfected - Phase 1 Complete)
 
 ## Accessibility
 

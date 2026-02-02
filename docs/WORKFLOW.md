@@ -21,14 +21,12 @@ dotnet watch run
 
 - Press **F5** in VS Code or Visual Studio to start debugging
 - The app launches as `.exe` (not `.dll`) - this is required for WinUI 3
-
 - Set breakpoints in C# code or XAML code-behind files
 
 ### XAML Theme Changes
 
 - Edit `UIConfig.xaml` for colors, font sizes, margins, etc.
 - Changes apply immediately during debugging (no rebuild needed for most theme changes)
-
 - Both light and dark themes are defined in `ResourceDictionary.ThemeDictionaries`
 
 ### Adding New Views
@@ -54,6 +52,7 @@ dotnet watch run
 6. Switch theme, close, reopen - theme preference is restored
 
 **Settings Storage:**
+
 - Location: `C:\Users\[User]\AppData\Local\Or1nRenameFileNameToDate\`
 - File: `window-settings.json` (position, size, theme)
 - Debug: `or1n-window-debug.log` (troubleshooting logs)
@@ -80,29 +79,24 @@ dotnet watch run
 dotnet clean
 dotnet restore
 dotnet build
-
 ```
 
 ### IntelliSense Shows False Errors (CS0103, CS1061)
 
 - These are known XAML code-generation issues in VS Code
 - They don't prevent compilation - you can safely ignore them
-
 - The pragmas in `App.xaml.cs` and `MainWindow.xaml.cs` suppress these warnings
 
 ### Title Bar Not Theming Correctly
 
 - Ensure `MainWindow.xaml.cs` has called `SetupTitleBar()` in the constructor
 - Check that `RootFrame.ActualThemeChanged` event is registered
-
 - Verify theme colors in `UIConfig.xaml` are correct for your target theme
 
 ### Visual Studio vs VS Code
 
 - **VS Code** (recommended): Lighter, faster, highly customizable
 - **Visual Studio 2022**: Heavier but better debugger and IntelliSense
-
-- Use whichever you're most comfortable with
 
 ## Code Organization
 
@@ -132,15 +126,12 @@ Program.cs                - Bootstrap entry point
 ## Contributing
 
 - Follow C# naming conventions: `PascalCase` for classes/methods, `camelCase` for variables
-
 - Use theme resources from `UIConfig.xaml` - never hardcode colors
 - Add XML documentation comments to public methods
-
 - Test your changes in both light and dark themes
 
 ## References
 
 - [WinUI 3 Documentation](https://learn.microsoft.com/windows/apps/winui/winui3/)
-
 - [XAML Overview](https://learn.microsoft.com/windows/uwp/xaml-platform/xaml-overview)
 - [.NET 8 Documentation](https://learn.microsoft.com/dotnet/)

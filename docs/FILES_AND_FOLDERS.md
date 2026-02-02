@@ -166,6 +166,7 @@ or1n_rename_file-names-to-date/
   - `GetCenteredPosition(displayArea)` - Centers window on specified display
 
 - **JSON Schema**:
+
   ```json
   {
     "X": number,
