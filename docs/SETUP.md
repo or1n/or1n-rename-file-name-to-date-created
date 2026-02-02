@@ -9,18 +9,10 @@
 - Windows 11 (Build 19041 or later)
 - .NET SDK 8.0 or later
 
-- 250 MB free disk space
-- Dual-core processor, 4 GB RAM
-
 **Recommended:**
 
-- Windows 11 (Latest build, Build 26300+)
+- Latest Windows 11 build
 - .NET SDK 8.0.417 or later
-
-- 500 MB+ free disk space
-- Quad-core processor, 8 GB RAM
-
-- SSD for faster builds
 
 ## IDE/Editor Options
 
@@ -62,10 +54,8 @@ The script will:
 
 - ✅ Verify .NET SDK is installed
 - ✅ Check .NET version
-
 - ✅ Restore NuGet packages
 - ✅ Build the project
-
 - ✅ Display next steps
 
 ### Method 2: Manual Setup
@@ -126,13 +116,11 @@ You should see a window with:
 
 ## Development Dependencies
 
-These are automatically installed via NuGet:
+These are installed via NuGet (see the .csproj for exact versions):
 
-| Package | Version | Purpose |
-| --- | --- | --- |
-| Microsoft.WindowsAppSDK | 1.8.260101001 | WinUI 3 framework |
-| Microsoft.Web.WebView2 | 1.0.3179.45 | Web content rendering (optional) |
-| Microsoft.Windows.SDK.BuildTools | 10.0.26100.4654 | Windows SDK tools |
+- Microsoft.WindowsAppSDK
+- Microsoft.Web.WebView2
+- Microsoft.Windows.SDK.BuildTools
 
 ## Troubleshooting
 
@@ -169,10 +157,9 @@ These are automatically installed via NuGet:
 
 ## Next Steps
 
-1. Read [README.md](README.md) for feature overview
-2. Check [WORKFLOW.md](WORKFLOW.md) for development tips
-3. See [TODO.md](TODO.md) for roadmap
-4. Start coding! Press `F5` to debug
+- Overview: [README.md](README.md)
+- Build/run workflow: [WORKFLOW.md](WORKFLOW.md)
+- Current work list: [TODO.md](TODO.md)
 
 ## Support
 

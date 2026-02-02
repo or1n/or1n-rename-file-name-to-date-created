@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project uses timestamp-based versioning in the format `v{YYYY}.{MM}.{DD}.{HH}.{mm}.{MSS}`.
 
+## [v2026.02.02.05.10.000] - 2026-02-02 - Folder Picker UX Improvements
+
+### Added (v2026.02.02.05.10.000)
+
+- **Inline path editing** — Click directly on the path text in the folder picker to edit it in place. Press Enter to save or Escape to cancel.
+- **Home button quick access** — Moved Home button from navigation bar to the top quick access row (left of Desktop) for easier access.
+
+### Changed (v2026.02.02.05.10.000)
+
+- **Folder picker navigation simplification** — Streamlined UI by integrating Home into quick access and making path directly clickable without requiring an Edit button.
+
+---
+
 ## [v2026.02.02.04.52.000] - 2026-02-02 - Folder Picker Window Improvements
 
 ### Added (v2026.02.02.04.52.000)
@@ -48,7 +61,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - Snaps scroll offsets to exact line-height increments to prevent partial line display
   - Size changes now preserve consistent scroll alignment
 
-## [v2026.02.02.18.45.000] - 2026-02-02 - Theme-Aware Console & Line Clipping (Phase 1 Complete)
+## [v2026.02.02.18.45.000] - 2026-02-02 - Theme-Aware Console & Line Clipping
 
 ### Added (v2026.02.02.18.45.000)
 
@@ -56,7 +69,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - Algorithm: Calculates visible ScrollViewer height ÷ 20px line height = max complete lines
   - Only displays lines that fit completely within visible area (no mid-line text cutoff)
   - Shows most recent log entries that fit, maintains 100-line rolling buffer in memory
-  - Improves professional appearance of console output
+  - Improves console output appearance
 
 ### Changed (v2026.02.02.18.45.000)
 
@@ -87,12 +100,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Status (v2026.02.02.18.45.000)
 
-- ✅ **Phase 1 (v1.0 Shell) — 100% Complete**
+- ✅ **Core UI baseline validated**
   - All core UI features implemented and tested
-  - All Phase 1 features working correctly (0 errors, 0 warnings in build)
-  - Ready for Phase 2 implementation (batch rename engine, file metadata, advanced features)
+  - Build verified clean (0 errors, 0 warnings)
+  - Batch rename engine and advanced features remain in progress
 
-## [v2026.02.01.22.27.000] - 2026-02-01 - Window State Persistence System (Phase 1.5 Complete)
+## [v2026.02.01.22.27.000] - 2026-02-01 - Window State Persistence System
 
 ### Added (v2026.02.01.22.27.000)
 
@@ -181,7 +194,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Status Update (v2026.02.01.22.27.000)
 
-**Phase 1.5 (Window Persistence) now complete:**
+**Window persistence complete:**
 
 - ✅ Window position save/restore with multi-monitor awareness
 - ✅ Window size save/restore with intelligent minimum (710x640px)
@@ -189,7 +202,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - ✅ Instant app close (200ms timeout optimization)
 - ✅ Debug logging for troubleshooting
 
-**Phase 1 (Foundation) status - partially complete:**
+**Foundation status:**
 
 - ✅ Theme system (UIConfig.xaml with Light/Dark ThemeDictionaries)
 - ✅ Responsive breakpoints (Compact/Medium/Wide VisualStates)
@@ -199,7 +212,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - ⚠️ Mica Alt backdrop (code exists, needs user verification if working)
 - ⚠️ Full design system implementation (spacing/control polish/animations ongoing)
 
-**Next:** Complete remaining WinUI 3 design items, then move to Phase 2 (core rename functionality).
+**Next:** Continue WinUI 3 design items and core rename functionality work.
 
 ---
 

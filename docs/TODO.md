@@ -9,16 +9,16 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 
 ## 🔄 Active Tasks (Prioritized by Importance)
 
-### Folder Picker UX (Current Focus)
+### Folder Picker UX (Complete)
 
-- [ ] **Inline path editing** — Click path to edit in place; Enter saves, Escape cancels. (0%)
-- [ ] **Move Home button** — Place Home in top quick access row (left of Desktop). (0%)
+- [x] **Inline path editing** — Click path to edit in place; Enter saves, Escape cancels. (2026-02-02 05:10)
+- [x] **Move Home button** — Place Home in top quick access row (left of Desktop). (2026-02-02 05:10)
 
 ### WinUI 3 Design & Polish
 
 - [ ] **High contrast readiness** — Test and adjust for HC mode visibility. (0%)
 
-### Core Rename Functionality (v2.0+)
+### Core Rename Functionality
 
 - [ ] **Batch rename engine** — Parse filename, extension, and date components. (0%)
 - [ ] **Apply formatting rules** — Date calculations and formatting logic. (0%)
@@ -26,7 +26,7 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 - [ ] **Atomic batch rename** — All-or-nothing rename operation. (0%)
 - [ ] **Handle name collisions** — Conflict resolution logic. (0%)
 
-### Enhanced UI & Controls (v2.0+)
+### Enhanced UI & Controls
 
 - [ ] **Date/time format selector** — ComboBox for format selection. (0%)
 - [ ] **Prefix/suffix input fields** — TextBox controls for custom text. (0%)
@@ -41,7 +41,7 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 - [ ] **MenuBar** — File/Edit/View menu structure. (0%)
 - [ ] **RichEditBox** — Preview and details view. (0%)
 
-### Animations & Visual Effects (v2.0+)
+### Animations & Visual Effects
 
 - [ ] **Smooth theme switching animations** — Animated theme transitions. (0%)
 - [ ] **Control entry/exit animations** — Element appearance animations. (0%)
@@ -52,7 +52,7 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 - [ ] **Icon support** — FontIcon with theme variants. (0%)
 - [ ] **Custom brushes and gradients** — Enhanced color palette. (0%)
 
-### Accessibility & Compliance (v2.1+)
+### Accessibility & Compliance
 
 - [ ] **Screen reader support** — Full Narrator compatibility. (0%)
 - [ ] **Tab order optimization** — Logical keyboard navigation flow. (0%)
@@ -61,7 +61,7 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 - [ ] **WCAG AAA color contrast** — High contrast testing and compliance. (0%)
 - [ ] **High contrast theme** — HC mode in UIConfig.xaml. (0%)
 
-### Advanced Features (v3.0+)
+### Advanced Features
 
 - [ ] **Save/load rename profiles** — Reusable rename configurations. (0%)
 - [ ] **Built-in presets** — Standard Date, ISO Date templates. (0%)

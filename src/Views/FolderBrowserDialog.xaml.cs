@@ -306,14 +306,16 @@ namespace Or1nRenameFileNameToDateCreated.Views
             rootGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Info text
             rootGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto }); // Action buttons
 
-            // Quick access buttons - icon-only with consistent width
+            // Quick access buttons - icon-only with consistent width (Home on left, then Desktop, Documents, Downloads, Pictures)
             var quickAccessPanel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, Margin = new Thickness(0, 0, 0, 8) };
             
-            var desktopBtn = CreateQuickAccessButton("\uE8FC", "Desktop", Environment.SpecialFolder.Desktop); // Home icon
+            var homeBtn = CreateQuickAccessButton("\uE80F", "Home", Environment.SpecialFolder.UserProfile); // Home icon
+            var desktopBtn = CreateQuickAccessButton("\uE8FC", "Desktop", Environment.SpecialFolder.Desktop); // Desktop icon
             var documentsBtn = CreateQuickAccessButton("\uE8A5", "Documents", Environment.SpecialFolder.MyDocuments); // Document icon
             var downloadsBtn = CreateQuickAccessButton("\uE896", "Downloads", Environment.SpecialFolder.UserProfile); // Download icon
             var picturesBtn = CreateQuickAccessButton("\uEB9F", "Pictures", Environment.SpecialFolder.MyPictures); // Picture icon
             
+            quickAccessPanel.Children.Add(homeBtn);
             quickAccessPanel.Children.Add(desktopBtn);
             quickAccessPanel.Children.Add(documentsBtn);
             quickAccessPanel.Children.Add(downloadsBtn);
@@ -322,34 +324,22 @@ namespace Or1nRenameFileNameToDateCreated.Views
             Grid.SetRow(quickAccessPanel, 0);
             rootGrid.Children.Add(quickAccessPanel);
 
-            // Navigation buttons - consistent width
+            // Navigation buttons - consistent width (Up button on left, then Path display)
             var navGrid = new Grid { ColumnSpacing = 8 };
-            navGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Home
             navGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Up
             navGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // Path
-            navGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Edit
-
-            var homeButton = new Button { Content = new FontIcon { Glyph = "\uE80F", FontSize = 16 }, Width = 40, Height = 36 };
-            ToolTipService.SetToolTip(homeButton, "Home");
-            homeButton.Click += HomeButton_Click;
-            Grid.SetColumn(homeButton, 0);
-            navGrid.Children.Add(homeButton);
 
             var upButton = new Button { Content = new FontIcon { Glyph = "\uE74A", FontSize = 16 }, Width = 40, Height = 36 };
             ToolTipService.SetToolTip(upButton, "Up");
             upButton.Click += UpButton_Click;
-            Grid.SetColumn(upButton, 1);
+            Grid.SetColumn(upButton, 0);
             navGrid.Children.Add(upButton);
 
             currentPathText = new TextBlock { Text = currentPath, VerticalAlignment = VerticalAlignment.Center, TextTrimming = TextTrimming.CharacterEllipsis, FontSize = 13, Margin = new Thickness(8, 0, 8, 0) };
-            Grid.SetColumn(currentPathText, 2);
+            currentPathText.PointerPressed += CurrentPathText_PointerPressed;
+            ToolTipService.SetToolTip(currentPathText, "Click to edit path");
+            Grid.SetColumn(currentPathText, 1);
             navGrid.Children.Add(currentPathText);
-
-            var editButton = new Button { Content = new FontIcon { Glyph = "\uE70F", FontSize = 16 }, Width = 40, Height = 36 };
-            ToolTipService.SetToolTip(editButton, "Edit path");
-            editButton.Click += EditPathButton_Click;
-            Grid.SetColumn(editButton, 3);
-            navGrid.Children.Add(editButton);
 
             Grid.SetRow(navGrid, 1);
             rootGrid.Children.Add(navGrid);
@@ -359,8 +349,6 @@ namespace Or1nRenameFileNameToDateCreated.Views
             pathEditBox.KeyDown += PathEditBox_KeyDown;
             Grid.SetRow(pathEditBox, 2);
             rootGrid.Children.Add(pathEditBox);
-
-            // Folder list with improved styling
             var border = new Border 
             { 
                 CornerRadius = new CornerRadius(8),
@@ -523,6 +511,18 @@ namespace Or1nRenameFileNameToDateCreated.Views
             else
             {
                 pathEditBox.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void CurrentPathText_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            // Show edit box when path is clicked
+            if (pathEditBox.Visibility == Visibility.Collapsed)
+            {
+                pathEditBox.Visibility = Visibility.Visible;
+                pathEditBox.Focus(FocusState.Programmatic);
+                pathEditBox.SelectAll();
+                e.Handled = true;
             }
         }
 

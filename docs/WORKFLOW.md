@@ -54,7 +54,8 @@ dotnet watch run
 **Settings Storage:**
 
 - Location: `C:\Users\[User]\AppData\Local\Or1nRenameFileNameToDate\`
-- File: `window-settings.json` (position, size, theme)
+- File: `window-settings.json` (main window position, size, theme)
+- File: `folder-browser-settings.json` (folder picker position, size, last path)
 - Debug: `or1n-window-debug.log` (troubleshooting logs)
 
 ## Troubleshooting
@@ -100,28 +101,7 @@ dotnet build
 
 ## Code Organization
 
-```text
-Views/                    - UI pages (MainPage, future pages)
-Helpers/                  - Utility classes
-  ├── WindowHelper.cs     - Window tracking and communication
-  └── WindowSettings.cs   - Persistent window state (position, size, theme)
-Assets/                   - Images, icons, app branding
-bin/, obj/                - Build artifacts (generated, ignore in git)
-Properties/               - Project properties (mostly empty for WinUI 3)
-UIConfig.xaml             - Centralized theme/style resources
-App.xaml.cs               - Application lifecycle
-MainWindow.xaml.cs        - Window setup (title bar, frame navigation, persistence)
-Program.cs                - Bootstrap entry point
-```
-
-## Performance Notes
-
-- **Cold Start**: ~1-2 seconds (normal for .NET WinUI 3 apps)
-- **Window Restoration**: <50ms (loads position/size/theme from JSON cache)
-- **Close Performance**: 200ms timeout (instant visual close, async settings save)
-- **Folder Scanning**: Currently lists files by type; scale considerations TBD
-- **Theme Switching**: Instant (no processing, just UI refresh + async save)
-- **Memory**: ~80-120 MB typical (WinUI 3 base overhead + .NET runtime)
+See [FILES_AND_FOLDERS.md](FILES_AND_FOLDERS.md) for the concise structure guide.
 
 ## Contributing
 

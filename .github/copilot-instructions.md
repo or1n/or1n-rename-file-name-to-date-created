@@ -12,7 +12,7 @@ This file provides custom guidance for GitHub Copilot when working in this repos
 - XAML for UI
 - C# 12 for backend
 
-**Current Status:** Foundation complete (UI, theming, window management, Mica Alt backdrop, responsive design, entrance animations). Core rename engine planned for Phase 5 (v3.0).
+**Current Status:** Core UI complete (UI, theming, window management, Desktop Acrylic backdrop, responsive design, entrance animations). Core rename engine is in progress.
 
 ---
 
@@ -21,7 +21,7 @@ This file provides custom guidance for GitHub Copilot when working in this repos
 **CRITICAL: Always consult `docs/WINUI3_DESIGN_GUIDE.md` before implementing UI features.**
 
 The design guide contains:
-- Mica Alt backdrop implementation
+- Desktop Acrylic backdrop implementation (with Mica fallback)
 - Animation timing standards
 - Responsive breakpoint patterns
 - Accessibility requirements
@@ -96,9 +96,9 @@ When adding new UI elements:
 ## Development Workflow
 
 ### Before Starting Code
-1. Check `TODO.md` - which phase are we in?
-2. Check `FILES_AND_FOLDERS.md` - where does this code go?
-3. Read `WORKFLOW.md` - tips for this type of change
+1. Check `TODO.md` for current focus
+2. Check `FILES_AND_FOLDERS.md` for file locations
+3. Read `WORKFLOW.md` for tips on this type of change
 
 ### While Coding
 1. Use theme resources, not hardcoded values

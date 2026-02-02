@@ -1,9 +1,9 @@
 
 # or1n-rename-file-name-to-date-created
 
-## 🔄 Status: Foundation Complete (Phase 1: 100% Complete)
+## 🔄 Status: Core UI Ready
 
-**Phase 1 (Foundation & Core UI) is 100% complete.** All core UI features, window persistence, theme system, and console output with line-height snapping and auto-scroll are fully functional. WinUI 3 design system implementation is complete. Core rename functionality is planned for Phase 2 (v2.0+). See [docs/TODO.md](docs/TODO.md) for the development roadmap.
+**Core UI features, window persistence, theming, and console output are fully functional.** Batch rename functionality and advanced controls are still in progress. See [docs/TODO.md](docs/TODO.md) for the current roadmap.
 
 ## Title
 
@@ -23,7 +23,7 @@ A modern WinUI 3 desktop app (Windows 11) to batch rename files in a selected fo
   - Consistent motion system for hover/press feedback
   - Keyboard navigation with verified tab order
   - Polished controls (consistent sizing, spacing, corner radius)
-- **Professional Theme System**: Light, Dark, and System theme support
+- **Theme System**: Light, Dark, and System theme support
   - Theme-aware colors and instant switching
   - Custom title bar colors matching theme
   - Persistent theme preference across sessions
@@ -31,7 +31,7 @@ A modern WinUI 3 desktop app (Windows 11) to batch rename files in a selected fo
   - Position, size, and theme preference save/restore
   - Multi-monitor aware (prevents off-screen restoration)
   - Intelligent minimum size ensures no UI cutoff
-- **Professional Console Output**
+- **Console Output**
   - Real-time operation logging with timestamps
   - Theme-aware coloring (dark text in light mode, bright text in dark mode)
   - Right-click context menu (Select All, Copy, Copy All)
@@ -45,47 +45,9 @@ A modern WinUI 3 desktop app (Windows 11) to batch rename files in a selected fo
   - Clean, modern responsive layout
   - Accessible button controls
 
-### ❌ Not Yet Implemented (Planned)
+### ❌ Not Yet Implemented
 
-The following features are **not yet implemented** and are tracked in [docs/TODO.md](docs/TODO.md):
-
-- **Batch rename functionality**: Core renaming engine not yet built
-- **File metadata extraction**: No image/video/file date reading (date created, date taken, EXIF, etc.)
-- **Format configuration**: No customizable date/time formatting options
-- **Prefix/suffix handling**: Not implemented
-- **Bulk operations**: Cannot apply renames to multiple files
-- **Preview before apply**: No dry-run or confirmation dialog
-- **Error recovery**: Limited error handling and recovery options
-- **Advanced filters**: No file type or date range filtering
-- **Settings/profiles**: No save/load configuration
-
-**See [docs/TODO.md](docs/TODO.md) for the detailed roadmap and tracking.**
-
-### Phase 2 (v1.1) Planned Items
-
-- ProgressRing for file operations
-- Enhanced error messages and recovery
-- More comprehensive code documentation
-
-### Phase 3 (v2.0) Planned Items
-
-- **Batch Rename Engine**: Date/time formatting, prefix/suffix, smart numbering
-- **Advanced WinUI 3 Controls**: RichEditBox, NumberBox, ContentDialog, ProgressRing, InfoBar
-- **File Filtering**: Select by file type, date range, size criteria
-- **Preview & Results**: Inline file preview, rename preview, detailed results
-
-### Phase 4 (v2.1) Planned Items
-
-- Full keyboard navigation
-- Screen reader optimization
-- High contrast mode support
-
-### Phase 5+ (v3.0+) Planned Items
-
-- Save/load rename profiles
-- Undo/redo support
-- Settings and preferences page
-- Advanced animations and visual effects
+The core rename engine and advanced controls are still in progress. See [docs/TODO.md](docs/TODO.md) for the current work list and priorities.
 
 ## Requirements
 
@@ -94,30 +56,10 @@ The following features are **not yet implemented** and are tracked in [docs/TODO
 - **Windows App SDK 1.8** or later (automatically installed via NuGet)
 - **VS Code** (recommended) or Visual Studio 2022
 
-## Installation
+## Installation & Workflow
 
-### Using VS Code (Recommended)
-
-1. Clone or download this repository
-2. Open the folder in VS Code
-3. Install recommended extensions:
-   - C# Dev Kit
-   - XAML Language Support
-   - .NET Runtime
-4. Open a terminal and run:
-
-   ```bash
-   dotnet restore
-   dotnet build
-   ```
-
-### Using Visual Studio 2022
-
-1. Clone or download this repository
-2. Open `or1n-rename-file-name-to-date-created.slnx` in Visual Studio
-3. Wait for NuGet packages to restore
-4. Build the solution (Ctrl+Shift+B)
-5. Run the app (F5)
+- Setup instructions: [docs/SETUP.md](docs/SETUP.md)
+- Build/run workflow: [docs/WORKFLOW.md](docs/WORKFLOW.md)
 
 ## Usage
 

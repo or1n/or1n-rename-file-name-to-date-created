@@ -10,7 +10,7 @@ This document serves as the definitive reference for WinUI 3 UI/UX implementatio
 
 ### Backdrop Materials
 
-**Mica Alt (Primary)** - Used for main application window
+**Desktop Acrylic (Primary)** - Used for main application window
 
 - Applied to: `MainWindow` via `SystemBackdrop` property
 - Purpose: Strong desktop wallpaper integration for title bar and commanding areas
@@ -19,12 +19,18 @@ This document serves as the definitive reference for WinUI 3 UI/UX implementatio
 **Implementation:**
 
 ```csharp
+SystemBackdrop = new DesktopAcrylicBackdrop();
+```
+
+**Fallback:**
+
+```csharp
 SystemBackdrop = new MicaBackdrop() { Kind = MicaKind.BaseAlt };
 ```
 
 **Layering System (3-tier):**
 
-1. **Base Layer:** Mica Alt backdrop (foundation)
+1. **Base Layer:** Desktop Acrylic backdrop (foundation)
 2. **Commanding Layer:** `LayerOnMicaBaseAltFillColorDefaultBrush` (navigation, menus)
 3. **Content Layer:** `LayerFillColorDefaultBrush` (main content areas)
 
