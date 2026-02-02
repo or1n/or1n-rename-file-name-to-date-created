@@ -89,11 +89,11 @@ dotnet watch run --project or1n-rename-file-name-to-date-created.csproj
 
 This project uses **timestamp-based versioning** for simplicity and reproducibility:
 
-**Format**: `v{YYYY}.{MM}.{DD}.{HH}.{MM}.{SS}.{MSS}`
+**Format**: `v{YYYY}.{MM}.{DD}.{HH}.{mm}.{ss}.{fff}`
 
 ### Example
 
-- `v2026.02.01.17.15.39.288` - Released on Feb 1, 2026 at 17:15:39.288 UTC
+- `v2026.02.02.05.58.437` - Released on Feb 2, 2026 at 05:58:43.437 UTC
 
 ### Benefits
 
@@ -104,7 +104,7 @@ This project uses **timestamp-based versioning** for simplicity and reproducibil
 
 ### Current Version
 
-**v2026.02.02.03.05.000** (Motion System & Control Polish Complete)
+**Check [docs/CHANGELOG.md](docs/CHANGELOG.md) for the current version** (automatically updated with each release)
 
 ## Accessibility
 
