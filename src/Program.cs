@@ -1,6 +1,7 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.ApplicationModel.DynamicDependency;
+using Or1nRenameFileNameToDateCreated.Helpers;
 using System;
 using System.Threading;
 
@@ -31,6 +32,8 @@ namespace Or1nRenameFileNameToDateCreated
                 // Note: Window sizing is handled by MainWindow's RestoreOrCenterWindow()
                 // which restores the last saved size or centers at default size
                 window.Activate();
+
+                _ = SettingsService.Instance.InitializeAsync();
             });
         }
     }

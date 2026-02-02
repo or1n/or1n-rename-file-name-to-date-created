@@ -41,6 +41,7 @@ namespace Or1nRenameFileNameToDateCreated
             
             SetupTitleBar();
             RootFrame.Navigate(typeof(MainPage));
+            ThemeManager.ApplyThemeToAllWindows(SettingsService.Instance.Theme);
 
             ApplyMinimumWindowSize();
             
@@ -289,48 +290,41 @@ namespace Or1nRenameFileNameToDateCreated
 
             var titleBar = appWindow.TitleBar;
 
-            // Determine if we're in dark mode
-            bool isDark = theme == ElementTheme.Dark ||
-                         (theme == ElementTheme.Default && 
-                          Application.Current.RequestedTheme == ApplicationTheme.Dark);
-
+            bool isDark = theme == ElementTheme.Dark;
+            
             if (isDark)
             {
-                // Dark theme colors
-                titleBar.BackgroundColor = Color.FromArgb(255, 26, 26, 26);        // #1A1A1A
-                titleBar.ForegroundColor = Color.FromArgb(255, 255, 255, 255);     // White text
-                titleBar.InactiveBackgroundColor = Color.FromArgb(255, 26, 26, 26);
-                titleBar.InactiveForegroundColor = Color.FromArgb(255, 160, 160, 160);
+                titleBar.BackgroundColor = Color.FromArgb(255, 32, 32, 32);
+                titleBar.ForegroundColor = Color.FromArgb(255, 255, 255, 255);
+                titleBar.InactiveBackgroundColor = Color.FromArgb(255, 32, 32, 32);
+                titleBar.InactiveForegroundColor = Color.FromArgb(255, 138, 138, 138);
                 
-                // Button colors - set explicit dark background instead of transparent
-                titleBar.ButtonBackgroundColor = Color.FromArgb(255, 26, 26, 26);  // Match title bar
+                titleBar.ButtonBackgroundColor = Color.FromArgb(255, 32, 32, 32);
                 titleBar.ButtonForegroundColor = Color.FromArgb(255, 255, 255, 255);
-                titleBar.ButtonHoverBackgroundColor = Color.FromArgb(255, 50, 50, 50);
+                titleBar.ButtonHoverBackgroundColor = Color.FromArgb(255, 60, 60, 60);
                 titleBar.ButtonHoverForegroundColor = Color.FromArgb(255, 255, 255, 255);
-                titleBar.ButtonPressedBackgroundColor = Color.FromArgb(255, 70, 70, 70);
-                titleBar.ButtonPressedForegroundColor = Color.FromArgb(255, 200, 200, 200);
+                titleBar.ButtonPressedBackgroundColor = Color.FromArgb(255, 80, 80, 80);
+                titleBar.ButtonPressedForegroundColor = Color.FromArgb(255, 255, 255, 255);
                 
-                titleBar.ButtonInactiveBackgroundColor = Color.FromArgb(255, 26, 26, 26);
-                titleBar.ButtonInactiveForegroundColor = Color.FromArgb(255, 160, 160, 160);
+                titleBar.ButtonInactiveBackgroundColor = Color.FromArgb(255, 32, 32, 32);
+                titleBar.ButtonInactiveForegroundColor = Color.FromArgb(255, 138, 138, 138);
             }
             else
             {
-                // Light theme colors
-                titleBar.BackgroundColor = Color.FromArgb(255, 255, 255, 255);     // White
-                titleBar.ForegroundColor = Color.FromArgb(255, 26, 26, 26);        // Dark text
-                titleBar.InactiveBackgroundColor = Color.FromArgb(255, 255, 255, 255);
-                titleBar.InactiveForegroundColor = Color.FromArgb(255, 150, 150, 150);
+                titleBar.BackgroundColor = Color.FromArgb(255, 243, 243, 243);
+                titleBar.ForegroundColor = Color.FromArgb(255, 0, 0, 0);
+                titleBar.InactiveBackgroundColor = Color.FromArgb(255, 243, 243, 243);
+                titleBar.InactiveForegroundColor = Color.FromArgb(255, 115, 115, 115);
                 
-                // Button colors - set explicit white background instead of transparent
-                titleBar.ButtonBackgroundColor = Color.FromArgb(255, 255, 255, 255);  // Match title bar
-                titleBar.ButtonForegroundColor = Color.FromArgb(255, 26, 26, 26);
-                titleBar.ButtonHoverBackgroundColor = Color.FromArgb(255, 240, 240, 240);
-                titleBar.ButtonHoverForegroundColor = Color.FromArgb(255, 26, 26, 26);
-                titleBar.ButtonPressedBackgroundColor = Color.FromArgb(255, 220, 220, 220);
-                titleBar.ButtonPressedForegroundColor = Color.FromArgb(255, 50, 50, 50);
+                titleBar.ButtonBackgroundColor = Color.FromArgb(255, 243, 243, 243);
+                titleBar.ButtonForegroundColor = Color.FromArgb(255, 0, 0, 0);
+                titleBar.ButtonHoverBackgroundColor = Color.FromArgb(255, 230, 230, 230);
+                titleBar.ButtonHoverForegroundColor = Color.FromArgb(255, 0, 0, 0);
+                titleBar.ButtonPressedBackgroundColor = Color.FromArgb(255, 210, 210, 210);
+                titleBar.ButtonPressedForegroundColor = Color.FromArgb(255, 0, 0, 0);
                 
-                titleBar.ButtonInactiveBackgroundColor = Color.FromArgb(255, 255, 255, 255);
-                titleBar.ButtonInactiveForegroundColor = Color.FromArgb(255, 150, 150, 150);
+                titleBar.ButtonInactiveBackgroundColor = Color.FromArgb(255, 243, 243, 243);
+                titleBar.ButtonInactiveForegroundColor = Color.FromArgb(255, 115, 115, 115);
             }
         }
     }

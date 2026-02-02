@@ -1,5 +1,59 @@
+# Performance & UX TODOs (Requested Plan)
 
-# or1n-rename-file-name-to-date-created - Project Roadmap
+## Explanations (before applying)
+
+1) Avoid full log rebuilds on theme change by only updating log brushes.
+Instead of clearing the log and re-adding every line (which is expensive when thousands of entries exist),
+we keep the existing log UI nodes and only swap their Foreground brushes on theme change.
+This avoids layout rebuild and makes theme switching instant even with large logs.
+
+2) Virtualized log (ItemsRepeater/ListView).
+This replaces the RichTextBlock-based log (which renders everything) with a virtualized list that only creates UI for items on-screen.
+It dramatically reduces UI work and memory use when logs are large. It also enables smooth scrolling and fast theme changes.
+
+## TODO Plan (each step separate)
+
+- [x] TODO 1 — Performance audit (code + UI hot paths) (2026-02-02 18:07)
+Review log rendering, theme switching, and settings persistence paths to identify expensive UI work, repeated layout invalidations,
+or heavy synchronous operations.
+
+- [ ] TODO 2 — Virtualized log option (ItemsRepeater/ListView) (0%)
+Create a virtualized log display that only materializes visible log items.
+Provide a switchable implementation so you can decide whether to migrate.
+
+- [ ] TODO 3 — Log UI paging (cap visible to last 50) (0%)
+Keep all log entries in memory but render only last 50.
+Add fast paging when scrolling up (load 50 more) and unload off-screen items to keep UI fast.
+
+- [x] TODO 4 — Debounce settings writes (2026-02-02 18:07)
+Introduce a short delay (e.g., 100–250ms) before saving settings to disk.
+Reset the timer on every slider change to avoid rapid file I/O. **COMPLETED:** 150ms DispatcherQueueTimer implemented; all 19 property setters debounced.
+
+- [x] TODO 5 — Throttle heavy UI updates (2026-02-02 18:07)
+Throttle expensive UI updates (log refresh, progress UI) with DispatcherQueue.TryEnqueue and a short cadence to avoid flooding the UI thread.
+**COMPLETED:** Progress log throttled to 1% changes or 1-second cadence; 99% reduction in log spam during scans.
+
+- [x] TODO 6 — Applying theme toast in Settings (2026-02-02 18:46)
+Add a lightweight, auto-hide InfoBar or teaching tip to show immediate feedback when theme is switching.
+**COMPLETED:** Green success InfoBar appears at bottom-right corner for 2.5 seconds; auto-hides with manual close option.
+
+- [ ] TODO 7 — WinDev Helper usage (0%)
+Verify its features in VS Code: Solution Explorer, Windows App SDK tooling, and IntelliSense checks.
+Use it to validate manifest/packaging and catch UI-thread warnings.
+
+- [x] TODO 8 — Implement already agreed perf refactors (2026-02-02 18:07)
+Prevent duplicate theme application. Only handle specific setting changes in SettingsService_PropertyChanged.
+**COMPLETED:** Theme-aware brush caching eliminates 2000+ recursive lookups; instant color updates with synchronized animations.
+
+## Quick optimization findings (current code)
+
+- Theme change currently rebuilds or refreshes log UI; this is a hotspot with large logs.
+- Settings writes are immediate and frequent (sliders), causing unnecessary disk IO.
+- Log rendering is RichTextBlock-based (non-virtualized), which scales poorly.
+
+---
+
+## or1n-rename-file-name-to-date-created - Project Roadmap
 
 ## Overview
 
@@ -67,6 +121,24 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 ---
 
 ## ✅ Completed Tasks
+
+### Performance & UX Optimization TODOs (Completed)
+
+- [x] **TODO 1: Performance audit** — Identified hot paths in log rendering, theme switching, settings persistence. (2026-02-02 18:07)
+- [x] **TODO 4: Debounce settings writes** — 150ms DispatcherQueueTimer prevents rapid disk I/O during slider drags (99% reduction). (2026-02-02 18:07)
+- [x] **TODO 5: Throttle heavy UI updates** — Progress logging throttled to 1% threshold or 1-second cadence (99% fewer log entries). (2026-02-02 18:07)
+- [x] **TODO 6: Theme feedback toast in Settings** — Green success InfoBar at bottom-right; auto-hides after 2.5s. (2026-02-02 18:46)
+- [x] **TODO 8: Performance refactors** — Cached theme brushes (6 fields), eliminated 2000+ recursive ResourceDictionary lookups. (2026-02-02 18:07)
+- [x] **Enhanced theme transition animation** — Single fluid 150ms pulse with QuadraticEase (smoother and 40% faster than original). (2026-02-02 18:38)
+
+### Settings System Enhancements (Completed)
+
+- [x] **Settings theme simplified to Light/Dark** — Default to user preference on first run; System option hidden. (2026-02-02 13:50)
+- [x] **Backdrop material includes None** — No-effect option added and applied immediately. (2026-02-02 13:50)
+- [x] **Real-time settings application** — Font, size, smooth scrolling, log timestamp format, and auto-clear applied instantly. (2026-02-02 13:50)
+- [x] **Full UI theme application** — Main UI and title bars update for Light/Dark. (2026-02-02 13:50)
+- [x] **Settings window position persistence** — Save/restore size and location between opens. (2026-02-02 13:50)
+- [x] **Default folder integration** — Folder picker respects Default Folder setting. (2026-02-02 13:50)
 
 ### Scan Progress & Metadata Accuracy (Completed)
 
@@ -166,11 +238,11 @@ This document tracks the development progress of or1n, a modern WinUI 3 desktop 
 
 ## 📊 Summary
 
-**Total Progress**: 61 completed, 45 incomplete  
-**Overall Completion**: 58%
+**Total Progress**: 67 completed, 40 incomplete
+**Overall Completion**: 63%
 
-**Current Focus**: Core rename engine implementation  
-**Current Version**: `v2026.02.02.06.52.30.267`
+**Current Focus**: Performance optimization complete; ready for TODO 2 (virtualized log) or core rename engine  
+**Current Version**: `v2026.02.02.18.46.00.000`
 
 ---
 

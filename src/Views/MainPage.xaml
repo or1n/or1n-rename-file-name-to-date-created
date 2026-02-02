@@ -127,7 +127,8 @@
                       PointerPressed="InteractiveControl_PointerPressed"
                       PointerReleased="InteractiveControl_PointerReleased"
                       AutomationProperties.Name="Theme Selector"
-                      AutomationProperties.HelpText="Choose between Light or Dark theme">
+                      AutomationProperties.HelpText="Choose between Light or Dark theme"
+                      Visibility="Collapsed">
                 <ComboBoxItem Tag="Light">
                     <FontIcon Glyph="&#xE706;" FontSize="16" />
                 </ComboBoxItem>
@@ -265,6 +266,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <!-- GitHub Link -->
@@ -294,6 +296,27 @@
                        IsTabStop="False"
                        AutomationProperties.Name="Application Version"
                        AutomationProperties.HelpText="Current application version with timestamp"/>
+
+            <!-- Settings Button -->
+            <Button x:Name="SettingsButton"
+                    Grid.Column="3"
+                    Width="36"
+                    Height="36"
+                    Padding="0"
+                    Margin="8,0,0,0"
+                    TabIndex="4"
+                    Click="SettingsButton_Click"
+                    UseSystemFocusVisuals="True"
+                    FocusVisualMargin="-3"
+                    CornerRadius="4"
+                    PointerEntered="InteractiveControl_PointerEntered"
+                    PointerExited="InteractiveControl_PointerExited"
+                    PointerPressed="InteractiveControl_PointerPressed"
+                    PointerReleased="InteractiveControl_PointerReleased"
+                    AutomationProperties.Name="Settings"
+                    AutomationProperties.HelpText="Open application settings">
+                <FontIcon Glyph="&#xE713;" FontSize="16" />
+            </Button>
         </Grid>
     </Grid>
 </Page>

@@ -12,9 +12,11 @@ using Windows.UI;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 using System.IO;
 using System.Runtime.InteropServices;
+using Or1nRenameFileNameToDateCreated.Helpers;
 
 namespace Or1nRenameFileNameToDateCreated.Views
 {
@@ -39,11 +41,32 @@ namespace Or1nRenameFileNameToDateCreated.Views
         private readonly ConcurrentQueue<LogEntry> _logQueue = new();
         private DispatcherQueueTimer? _logFlushTimer;
         private DateTime _lastProgressUiUpdate = DateTime.MinValue;
+        private DateTime _lastProgressLogUpdate = DateTime.MinValue;
+        private double _lastProgressLogPercent = 0;
+        private const int PROGRESS_UI_THROTTLE_MS = 100;
+        private const int PROGRESS_LOG_THROTTLE_MS = 1000;
+        private const double PROGRESS_PERCENT_THRESHOLD = 1.0;
+        private bool _enableAnimations = true;
+        private double _animationSpeedMultiplier = 1.0;
+        private bool _smoothScrollingEnabled = true;
+        private string _logTimestampFormat = "24Hour";
+        private readonly Dictionary<Run, LogLevel> _messageRuns = new();
+        private readonly HashSet<Run> _timestampRuns = new();
+        
+        // Cached brushes to avoid recursive lookups during theme changes
+        private SolidColorBrush? _cachedTimestampBrush;
+        private SolidColorBrush? _cachedInfoBrush;
+        private SolidColorBrush? _cachedWarningBrush;
+        private SolidColorBrush? _cachedErrorBrush;
+        private SolidColorBrush? _cachedSuccessBrush;
+        private SolidColorBrush? _cachedDebugBrush;
+        private bool _isThemeTransitionInProgress = false;
 
         public MainPage()
         {
             this.InitializeComponent();
             Loaded += MainPage_Loaded;
+            Unloaded += MainPage_Unloaded;
         }
 
         /// <summary>
@@ -65,6 +88,13 @@ namespace Or1nRenameFileNameToDateCreated.Views
 
             InitializeResizeLogging();
             InitializeLogBuffer();
+
+            ApplySettingsFromService();
+            SettingsService.Instance.PropertyChanged += SettingsService_PropertyChanged;
+            ActualThemeChanged += MainPage_ActualThemeChanged;
+            
+            // Cache theme brushes to avoid recursive lookups
+            CacheThemeBrushes();
             
             // Display current application version without the "v" prefix
             if (VersionText != null)
@@ -74,6 +104,174 @@ namespace Or1nRenameFileNameToDateCreated.Views
                 var versionWithoutPrefix = fullVersion.TrimStart('v');
                 VersionText.Text = $"version {versionWithoutPrefix}";
             }
+        }
+
+        private void MainPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            SettingsService.Instance.PropertyChanged -= SettingsService_PropertyChanged;
+            ActualThemeChanged -= MainPage_ActualThemeChanged;
+        }
+
+        private async void MainPage_ActualThemeChanged(FrameworkElement sender, object args)
+        {
+            if (_isThemeTransitionInProgress)
+            {
+                return;
+            }
+
+            _isThemeTransitionInProgress = true;
+
+            // Update brushes IMMEDIATELY so color change is instant and synchronized
+            CacheThemeBrushes();
+            RefreshLogBrushes();
+
+            // Then animate the transition smoothly over the already-updated colors
+            if (_enableAnimations)
+            {
+                await AnimateThemeTransitionAsync();
+            }
+
+            _isThemeTransitionInProgress = false;
+        }
+
+        /// <summary>
+        /// Performs a smooth theme transition across the whole page with a subtle pulse effect.
+        /// Uses a single fluid animation for perfect synchronization.
+        /// </summary>
+        private async Task AnimateThemeTransitionAsync()
+        {
+            if (RootGrid == null)
+            {
+                return;
+            }
+
+            // Fast, smooth pulse: 150ms total with QuadraticEase for butter-smooth motion
+            var duration = GetAnimationDurationMs(150);
+
+            // Single pulse animation that goes: 100% → 96% → 100%
+            // This creates a subtle "acknowledgment" effect that's faster and smoother than two separate fades
+            var storyboard = new Storyboard { Duration = TimeSpan.FromMilliseconds(duration) };
+            
+            var opacityAnim = new DoubleAnimationUsingKeyFrames { Duration = TimeSpan.FromMilliseconds(duration) };
+            
+            // Start at 100%
+            opacityAnim.KeyFrames.Add(new DiscreteDoubleKeyFrame { KeyTime = KeyTime.FromTimeSpan(TimeSpan.Zero), Value = 1.0 });
+            
+            // Smooth ease to 96% at midpoint (75ms) - subtle dip
+            opacityAnim.KeyFrames.Add(new EasingDoubleKeyFrame 
+            { 
+                KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(duration * 0.5)), 
+                Value = 0.96,
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            });
+            
+            // Smooth ease back to 100% at end (150ms) - polished return
+            opacityAnim.KeyFrames.Add(new EasingDoubleKeyFrame 
+            { 
+                KeyTime = KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(duration)), 
+                Value = 1.0,
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+            });
+
+            Storyboard.SetTarget(opacityAnim, RootGrid);
+            Storyboard.SetTargetProperty(opacityAnim, "Opacity");
+            storyboard.Children.Add(opacityAnim);
+
+            var tcs = new TaskCompletionSource<bool>();
+            storyboard.Completed += (s, e) => tcs.SetResult(true);
+            storyboard.Begin();
+            await tcs.Task;
+        }
+
+        /// <summary>
+        /// Animates opacity for a UI element with easing.
+        /// </summary>
+        private async Task AnimateOpacityAsync(UIElement element, double from, double to, int durationMs)
+        {
+            var storyboard = new Storyboard { Duration = TimeSpan.FromMilliseconds(durationMs) };
+            var doubleAnim = new DoubleAnimation
+            {
+                From = from,
+                To = to,
+                Duration = TimeSpan.FromMilliseconds(durationMs),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut }
+            };
+
+            Storyboard.SetTarget(doubleAnim, element);
+            Storyboard.SetTargetProperty(doubleAnim, "Opacity");
+            storyboard.Children.Add(doubleAnim);
+
+            var tcs = new TaskCompletionSource<bool>();
+            storyboard.Completed += (s, e) => tcs.SetResult(true);
+            storyboard.Begin();
+            await tcs.Task;
+        }
+
+        private void SettingsService_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            var settings = SettingsService.Instance;
+
+            switch (e.PropertyName)
+            {
+                case nameof(SettingsService.EnableAnimations):
+                    _enableAnimations = settings.EnableAnimations;
+                    break;
+                case nameof(SettingsService.AnimationSpeedMultiplier):
+                    _animationSpeedMultiplier = Math.Max(0.1, settings.AnimationSpeedMultiplier);
+                    break;
+                case nameof(SettingsService.SmoothScrolling):
+                    _smoothScrollingEnabled = settings.SmoothScrolling;
+                    if (LogScrollViewer != null)
+                    {
+                        LogScrollViewer.IsScrollInertiaEnabled = _smoothScrollingEnabled;
+                    }
+                    break;
+                case nameof(SettingsService.AutoScrollLog):
+                    _isAutoScrollEnabled = settings.AutoScrollLog;
+                    break;
+                case nameof(SettingsService.LogTimestampFormat):
+                    _logTimestampFormat = settings.LogTimestampFormat;
+                    UpdateLogText();
+                    break;
+                case nameof(SettingsService.LogColorScheme):
+                    RefreshLogBrushes();
+                    break;
+                case nameof(SettingsService.Theme):
+                    ApplyThemeFromSettings(settings.Theme);
+                    break;
+            }
+        }
+
+        private void ApplySettingsFromService()
+        {
+            var settings = SettingsService.Instance;
+
+            _enableAnimations = settings.EnableAnimations;
+            _animationSpeedMultiplier = Math.Max(0.1, settings.AnimationSpeedMultiplier);
+            _smoothScrollingEnabled = settings.SmoothScrolling;
+            _isAutoScrollEnabled = settings.AutoScrollLog;
+            _logTimestampFormat = settings.LogTimestampFormat;
+
+            if (LogScrollViewer != null)
+            {
+                LogScrollViewer.IsScrollInertiaEnabled = _smoothScrollingEnabled;
+            }
+
+            ApplyThemeFromSettings(settings.Theme);
+        }
+
+        private void ApplyThemeFromSettings(string theme)
+        {
+            RequestedTheme = ThemeManager.ParseTheme(theme);
+            RefreshLogBrushes();
+        }
+
+        /// <summary>
+        /// Rebuilds the log output so existing entries use current theme brushes.
+        /// </summary>
+        public void RefreshLogColors()
+        {
+            RefreshLogBrushes();
         }
 
         private void InitializeResizeLogging()
@@ -115,29 +313,8 @@ namespace Or1nRenameFileNameToDateCreated.Views
         {
             if (ThemeComboBox == null) return;
 
-            // Try to load saved theme preference
-            var task = Task.Run(async () =>
-            {
-                var settings = await Or1nRenameFileNameToDateCreated.Helpers.WindowSettings.LoadAsync();
-                return settings?.Theme;
-            });
-            task.Wait();
-            var savedTheme = task.Result;
-
-            if (!string.IsNullOrEmpty(savedTheme))
-            {
-                // Use saved theme
-                ThemeComboBox.SelectedIndex = savedTheme == "Dark" ? 1 : 0;
-            }
-            else
-            {
-                // Use system preference
-                var systemTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark
-                    ? ElementTheme.Dark
-                    : ElementTheme.Light;
-
-                ThemeComboBox.SelectedIndex = systemTheme == ElementTheme.Dark ? 1 : 0;
-            }
+            var theme = SettingsService.Instance.Theme;
+            ThemeComboBox.SelectedIndex = theme == "Dark" ? 1 : 0;
         }
 
         /// <summary>
@@ -149,6 +326,13 @@ namespace Or1nRenameFileNameToDateCreated.Views
         private void AnimateElementEntrance(FrameworkElement element, TranslateTransform transform, int delayMs)
         {
             if (element == null || transform == null) return;
+
+            if (!_enableAnimations)
+            {
+                element.Opacity = 1;
+                transform.Y = 0;
+                return;
+            }
 
             // Initial state
             element.Opacity = 0;
@@ -162,7 +346,7 @@ namespace Or1nRenameFileNameToDateCreated.Views
             {
                 From = 20,
                 To = 0,
-                Duration = TimeSpan.FromMilliseconds(167),
+                Duration = TimeSpan.FromMilliseconds(GetAnimationDurationMs(167)),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             };
             Storyboard.SetTarget(slideAnimation, transform);
@@ -174,7 +358,7 @@ namespace Or1nRenameFileNameToDateCreated.Views
             {
                 From = 0,
                 To = 1,
-                Duration = TimeSpan.FromMilliseconds(167)
+                Duration = TimeSpan.FromMilliseconds(GetAnimationDurationMs(167))
             };
             Storyboard.SetTarget(fadeAnimation, element);
             Storyboard.SetTargetProperty(fadeAnimation, "Opacity");
@@ -192,6 +376,12 @@ namespace Or1nRenameFileNameToDateCreated.Views
         {
             var timestamp = DateTime.Now;
             var level = GetLogLevel(message);
+
+            if (level == LogLevel.Debug && !SettingsService.Instance.DebugMode)
+            {
+                return;
+            }
+
             _logQueue.Enqueue(new LogEntry(timestamp, message, level));
 
             if (DispatcherQueue.HasThreadAccess)
@@ -204,6 +394,8 @@ namespace Or1nRenameFileNameToDateCreated.Views
         {
             if (InfoRichTextBlock == null) return;
 
+            _messageRuns.Clear();
+            _timestampRuns.Clear();
             InfoRichTextBlock.Blocks.Clear();
 
             foreach (var entry in _logEntries)
@@ -212,6 +404,49 @@ namespace Or1nRenameFileNameToDateCreated.Views
             }
 
             AutoScrollLog();
+        }
+
+        /// <summary>
+        /// Caches all theme-aware brushes to avoid recursive dictionary lookups.
+        /// Call this once at startup and whenever the theme changes.
+        /// </summary>
+        private void CacheThemeBrushes()
+        {
+            _cachedTimestampBrush = GetThemeAwareBrush("LogTimestampBrush");
+            _cachedInfoBrush = GetThemeAwareBrush("LogInfoBrush");
+            _cachedWarningBrush = GetThemeAwareBrush("LogWarningBrush");
+            _cachedErrorBrush = GetThemeAwareBrush("LogErrorBrush");
+            _cachedSuccessBrush = GetThemeAwareBrush("LogSuccessBrush");
+            _cachedDebugBrush = GetThemeAwareBrush("LogDebugBrush");
+        }
+
+        private void RefreshLogBrushes()
+        {
+            if (InfoRichTextBlock == null) return;
+
+            // Use cached brushes instead of recursive lookups
+            var timestampBrush = _cachedTimestampBrush ?? GetThemeAwareBrush("LogTimestampBrush");
+
+            foreach (var run in _timestampRuns)
+            {
+                run.Foreground = timestampBrush;
+            }
+
+            foreach (var kvp in _messageRuns)
+            {
+                var brushKey = GetBrushKey(kvp.Value);
+                var messageBrush = brushKey switch
+                {
+                    "LogTimestampBrush" => _cachedTimestampBrush ?? GetThemeAwareBrush(brushKey),
+                    "LogInfoBrush" => _cachedInfoBrush ?? GetThemeAwareBrush(brushKey),
+                    "LogWarningBrush" => _cachedWarningBrush ?? GetThemeAwareBrush(brushKey),
+                    "LogErrorBrush" => _cachedErrorBrush ?? GetThemeAwareBrush(brushKey),
+                    "LogSuccessBrush" => _cachedSuccessBrush ?? GetThemeAwareBrush(brushKey),
+                    "LogDebugBrush" => _cachedDebugBrush ?? GetThemeAwareBrush(brushKey),
+                    _ => GetThemeAwareBrush(brushKey)
+                };
+                kvp.Key.Foreground = messageBrush;
+            }
         }
 
         private void InitializeLogBuffer()
@@ -244,6 +479,28 @@ namespace Or1nRenameFileNameToDateCreated.Views
             if (added)
             {
                 AutoScrollLog();
+            }
+        }
+
+        /// <summary>
+        /// Clears all log entries from the display and internal storage.
+        /// This is called by the Settings window when clearing logs.
+        /// </summary>
+        public void ClearLog()
+        {
+            if (!DispatcherQueue.HasThreadAccess)
+            {
+                DispatcherQueue.TryEnqueue(ClearLog);
+                return;
+            }
+
+            _logEntries.Clear();
+            _logQueue.Clear();
+            _messageRuns.Clear();
+            _timestampRuns.Clear();
+            if (InfoRichTextBlock != null)
+            {
+                InfoRichTextBlock.Blocks.Clear();
             }
         }
 
@@ -297,32 +554,52 @@ namespace Or1nRenameFileNameToDateCreated.Views
         {
             if (InfoRichTextBlock == null) return;
 
-            var timestamp = entry.Timestamp.ToString("yy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            var timestampText = GetTimestampText(entry.Timestamp);
             var paragraph = new Paragraph { Margin = new Thickness(0, 0, 0, 0), LineHeight = LOG_LINE_HEIGHT };
 
-            // Get timestamp brush - light gray in both themes
-            var timestampBrush = GetThemeAwareBrush("LogTimestampBrush");
-            paragraph.Inlines.Add(new Run
+            if (!string.IsNullOrWhiteSpace(timestampText))
             {
-                Text = $"[{timestamp}] ",
-                Foreground = timestampBrush
-            });
+                // Get timestamp brush - light gray in both themes
+                var timestampBrush = GetThemeAwareBrush("LogTimestampBrush");
+                var timestampRun = new Run
+                {
+                    Text = $"[{timestampText}] ",
+                    Foreground = timestampBrush
+                };
+                _timestampRuns.Add(timestampRun);
+                paragraph.Inlines.Add(timestampRun);
+            }
 
             // Get message brush - theme-aware via resource lookup or theme
             var messageBrush = GetThemeAwareBrush(GetBrushKey(entry.Level));
-            paragraph.Inlines.Add(new Run
+            var messageRun = new Run
             {
                 Text = entry.Message,
                 Foreground = messageBrush
-            });
+            };
+            _messageRuns[messageRun] = entry.Level;
+            paragraph.Inlines.Add(messageRun);
 
             InfoRichTextBlock.Blocks.Add(paragraph);
         }
 
-        private static string FormatLogLine(LogEntry entry)
+        private string FormatLogLine(LogEntry entry)
         {
-            var timestamp = entry.Timestamp.ToString("yy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-            return $"[{timestamp}] {entry.Message}";
+            var timestampText = GetTimestampText(entry.Timestamp);
+            return string.IsNullOrWhiteSpace(timestampText)
+                ? entry.Message
+                : $"[{timestampText}] {entry.Message}";
+        }
+
+        private string GetTimestampText(DateTime timestamp)
+        {
+            return _logTimestampFormat switch
+            {
+                "None" => string.Empty,
+                "12Hour" => timestamp.ToString("yy/MM/dd hh:mm:ss tt", System.Globalization.CultureInfo.InvariantCulture),
+                "ISO" => timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture),
+                _ => timestamp.ToString("yy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture)
+            };
         }
 
         private static string GetBrushKey(LogLevel level)
@@ -339,20 +616,57 @@ namespace Or1nRenameFileNameToDateCreated.Views
 
         private SolidColorBrush GetThemeAwareBrush(string resourceKey)
         {
-            // Always determine theme dynamically - don't cache theme at load time
-            // this.ActualTheme will be correct at render time
-            var isLightTheme = this.ActualTheme == ElementTheme.Light;
+            var themeKey = ActualTheme == ElementTheme.Dark ? "Dark" : "Light";
 
-            return resourceKey switch
+            if (TryGetThemedBrush(Application.Current.Resources, themeKey, resourceKey, out var themedBrush))
             {
-                "LogTimestampBrush" => new SolidColorBrush(new Color { A = 255, R = 97, G = 97, B = 97 }),
-                "LogInfoBrush" => new SolidColorBrush(new Color { A = 255, R = (byte)(isLightTheme ? 26 : 255), G = (byte)(isLightTheme ? 26 : 255), B = (byte)(isLightTheme ? 26 : 255) }),
-                "LogWarningBrush" => new SolidColorBrush(new Color { A = 255, R = (byte)(isLightTheme ? 184 : 255), G = (byte)(isLightTheme ? 134 : 201), B = (byte)(isLightTheme ? 11 : 60) }),
-                "LogErrorBrush" => new SolidColorBrush(new Color { A = 255, R = (byte)(isLightTheme ? 180 : 255), G = (byte)(isLightTheme ? 55 : 107), B = (byte)(isLightTheme ? 59 : 107) }),
-                "LogSuccessBrush" => new SolidColorBrush(new Color { A = 255, R = (byte)(isLightTheme ? 11 : 81), G = (byte)(isLightTheme ? 102 : 207), B = (byte)(isLightTheme ? 35 : 102) }),
-                "LogDebugBrush" => new SolidColorBrush(new Color { A = 255, R = (byte)(isLightTheme ? 74 : 197), G = (byte)(isLightTheme ? 74 : 197), B = (byte)(isLightTheme ? 74 : 197) }),
-                _ => new SolidColorBrush(new Color { A = 255, R = (byte)(isLightTheme ? 26 : 255), G = (byte)(isLightTheme ? 26 : 255), B = (byte)(isLightTheme ? 26 : 255) })
-            };
+                return themedBrush;
+            }
+
+            var fallback = ActualTheme == ElementTheme.Light ? Colors.Black : Colors.White;
+            return new SolidColorBrush(fallback);
+        }
+
+        private static bool TryGetThemedBrush(ResourceDictionary dictionary, string themeKey, string resourceKey, out SolidColorBrush brush)
+        {
+            if (dictionary.ThemeDictionaries.TryGetValue(themeKey, out var themeDictObj) && themeDictObj is ResourceDictionary themeDict)
+            {
+                if (TryGetBrush(themeDict, resourceKey, out brush))
+                {
+                    return true;
+                }
+            }
+
+            foreach (var merged in dictionary.MergedDictionaries)
+            {
+                if (TryGetThemedBrush(merged, themeKey, resourceKey, out brush))
+                {
+                    return true;
+                }
+            }
+
+            return TryGetBrush(dictionary, resourceKey, out brush);
+        }
+
+        private static bool TryGetBrush(ResourceDictionary dictionary, string resourceKey, out SolidColorBrush brush)
+        {
+            if (dictionary.TryGetValue(resourceKey, out var value))
+            {
+                if (value is SolidColorBrush foundBrush)
+                {
+                    brush = foundBrush;
+                    return true;
+                }
+
+                if (value is Color color)
+                {
+                    brush = new SolidColorBrush(color);
+                    return true;
+                }
+            }
+
+            brush = null!;
+            return false;
         }
 
         private static SolidColorBrush GetLogBrush(string resourceKey, SolidColorBrush fallback)
@@ -380,7 +694,7 @@ namespace Or1nRenameFileNameToDateCreated.Views
             LogScrollViewer.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
             {
                 LogScrollViewer.UpdateLayout();
-                LogScrollViewer.ChangeView(null, LogScrollViewer.ScrollableHeight, null, true);
+                LogScrollViewer.ChangeView(null, LogScrollViewer.ScrollableHeight, null, !_smoothScrollingEnabled);
             });
         }
 
@@ -394,7 +708,7 @@ namespace Or1nRenameFileNameToDateCreated.Views
             LogScrollViewer.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () =>
             {
                 LogScrollViewer.UpdateLayout();
-                LogScrollViewer.ChangeView(null, LogScrollViewer.ScrollableHeight, null, true);
+                LogScrollViewer.ChangeView(null, LogScrollViewer.ScrollableHeight, null, !_smoothScrollingEnabled);
             });
         }
 
@@ -474,31 +788,8 @@ namespace Or1nRenameFileNameToDateCreated.Views
                 if (ThemeComboBox != null && ThemeComboBox.SelectedItem is ComboBoxItem item && item.Tag is string tag)
                 {
                     System.Diagnostics.Debug.WriteLine($"[ThemeComboBox_SelectionChanged] Selected tag: {tag}");
-                    ElementTheme theme = tag switch
-                    {
-                        "Light" => ElementTheme.Light,
-                        "Dark" => ElementTheme.Dark,
-                        _ => ElementTheme.Default
-                    };
-                    
-                    // Apply theme to the Page
-                    this.RequestedTheme = theme;
-                    
-                    // Also apply theme to the Window's content root for title bar update
-                    if (this.XamlRoot?.Content is FrameworkElement root)
-                    {
-                        root.RequestedTheme = theme;
-                    }
-                    
-                    // Get MainWindow and trigger title bar update
-                    var window = WindowHelper.GetWindowForElement(this);
-                    if (window is MainWindow mainWindow)
-                    {
-                        mainWindow.UpdateTitleBarTheme(theme);
-                    }
-
-                    // Save theme preference
-                    _ = Or1nRenameFileNameToDateCreated.Helpers.WindowSettings.SaveThemeAsync(tag);
+                    SettingsService.Instance.Theme = tag == "Dark" ? "Dark" : "Light";
+                    ApplyThemeFromSettings(SettingsService.Instance.Theme);
 
                     Log($"Theme changed to {tag}");
                 }
@@ -606,6 +897,11 @@ namespace Or1nRenameFileNameToDateCreated.Views
                 Log("[SCAN] Please select a folder first.");
                 return;
             }
+
+            if (SettingsService.Instance.AutoClearLog)
+            {
+                ClearLog();
+            }
             try
             {
                 var fileExtensions = GetFolderExtensions(_selectedFolderPath);
@@ -634,14 +930,26 @@ namespace Or1nRenameFileNameToDateCreated.Views
                 Action<Or1nRenameFileNameToDateCreated.Helpers.MetadataScanService.ScanProgress> progressReporter = scanProgress =>
                 {
                     var now = DateTime.UtcNow;
-                    if (now - _lastProgressUiUpdate > TimeSpan.FromMilliseconds(100) || scanProgress.Index == scanProgress.Total)
+                    
+                    // THROTTLE #1: UI progress updates (100ms cadence or on completion)
+                    if (now - _lastProgressUiUpdate > TimeSpan.FromMilliseconds(PROGRESS_UI_THROTTLE_MS) || scanProgress.Index == scanProgress.Total)
                     {
                         _lastProgressUiUpdate = now;
                         UpdateScanProgress(scanProgress.Index, scanProgress.Total, scanProgress.Percent, scanProgress.Elapsed, scanProgress.EstimatedRemaining,
                             $"{scanProgress.Index}/{scanProgress.Total} ({scanProgress.Percent:0.0}%) | ETA {scanProgress.EstimatedRemaining:mm\\:ss}");
                     }
 
-                    Log($"[SCAN] {scanProgress.Index}/{scanProgress.Total} ({scanProgress.Percent:0.0}%) | ETA {scanProgress.EstimatedRemaining:mm\\:ss} | {scanProgress.FileName}");
+                    // THROTTLE #2: Progress logging (only log if percent changed >1% or >1 second elapsed or on completion)
+                    bool shouldLogProgress = scanProgress.Index == scanProgress.Total // Always log completion
+                        || Math.Abs(scanProgress.Percent - _lastProgressLogPercent) >= PROGRESS_PERCENT_THRESHOLD
+                        || now - _lastProgressLogUpdate > TimeSpan.FromMilliseconds(PROGRESS_LOG_THROTTLE_MS);
+
+                    if (shouldLogProgress)
+                    {
+                        _lastProgressLogUpdate = now;
+                        _lastProgressLogPercent = scanProgress.Percent;
+                        Log($"[SCAN] {scanProgress.Index}/{scanProgress.Total} ({scanProgress.Percent:0.0}%) | ETA {scanProgress.EstimatedRemaining:mm\\:ss} | {scanProgress.FileName}");
+                    }
                 };
 
                 var scanResult = await Task.Run(() => Or1nRenameFileNameToDateCreated.Helpers.MetadataScanService.ScanFolder(_selectedFolderPath, selectedExtensions, progressReporter));
@@ -897,12 +1205,19 @@ namespace Or1nRenameFileNameToDateCreated.Views
 
         private void AnimateScale(ScaleTransform transform, double toScale, int durationMs)
         {
+            if (!_enableAnimations)
+            {
+                transform.ScaleX = toScale;
+                transform.ScaleY = toScale;
+                return;
+            }
+
             var storyboard = new Storyboard();
             
             var scaleXAnimation = new DoubleAnimation
             {
                 To = toScale,
-                Duration = TimeSpan.FromMilliseconds(durationMs),
+                Duration = TimeSpan.FromMilliseconds(GetAnimationDurationMs(durationMs)),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             };
             Storyboard.SetTarget(scaleXAnimation, transform);
@@ -912,7 +1227,7 @@ namespace Or1nRenameFileNameToDateCreated.Views
             var scaleYAnimation = new DoubleAnimation
             {
                 To = toScale,
-                Duration = TimeSpan.FromMilliseconds(durationMs),
+                Duration = TimeSpan.FromMilliseconds(GetAnimationDurationMs(durationMs)),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             };
             Storyboard.SetTarget(scaleYAnimation, transform);
@@ -920,6 +1235,17 @@ namespace Or1nRenameFileNameToDateCreated.Views
             storyboard.Children.Add(scaleYAnimation);
 
             storyboard.Begin();
+        }
+
+        private int GetAnimationDurationMs(int baseDurationMs)
+        {
+            if (_animationSpeedMultiplier <= 0)
+            {
+                return baseDurationMs;
+            }
+
+            var adjusted = baseDurationMs / _animationSpeedMultiplier;
+            return (int)Math.Max(40, Math.Min(1000, adjusted));
         }
 
         /// <summary>
@@ -956,6 +1282,20 @@ namespace Or1nRenameFileNameToDateCreated.Views
             catch (Exception ex)
             {
                 Log($"Error: Failed to open GitHub page - {ex.Message}");
+            }
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var settingsWindow = new SettingsWindow();
+                settingsWindow.Activate();
+                Log("Settings window opened");
+            }
+            catch (Exception ex)
+            {
+                Log($"Error opening settings: {ex.Message}");
             }
         }
     }

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="Or1nRenameFileNameToDateCreated.Views.SettingsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Settings">
+
+    <Grid Background="{ThemeResource PageBackgroundBrush}">
+        <!-- Main scrollable content -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalScrollMode="Auto">
+            <StackPanel Padding="{StaticResource Padding.Large}" Spacing="{StaticResource Spacing.Large}">
+                <TextBlock Text="Settings"
+                           FontSize="{StaticResource FontSize.Title}"
+                           FontWeight="SemiBold"
+                           Foreground="{ThemeResource TitleBrush}" />
+
+                <!-- Appearance -->
+                <StackPanel Spacing="{StaticResource Spacing.Small}" Margin="0,0,0,20">
+                    <TextBlock Text="Appearance"
+                               FontSize="{StaticResource FontSize.Subtitle}"
+                               FontWeight="SemiBold"
+                               Foreground="{ThemeResource SubtitleBrush}" />
+
+                        <StackPanel Spacing="{StaticResource Spacing.XSmall}">
+                            <TextBlock Text="Theme" FontWeight="SemiBold" />
+                            <ComboBox x:Name="ThemeComboBox" Width="{StaticResource ComboBox.Width}" HorizontalAlignment="Left">
+                                <ComboBoxItem Content="Light" />
+                                <ComboBoxItem Content="Dark" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="{StaticResource Spacing.XSmall}">
+                            <TextBlock Text="Backdrop Material" FontWeight="SemiBold" />
+                            <ComboBox x:Name="BackdropMaterialComboBox" Width="{StaticResource ComboBox.Width}" HorizontalAlignment="Left">
+                                <ComboBoxItem Content="None" />
+                                <ComboBoxItem Content="Desktop Acrylic" />
+                                <ComboBoxItem Content="Mica" />
+                                <ComboBoxItem Content="Mica Alt" />
+                            </ComboBox>
+                            <TextBlock Text="Applies to all app windows."
+                                       FontSize="{StaticResource FontSize.Small}"
+                                       Foreground="{ThemeResource TextSecondaryBrush}" />
+                        </StackPanel>
+
+                        <StackPanel Spacing="{StaticResource Spacing.XSmall}">
+                            <TextBlock Text="Corner Radius" FontWeight="SemiBold" />
+                            <ComboBox x:Name="CornerRadiusComboBox" Width="{StaticResource ComboBox.Width}" HorizontalAlignment="Left">
+                                <ComboBoxItem Content="Sharp (0px)" />
+                                <ComboBoxItem Content="Rounded (4px)" />
+                                <ComboBoxItem Content="Very Rounded (8px)" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="{StaticResource Spacing.XSmall}">
+                            <TextBlock Text="Font Family" FontWeight="SemiBold" />
+                            <ComboBox x:Name="FontFamilyComboBox" Width="{StaticResource ComboBox.Width}" HorizontalAlignment="Left">
+                                <ComboBoxItem Content="Segoe UI" />
+                                <ComboBoxItem Content="Consolas" />
+                                <ComboBoxItem Content="Cascadia Code" />
+                                <ComboBoxItem Content="Courier New" />
+                                <ComboBoxItem Content="Georgia" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="{StaticResource Spacing.XSmall}">
+                            <TextBlock Text="Font Size" FontWeight="SemiBold" />
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{StaticResource Spacing.Small}">
+                                <Slider x:Name="FontSizeSlider" Grid.Column="0" Minimum="12" Maximum="20" StepFrequency="1" TickFrequency="2" />
+                                <TextBlock x:Name="FontSizeDisplay" Grid.Column="1" Text="13px" VerticalAlignment="Center" />
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel Spacing="{StaticResource Spacing.XSmall}">
+                            <TextBlock Text="Window Transparency" FontWeight="SemiBold" />
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{StaticResource Spacing.Small}">
+                                <Slider x:Name="BackdropOpacitySlider" Grid.Column="0" Minimum="0" Maximum="100" StepFrequency="5" TickFrequency="10" />
+                                <TextBlock x:Name="OpacityDisplay" Grid.Column="1" Text="100%" VerticalAlignment="Center" />
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel Spacing="{StaticResource Spacing.XSmall}">
+                            <TextBlock Text="Animation Speed" FontWeight="SemiBold" />
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{StaticResource Spacing.Small}">
+                                <Slider x:Name="AnimationSpeedSlider" Grid.Column="0" Minimum="0.5" Maximum="2.0" StepFrequency="0.1" TickFrequency="0.25" />
+                                <TextBlock x:Name="AnimationSpeedDisplay" Grid.Column="1" Text="1.0x" VerticalAlignment="Center" />
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel Spacing="{StaticResource Spacing.XSmall}">
+                            <TextBlock Text="Accent Color" FontWeight="SemiBold" />
+                            <ComboBox x:Name="AccentColorComboBox" Width="{StaticResource ComboBox.Width}" HorizontalAlignment="Left">
+                                <ComboBoxItem Content="System Primary" />
+                                <ComboBoxItem Content="Blue" />
+                                <ComboBoxItem Content="Purple" />
+                                <ComboBoxItem Content="Pink" />
+                                <ComboBoxItem Content="Orange" />
+                                <ComboBoxItem Content="Green" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Spacing="{StaticResource Spacing.XSmall}">
+                            <TextBlock Text="Animations" FontWeight="SemiBold" />
+                            <ToggleSwitch x:Name="EnableAnimationsToggle" Header="Enable entrance and transition animations" />
+                        </StackPanel>
+                    </StackPanel>
+
+                <!-- Behavior -->
+                <StackPanel Spacing="{StaticResource Spacing.Small}" Margin="0,0,0,20">
+                    <TextBlock Text="Behavior"
+                               FontSize="{StaticResource FontSize.Subtitle}"
+                               FontWeight="SemiBold"
+                               Foreground="{ThemeResource SubtitleBrush}" />
+
+                    <ToggleSwitch x:Name="SmoothScrollingToggle" Header="Enable smooth scrolling" />
+                    <ToggleSwitch x:Name="AutoScrollLogToggle" Header="Auto-scroll log when new entries appear" />
+
+                    <StackPanel Spacing="{StaticResource Spacing.XSmall}">
+                        <TextBlock Text="Log Timestamp Format" FontWeight="SemiBold" />
+                        <ComboBox x:Name="LogTimestampFormatComboBox" Width="{StaticResource ComboBox.Width}" HorizontalAlignment="Left">
+                            <ComboBoxItem Content="None" />
+                            <ComboBoxItem Content="24-Hour (HH:mm:ss)" />
+                            <ComboBoxItem Content="12-Hour (hh:mm:ss tt)" />
+                            <ComboBoxItem Content="ISO (HH:mm:ss.fff)" />
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Spacing="{StaticResource Spacing.XSmall}">
+                        <TextBlock Text="Default Folder" FontWeight="SemiBold" />
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{StaticResource Spacing.Small}">
+                            <TextBox x:Name="DefaultFolderTextBox" Grid.Column="0" PlaceholderText="No default folder set" IsReadOnly="True" />
+                            <Button x:Name="BrowseFolderButton" Grid.Column="1" Content="Browse" Padding="12,6" />
+                        </Grid>
+                    </StackPanel>
+
+                    <ToggleSwitch x:Name="AlwaysOnTopToggle" Header="Keep window on top of other applications" />
+                    <ToggleSwitch x:Name="AutoClearLogToggle" Header="Auto-clear log when starting a new scan" />
+                </StackPanel>
+
+                <!-- Advanced -->
+                <StackPanel Spacing="{StaticResource Spacing.Small}" Margin="0,0,0,20">
+                    <TextBlock Text="Advanced"
+                               FontSize="{StaticResource FontSize.Subtitle}"
+                               FontWeight="SemiBold"
+                               Foreground="{ThemeResource SubtitleBrush}" />
+
+                    <ToggleSwitch x:Name="DebugModeToggle" Header="Enable debug mode" />
+
+                    <StackPanel Spacing="{StaticResource Spacing.XSmall}">
+                        <TextBlock Text="Log Color Scheme" FontWeight="SemiBold" />
+                        <ComboBox x:Name="LogColorSchemeComboBox" Width="{StaticResource ComboBox.Width}" HorizontalAlignment="Left">
+                            <ComboBoxItem Content="Default (Theme-aware)" />
+                            <ComboBoxItem Content="High Contrast" />
+                        </ComboBox>
+                    </StackPanel>
+
+                    <Button x:Name="ClearLogButton" Content="Clear All Log Entries" Padding="12,6" />
+
+                    <StackPanel Orientation="Horizontal" Spacing="{StaticResource Spacing.Small}">
+                        <Button x:Name="ExportSettingsButton" Content="Export Settings" Padding="12,6" />
+                        <Button x:Name="ImportSettingsButton" Content="Import Settings" Padding="12,6" />
+                    </StackPanel>
+
+                    <Button x:Name="ResetDefaultsButton"
+                            Content="Reset All Settings to Defaults"
+                            Padding="12,6"
+                            Style="{ThemeResource AccentButtonStyle}" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Theme Change Feedback Toast (overlaid at bottom-right, doesn't affect layout) -->
+        <InfoBar x:Name="ThemeFeedbackInfoBar"
+                 IsOpen="False"
+                 Severity="Success"
+                 Title="Theme Applied"
+                 Message="Theme has been changed successfully"
+                 IsClosable="True"
+                 VerticalAlignment="Bottom"
+                 HorizontalAlignment="Right"
+                 Margin="0,0,20,20"
+                 Width="340" />
+    </Grid>
+</Window>
